@@ -1,0 +1,43 @@
+{
+  "name": "ifsp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx prisma generate --schema ./prisma/schema && tsup src --out-dir dist --sourcemap inline",
+    "dev": "ts-node-dev --respawn -r tsconfig-paths/register src/server.ts",
+    "start": "node -r tsconfig-paths/register dist/server.js",
+    "prisma:migrate": "prisma migrate dev --schema ./prisma/schema",
+    "prisma:push": "prisma db push --schema ./prisma/schema"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.17.1",
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/cors": "^11.1.0",
+    "@fastify/jwt": "^10.0.0",
+    "@prisma/client": "^6.17.0",
+    "@supabase/supabase-js": "^2.75.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "fastify": "^5.6.1",
+    "prisma": "^6.17.0",
+    "uuid": "^13.0.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-plugin-perfectionist": "^4.15.1",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-unused-imports": "^4.2.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "tsup": "^8.5.0"
+  }
+}
