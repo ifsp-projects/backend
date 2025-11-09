@@ -1,0 +1,26 @@
+model Organization {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
+
+  page_content         Page?
+  organization_profile OrganizationProfile?
+
+  @@map("organizations")
+}
+
+model OrganizationProfile {
+  id         String   @id @default(uuid())
+  ong_id     String   @unique
+  name       String
+  slug       String   @unique
+  logo       String
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
+  phone      String
+
+  organization Organization @relation(fields: [ong_id], references: [id])
+
+  @@map("organizations_profiles")
+}

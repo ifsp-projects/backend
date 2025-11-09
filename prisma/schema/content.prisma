@@ -1,23 +1,11 @@
-model Organization {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  slug      String   @unique
-  createdAt DateTime @default(now())
-
-  pageContent Page?
-
-  @@map("organizations")
-}
-
 model Page {
-  id             String   @id @default(cuid())
-  organizationId String   @unique
-  updatedAt      DateTime @updatedAt
+  id              String   @id @default(cuid())
+  organization_id String   @unique
+  updated_at      DateTime @updatedAt
 
   sections Json
 
-  organization Organization @relation(fields: [organizationId], references: [id])
+  organization Organization @relation(fields: [organization_id], references: [id])
 
   @@map("pages")
 }

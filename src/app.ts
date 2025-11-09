@@ -2,9 +2,11 @@ import fastify from 'fastify'
 import fastifyCookie from '@fastify/cookie'
 import fastifyCors from '@fastify/cors'
 
-import { env } from './utils/env'
+import { env } from './config/env'
 
 import fastifyJwt from '@fastify/jwt'
+import { registerRoutes } from './adapters/inbound/http/decorators/route-decorator'
+import { organizationsRoutes } from './adapters/inbound/http/controllers/organizations/routes'
 
 export const app = fastify({
   connectionTimeout: 600000, // 10 minutes
@@ -42,7 +44,7 @@ app.register(fastifyCookie, {
   secret: env.JWT_SECRET
 })
 
-
+registerRoutes(app, organizationsRoutes)
 
 app.get('/', (_, reply) => {
   return reply.send({
