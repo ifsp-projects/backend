@@ -8,6 +8,7 @@ import fastifyJwt from '@fastify/jwt'
 import { registerRoutes } from './adapters/inbound/http/decorators/route-decorator'
 import { organizationsRoutes } from './adapters/inbound/http/controllers/organizations/routes'
 import { organizationsProfilesRoutes } from './adapters/inbound/http/controllers/organizations-profiles/routes'
+import { authRoutes } from './adapters/inbound/http/controllers/auth/routes'
 
 export const app = fastify({
   connectionTimeout: 600000, // 10 minutes
@@ -47,6 +48,7 @@ app.register(fastifyCookie, {
 
 registerRoutes(app, organizationsRoutes)
 registerRoutes(app, organizationsProfilesRoutes)
+registerRoutes(app, authRoutes)
 
 app.get('/', (_, reply) => {
   return reply.send({

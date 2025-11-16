@@ -1,8 +1,9 @@
 model Organization {
-  id         String   @id @default(uuid())
-  email      String   @unique
-  updated_at DateTime @updatedAt
-  created_at DateTime @default(now())
+  id          String   @id @default(uuid())
+  email       String   @unique
+  updated_at  DateTime @updatedAt
+  created_at  DateTime @default(now())
+  is_user_new Boolean  @default(true)
 
   page_content         Page?
   organization_profile OrganizationProfile?
