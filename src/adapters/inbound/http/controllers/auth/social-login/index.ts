@@ -16,27 +16,14 @@ export class SocialLoginController extends BaseAuth {
     this.useCase = new SocialLoginUseCase(organizationsRepository)
   }
 
-  @Route('POST', '/refresh-token')
-  async refreshToken(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ): Promise<void> {
-    const { token, refreshToken } = await this.signJwtTokens(reply, {
-      id: request.user.sub
-    })
-
-    return reply.status(200).send({
-      token,
-      refreshToken
-    })
-  }
-
   @Route('POST', '/social-login')
   async sociaLogin(
     request: FastifyRequest,
     reply: FastifyReply
   ): Promise<void> {
     const payload = socialLoginBodySchema.parse(request.body)
+
+    console.log(payload)
 
     const response = await this.useCase.executeSociaLogin(payload)
 
@@ -45,6 +32,8 @@ export class SocialLoginController extends BaseAuth {
     } = response
 
     const { token, refreshToken } = await this.signJwtTokens(reply, { id })
+
+    console.log(response)
 
     return reply.status(200).send({
       ...response,

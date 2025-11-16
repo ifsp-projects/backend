@@ -9,7 +9,6 @@ const schema = z.object({
   JWT_SECRET: z.string(),
   GOOGLE_CLIENT_ID: z.string(),
   DEBUG: z.string(),
-  RESEND_API_KEY: z.string(),
   WEBPAGE_BASE_URL: z.string()
 })
 
