@@ -1,3 +1,32 @@
+enum OngCategory {
+  animais                    @map("Animais")
+  meioAmbiente               @map("Meio Ambiente")
+  educacao                   @map("Educação")
+  saude                      @map("Saúde")
+  direitosHumanos            @map("Direitos Humanos")
+  combateAFome               @map("Combate à Fome")
+  criancasEAdolescentes      @map("Crianças e Adolescentes")
+  idosos                     @map("Idosos")
+  pessoasComDeficiencia      @map("Pessoas com Deficiência")
+  moradoresDeRua             @map("Moradores de Rua")
+  igualdadeDeGenero          @map("Igualdade de Gênero")
+  refugiadosEImigrantes      @map("Refugiados e Imigrantes")
+  protecaoAnimal             @map("Proteção Animal")
+  desenvolvimentoComunitario @map("Desenvolvimento Comunitário")
+  culturaEArte               @map("Cultura e Arte")
+  esporteEInclusao           @map("Esporte e Inclusão")
+  voluntariadoEDoacoes       @map("Voluntariado e Doações")
+  tecnologiaSocial           @map("Tecnologia Social")
+  direitosDasMulheres        @map("Direitos das Mulheres")
+  outros                     @map("Outros")
+}
+
+enum UserRoleEnum {
+  super_admin
+  admin
+  editor
+}
+
 model Organization {
   id          String   @id @default(uuid())
   email       String   @unique
@@ -21,7 +50,26 @@ model OrganizationProfile {
   created_at DateTime @default(now())
   phone      String
 
+  ong_type  OngCategory?
+  addresses Address[]
+
   organization Organization @relation(fields: [ong_id], references: [id])
 
   @@map("organizations_profiles")
+}
+
+model Address {
+  id                    String  @id @default(uuid())
+  street                String?
+  number                String?
+  complement            String?
+  city                  String?
+  state                 String?
+  country               String?
+  postal_code           String
+  organizationProfileId String?
+
+  organizationProfile OrganizationProfile? @relation(fields: [organizationProfileId], references: [id])
+
+  @@map("addresses")
 }
