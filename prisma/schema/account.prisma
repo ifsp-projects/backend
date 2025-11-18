@@ -65,7 +65,6 @@ model Address {
   complement              String?
   city                    String?
   state                   String?
-  country                 String?
   postal_code             String?
   organization_profile_id String?
   updated_at              DateTime @updatedAt
