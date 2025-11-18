@@ -2,6 +2,7 @@ import { OrganizationsRepository } from '@/core/ports/repositories/prisma/organi
 import { BaseAuth } from '@/core/use-cases/auth/base'
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { verifyJWT } from '../../../middlewares/verify-jwt'
 
 export class RefreshTokenController extends BaseAuth {
   organizationsRepository = new OrganizationsRepository()
@@ -12,7 +13,9 @@ export class RefreshTokenController extends BaseAuth {
     this.organizationsRepository = organizationsRepository
   }
 
-  @Route('POST', '/refresh-token')
+  @Route('POST', '/refresh-token', {
+    middlewares: [verifyJWT]
+  })
   async refreshToken(
     request: FastifyRequest,
     reply: FastifyReply
