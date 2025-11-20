@@ -14,5 +14,7 @@ export const createOrganizationProfileBodySchema = z.object({
       message: 'Invalid ONG category'
     })
     .transform(val => (val ? toPrismaOngCategory(val) : undefined)),
-  design_template: z.string().default('primary')
+  design_template: z
+    .enum(['primary', 'secondary', 'tertiary', 'quartenary'])
+    .default('primary')
 })

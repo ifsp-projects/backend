@@ -1,6 +1,9 @@
 import { Prisma } from '@prisma/client'
 import { randomUUID } from 'crypto'
-import { OrganizationInterface } from '../interfaces/organization-interface'
+import {
+  OrganizationInterface,
+  OrganizationWithProfileInclude
+} from '../interfaces/organization-interface'
 import { prisma } from '@/adapters/outbound/prisma/prisma'
 
 export class OrganizationsRepository implements OrganizationInterface {
@@ -70,6 +73,23 @@ export class OrganizationsRepository implements OrganizationInterface {
     return await prisma.organization.delete({
       where: {
         id
+      }
+    })
+  }
+
+  getOrganizationBySlug = async (slug: string) => {
+    const organizationProfile = await prisma.organizationProfile.findFirst({
+      where: {
+        slug
+      }
+    })
+
+    return await prisma.organization.findFirst({
+      where: {
+        id: organizationProfile?.ong_id
+      },
+      include: {
+        organization_profile: true
       }
     })
   }

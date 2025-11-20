@@ -17,11 +17,12 @@ export interface OrganizationInterface {
   getOrganizationByEmail: (
     email: string
   ) => Promise<OrganizationWithProfileInclude | null>
+  getOrganizationBySlug: (
+    slug: string
+  ) => Promise<OrganizationWithProfileInclude | null>
   updateOrganization: (
     id: string,
     payload: Prisma.OrganizationUncheckedUpdateInput
   ) => Promise<OrganizationWithProfileInclude | null>
-  deleteOrganization: (
-    id: string
-  ) => Promise<Organization | null>
+  deleteOrganization: (id: string) => Promise<Organization | null>
 }

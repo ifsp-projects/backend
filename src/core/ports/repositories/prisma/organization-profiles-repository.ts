@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client'
 import { randomUUID } from 'crypto'
 import { prisma } from '@/adapters/outbound/prisma/prisma'
+import { PAGE_TEMPLATES } from '@/shared/constants/default-templates-copies'
 
 export class OrganizationsProfilesRepository
   implements OrganizationsProfilesRepository
@@ -8,13 +9,22 @@ export class OrganizationsProfilesRepository
   createOrganizationProfile = async ({
     id = randomUUID(),
     ...payload
-  }: Prisma.OrganizationProfileUncheckedCreateInput) => {
+  }: Prisma.OrganizationProfileUncheckedCreateInput & {
+    design_template: 'primary' | 'secondary' | 'tertiary' | 'quartenary'
+  }) => {
     await prisma.organization.update({
       where: {
         id: payload.ong_id
       },
       data: {
         is_user_new: false
+      }
+    })
+
+    await prisma.page.create({
+      data: {
+        organization_id: payload.ong_id,
+        sections: PAGE_TEMPLATES[payload.design_template]
       }
     })
 

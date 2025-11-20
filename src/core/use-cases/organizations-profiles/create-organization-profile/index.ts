@@ -9,12 +9,16 @@ export class CreateOrganizationProfileUseCase {
   ) {}
 
   execute = async (
-    payload: Prisma.OrganizationProfileUncheckedCreateInput
+    payload: Prisma.OrganizationProfileUncheckedCreateInput & {
+      design_template: 'primary' | 'secondary' | 'tertiary' | 'quartenary'
+    }
   ): Promise<CreateOrganizationProfileUseCaseReturn> => {
     const { id, slug } = payload
 
     const organizationWithSameSlug =
-      await this.organizationsProfilesRepository.getOrganizationProfileBySlug(slug)
+      await this.organizationsProfilesRepository.getOrganizationProfileBySlug(
+        slug
+      )
 
     if (organizationWithSameSlug) {
       throw new OrganizationProfileAlreadyExistsError()
@@ -22,12 +26,14 @@ export class CreateOrganizationProfileUseCase {
 
     if (id) {
       const organizationWithSameId =
-        await this.organizationsProfilesRepository.getOrganizationProfileById(id)
+        await this.organizationsProfilesRepository.getOrganizationProfileById(
+          id
+        )
 
       if (organizationWithSameId) {
         throw new OrganizationProfileAlreadyExistsError()
       }
-    }   
+    }
 
     const organizationProfile =
       await this.organizationsProfilesRepository.createOrganizationProfile(
