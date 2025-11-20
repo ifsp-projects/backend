@@ -9,6 +9,15 @@ export class OrganizationsProfilesRepository
     id = randomUUID(),
     ...payload
   }: Prisma.OrganizationProfileUncheckedCreateInput) => {
+    await prisma.organization.update({
+      where: {
+        id: payload.ong_id
+      },
+      data: {
+        is_user_new: false
+      }
+    })
+
     return await prisma.organizationProfile.create({
       data: {
         id,

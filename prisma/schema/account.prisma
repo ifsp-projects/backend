@@ -41,14 +41,15 @@ model Organization {
 }
 
 model OrganizationProfile {
-  id         String   @id @default(uuid())
-  ong_id     String   @unique
-  name       String
-  slug       String   @unique
-  logo       String
-  updated_at DateTime @updatedAt
-  created_at DateTime @default(now())
-  phone      String
+  id              String   @id @default(uuid())
+  ong_id          String   @unique
+  name            String
+  slug            String   @unique
+  logo            String
+  updated_at      DateTime @updatedAt
+  created_at      DateTime @default(now())
+  phone           String
+  design_template String   @default("primary")
 
   ong_type  OngCategory?
   addresses Address[]

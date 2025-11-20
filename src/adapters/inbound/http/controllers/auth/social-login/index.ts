@@ -23,8 +23,6 @@ export class SocialLoginController extends BaseAuth {
   ): Promise<void> {
     const payload = socialLoginBodySchema.parse(request.body)
 
-    console.log(payload)
-
     const response = await this.useCase.executeSociaLogin(payload)
 
     const {
@@ -32,8 +30,6 @@ export class SocialLoginController extends BaseAuth {
     } = response
 
     const { token, refreshToken } = await this.signJwtTokens(reply, { id })
-
-    console.log(response)
 
     return reply.status(200).send({
       ...response,

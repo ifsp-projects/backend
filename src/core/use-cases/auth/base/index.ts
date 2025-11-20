@@ -45,8 +45,6 @@ export abstract class BaseAuth {
     if (!organization) {
       const organization =
         await this.organizationsRepository.createOrganization({ email })
-
-      console.log(JSON.stringify(organization))
     }
 
     if (organization) return organization
