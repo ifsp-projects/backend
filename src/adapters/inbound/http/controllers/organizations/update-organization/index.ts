@@ -9,7 +9,7 @@ import {
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 
 export class UpdateOrganizationController {
-  private organizationRepository = new OrganizationsRepository()
+  private organizationRepository: OrganizationsRepository
   private useCase: UpdateOrganizationUseCase
 
   constructor() {

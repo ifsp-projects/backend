@@ -11,6 +11,7 @@ import { organizationsRoutes } from './adapters/inbound/http/controllers/organiz
 import { organizationsProfilesRoutes } from './adapters/inbound/http/controllers/organizations-profiles/routes'
 import { authRoutes } from './adapters/inbound/http/controllers/auth/routes'
 import { addressesRoutes } from './adapters/inbound/http/controllers/addresses/route'
+import { pagesRoutes } from './adapters/inbound/http/controllers/pages/routes'
 
 export const app = fastify({
   connectionTimeout: 600000, // 10 minutes
@@ -51,6 +52,7 @@ app.register(fastifyCookie, {
 registerRoutes(app, organizationsRoutes)
 registerRoutes(app, organizationsProfilesRoutes)
 registerRoutes(app, addressesRoutes)
+registerRoutes(app, pagesRoutes)
 registerRoutes(app, authRoutes)
 
 app.get('/', (_, reply) => {

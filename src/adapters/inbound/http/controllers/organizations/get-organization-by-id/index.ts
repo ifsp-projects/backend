@@ -5,7 +5,7 @@ import { GetOrganizationByIdUseCase } from '@/core/use-cases/organizations/get-o
 import { getOrganizationByIdParamsSchema } from './schema'
 
 export class GetOrganizationByIdController {
-  private organizationRepository = new OrganizationsRepository()
+  private organizationRepository: OrganizationsRepository
   private useCase: GetOrganizationByIdUseCase
 
   constructor() {
