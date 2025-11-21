@@ -5,7 +5,7 @@ import { GetOrganizationProfileBySlugUseCase } from '@/core/use-cases/organizati
 import { OrganizationsProfilesRepository } from '@/core/ports/repositories/prisma/organization-profiles-repository'
 
 export class GetOrganizationProfileByEmailController {
-  private organizationProfileRepository = new OrganizationsProfilesRepository()
+  private organizationProfileRepository: OrganizationsProfilesRepository
   private useCase: GetOrganizationProfileBySlugUseCase
 
   constructor() {

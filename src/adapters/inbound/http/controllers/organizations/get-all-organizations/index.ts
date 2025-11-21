@@ -4,7 +4,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { GetAllOrganizationsUseCase } from '@/core/use-cases/organizations/get-all-organizations'
 
 export class GetAllOrganizationsController {
-  private organizationRepository = new OrganizationsRepository()
+  private organizationRepository: OrganizationsRepository
   private useCase: GetAllOrganizationsUseCase
 
   constructor() {

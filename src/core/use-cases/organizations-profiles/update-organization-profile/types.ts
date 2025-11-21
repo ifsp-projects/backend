@@ -1,4 +1,4 @@
-import { Organization, Prisma } from '@prisma/client'
+import { OrganizationProfile, Prisma } from '@prisma/client'
 
 export interface UpdateOrganizationPayload
   extends Omit<Prisma.OrganizationUncheckedUpdateInput, 'id'> {
@@ -6,5 +6,5 @@ export interface UpdateOrganizationPayload
 }
 
 export interface UpdateOrganizationUseCaseReturn {
-  organization: Organization
+  organization: OrganizationProfile
 }

@@ -4,7 +4,7 @@ import { GetAllOrganizationsProfilesUseCase } from '@/core/use-cases/organizatio
 import { OrganizationsProfilesRepository } from '@/core/ports/repositories/prisma/organization-profiles-repository'
 
 export class GetAllOrganizationsProfilesController {
-  private organizationProfileRepository = new OrganizationsProfilesRepository()
+  private organizationProfileRepository: OrganizationsProfilesRepository
   private useCase: GetAllOrganizationsProfilesUseCase
 
   constructor() {

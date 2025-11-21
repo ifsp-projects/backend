@@ -5,7 +5,7 @@ import { getOrganizationByEmailParamsSchema } from './schema'
 import { GetOrganizationByEmailUseCase } from '@/core/use-cases/organizations/get-organization-by-email'
 
 export class GetOrganizationByEmailController {
-  private organizationRepository = new OrganizationsRepository()
+  private organizationRepository: OrganizationsRepository
   private useCase: GetOrganizationByEmailUseCase
 
   constructor() {

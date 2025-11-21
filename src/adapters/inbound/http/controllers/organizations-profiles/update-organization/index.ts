@@ -7,14 +7,18 @@ import {
   updateOrganizationParamsSchema
 } from './schema'
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
+import { OrganizationsProfilesRepository } from '@/core/ports/repositories/prisma/organization-profiles-repository'
+import { UpdateOrganizationProfileUseCase } from '@/core/use-cases/organizations-profiles/update-organization-profile'
 
 export class UpdateOrganizationProfileController {
-  private organizationRepository = new OrganizationsRepository()
-  private useCase: UpdateOrganizationUseCase
+  private organizationProfileRepository: OrganizationsProfilesRepository
+  private useCase: UpdateOrganizationProfileUseCase
 
   constructor() {
-    this.organizationRepository = new OrganizationsRepository()
-    this.useCase = new UpdateOrganizationUseCase(this.organizationRepository)
+    this.organizationProfileRepository = new OrganizationsProfilesRepository()
+    this.useCase = new UpdateOrganizationProfileUseCase(
+      this.organizationProfileRepository
+    )
   }
 
   @Route('PATCH', '/organizations-organizations-profiles/:id', {
