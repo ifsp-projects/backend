@@ -1,5 +1,5 @@
 import { z } from 'zod'
 
 export const getPageByIdParamsSchema = z.object({
-  id: z.string().uuid()
+  id: z.string().nonempty()
 })

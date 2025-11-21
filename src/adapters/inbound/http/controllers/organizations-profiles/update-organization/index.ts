@@ -21,7 +21,7 @@ export class UpdateOrganizationProfileController {
     )
   }
 
-  @Route('PATCH', '/organizations-organizations-profiles/:id', {
+  @Route('PATCH', '/organizations-profiles/:id', {
     middlewares: [verifyJWT]
   })
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
