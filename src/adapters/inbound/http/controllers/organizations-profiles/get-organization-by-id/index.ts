@@ -5,7 +5,7 @@ import { OrganizationsProfilesRepository } from '@/core/ports/repositories/prism
 import { GetOrganizationProfileByIdUseCase } from '@/core/use-cases/organizations-profiles/get-organization-profile-by-id'
 
 export class GetOrganizationProfileByIdController {
-  private organizationProfileRepository = new OrganizationsProfilesRepository()
+  private organizationProfileRepository: OrganizationsProfilesRepository
   private useCase: GetOrganizationProfileByIdUseCase
 
   constructor() {

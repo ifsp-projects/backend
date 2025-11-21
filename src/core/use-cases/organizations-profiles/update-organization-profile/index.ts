@@ -1,13 +1,13 @@
-import { OrganizationsRepository } from '@/core/ports/repositories/prisma/organization-repository'
-import {
+import type {
   UpdateOrganizationPayload,
   UpdateOrganizationUseCaseReturn
 } from './types'
 import { OrganizationDoesNotExistError } from '@/core/domain/exceptions/organizations'
+import { OrganizationsProfilesRepository } from '@/core/ports/repositories/prisma/organization-profiles-repository'
 
-export class UpdateOrganizationUseCase {
+export class UpdateOrganizationProfileUseCase {
   constructor(
-    protected readonly organizationsRepository: OrganizationsRepository
+    protected readonly organizationsProfilesRepository: OrganizationsProfilesRepository
   ) {}
 
   execute = async (
@@ -16,14 +16,14 @@ export class UpdateOrganizationUseCase {
     const { id } = payload
 
     const organizationExists =
-      await this.organizationsRepository.getOrganizationById(id)
+      await this.organizationsProfilesRepository.getOrganizationProfileById(id)
 
     if (!organizationExists) {
       throw new OrganizationDoesNotExistError()
     }
 
     const updatedOrganization =
-      await this.organizationsRepository.updateOrganization(id, payload)
+      await this.organizationsProfilesRepository.updateOrganizationProfile(id, payload)
 
     return {
       organization: updatedOrganization

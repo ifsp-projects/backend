@@ -6,7 +6,7 @@ import { DeleteOrganizationUseCase } from '@/core/use-cases/organizations/delete
 import { deleteOrganizationParamsSchema } from './schema'
 
 export class DeleteOrganizationController {
-  private organizationRepository = new OrganizationsRepository()
+  private organizationRepository: OrganizationsRepository
   private useCase: DeleteOrganizationUseCase
 
   constructor() {

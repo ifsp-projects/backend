@@ -6,7 +6,7 @@ import { OrganizationsProfilesRepository } from '@/core/ports/repositories/prism
 import { DeleteOrganizationProfileUseCase } from '@/core/use-cases/organizations-profiles/delete-organization-profile'
 
 export class DeleteOrganizationprofileController {
-  private organizationProfileRepository = new OrganizationsProfilesRepository()
+  private organizationProfileRepository: OrganizationsProfilesRepository
   private useCase: DeleteOrganizationProfileUseCase
 
   constructor() {

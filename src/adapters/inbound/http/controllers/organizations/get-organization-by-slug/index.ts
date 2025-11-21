@@ -5,7 +5,7 @@ import { getOrganizationBySlugParamsSchema } from './schema'
 import { GetOrganizationBySlugUseCase } from '@/core/use-cases/organizations/get-organization-by-slug'
 
 export class GetOrganizationBySlugController {
-  private organizationRepository = new OrganizationsRepository()
+  private organizationRepository: OrganizationsRepository
   private useCase: GetOrganizationBySlugUseCase
 
   constructor() {
