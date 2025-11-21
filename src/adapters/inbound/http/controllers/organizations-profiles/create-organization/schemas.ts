@@ -15,6 +15,6 @@ export const createOrganizationProfileBodySchema = z.object({
     })
     .transform(val => (val ? toPrismaOngCategory(val) : undefined)),
   design_template: z
-    .enum(['primary', 'secondary', 'tertiary', 'quartenary'])
+    .enum(['primary', 'secondary', 'tertiary', 'quarternary'])
     .default('primary')
 })

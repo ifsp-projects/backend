@@ -10,7 +10,7 @@ export class CreateOrganizationProfileUseCase {
 
   execute = async (
     payload: Prisma.OrganizationProfileUncheckedCreateInput & {
-      design_template: 'primary' | 'secondary' | 'tertiary' | 'quartenary'
+      design_template: 'primary' | 'secondary' | 'tertiary' | 'quarternary'
     }
   ): Promise<CreateOrganizationProfileUseCaseReturn> => {
     const { id, slug } = payload

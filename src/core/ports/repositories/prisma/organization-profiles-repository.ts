@@ -10,7 +10,7 @@ export class OrganizationsProfilesRepository
     id = randomUUID(),
     ...payload
   }: Prisma.OrganizationProfileUncheckedCreateInput & {
-    design_template: 'primary' | 'secondary' | 'tertiary' | 'quartenary'
+    design_template: 'primary' | 'secondary' | 'tertiary' | 'quarternary'
   }) => {
     await prisma.organization.update({
       where: {
