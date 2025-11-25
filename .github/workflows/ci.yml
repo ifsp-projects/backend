@@ -1,10 +1,8 @@
 name: "Build and Plan"
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 env:
   IMAGE_LIST: ${{ vars.NODE_IMAGE }}

@@ -129,7 +129,3 @@ output "server_public_ip" {
 output "server_dns" {
   value = aws_instance.app_server.public_dns
 }
-
-variable "env" {
-  default = "prod"
-}
