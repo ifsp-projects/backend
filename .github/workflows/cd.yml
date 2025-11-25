@@ -97,7 +97,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           source: ".env"
-          target: "/home/ec2-user/app/.env"
+          target: "/home/ec2-user/app"
           debug: true
 
       - name: Deploy to EC2 via SSH
