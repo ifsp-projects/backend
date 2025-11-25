@@ -31,14 +31,16 @@ resource "aws_ecr_repository" "ecr_api_images_repository" {
   force_delete         = true
 }
 
-data "aws_vpc" "default" {
-  default = true
+resource "aws_default_vpc" "default" {
+  tags = {
+    Name = "Default VPC"
+  }
 }
 
 resource "aws_security_group" "app_sg" {
   name        = "${var.project_name}-sg"
   description = "Enable SSH and application PORT"
-  vpc_id      = data.aws_vpc.default.id
+  vpc_id      = aws_default_vpc.default.id
 
   ingress {
     from_port   = 22
