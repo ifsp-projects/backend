@@ -49,6 +49,7 @@ jobs:
         run: |
           terraform apply -auto-approve
           echo "EC2_HOST=$(terraform output -raw server_public_ip)" >> $GITHUB_ENV
+        working-directory: ./tf
         env:
           TF_VAR_key_name: ${{ vars.EC2_KEY_NAME }}
           TF_VAR_project_name: ${{ env.PROJECT_NAME }}
