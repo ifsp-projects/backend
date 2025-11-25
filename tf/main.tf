@@ -43,6 +43,13 @@ resource "aws_security_group" "app_sg" {
   vpc_id      = aws_default_vpc.default.id
 
   ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -122,12 +129,17 @@ resource "aws_instance" "app_server" {
   }
 }
 
+resource "aws_eip" "lb" {
+  instance = aws_instance.app_server.id
+  domain   = "vpc"
+}
+
 output "ecr_repository_url" {
   value = aws_ecr_repository.ecr_api_images_repository.repository_url
 }
 
 output "server_public_ip" {
-  value       = aws_instance.app_server.public_ip
+  value       = aws_eip.lb.public_ip
   description = "IP to acecess the API (http://IP:8000) or SSH (ssh -i key.pem ec2-user@IP)"
 }
 
