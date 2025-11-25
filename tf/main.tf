@@ -2,6 +2,9 @@ terraform {
   required_version = ">=1.0.0"
   backend "s3" {
     encrypt = true
+    key     = "tf/terraform.tfstate"
+    bucket  = "ifsp-extensao-api-tf-states"
+    region  = "us-east-1"
   }
   required_providers {
     aws = {
@@ -65,8 +68,8 @@ resource "aws_iam_role" "ec2_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
       Principal = { Service = "ec2.amazonaws.com" }
     }]
   })
@@ -122,7 +125,7 @@ output "ecr_repository_url" {
 }
 
 output "server_public_ip" {
-  value = aws_instance.app_server.public_ip
+  value       = aws_instance.app_server.public_ip
   description = "IP to acecess the API (http://IP:8000) or SSH (ssh -i key.pem ec2-user@IP)"
 }
 
