@@ -73,15 +73,12 @@ resource "aws_security_group" "app_sg" {
     }
   }
 
-  dynamic "ingress" {
-    for_each = local.cloudflare_ipv4_ranges
-    content {
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      cidr_blocks = [ingress.value]
-      description = "HTTPS from Cloudflare"
-    }
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "SSH access for GitHub Actions and admin"
   }
 
   ingress {
@@ -89,6 +86,7 @@ resource "aws_security_group" "app_sg" {
     to_port     = 8000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Direct app access (debug only)"
   }
 
   egress {
