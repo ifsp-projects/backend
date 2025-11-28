@@ -37,40 +37,17 @@ resource "aws_default_vpc" "default" {
   }
 }
 
-locals {
-  cloudflare_ipv4_ranges = [
-    "173.245.48.0/20",
-    "103.21.244.0/22",
-    "103.22.200.0/22",
-    "103.31.4.0/22",
-    "141.101.64.0/18",
-    "108.162.192.0/18",
-    "190.93.240.0/20",
-    "188.114.96.0/20",
-    "197.234.240.0/22",
-    "198.41.128.0/17",
-    "162.158.0.0/15",
-    "104.16.0.0/13",
-    "104.24.0.0/14",
-    "172.64.0.0/13",
-    "131.0.72.0/22"
-  ]
-}
-
 resource "aws_security_group" "app_sg" {
   name        = "${var.project_name}-sg"
   description = "Enable SSH and application PORT"
   vpc_id      = aws_default_vpc.default.id
 
-  dynamic "ingress" {
-    for_each = local.cloudflare_ipv4_ranges
-    content {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = [ingress.value]
-      description = "HTTP from Cloudflare"
-    }
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "HTTP Publico"
   }
 
   ingress {
