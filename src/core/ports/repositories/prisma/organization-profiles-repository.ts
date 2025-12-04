@@ -54,6 +54,9 @@ export class OrganizationsProfilesRepository
     return await prisma.organizationProfile.findUnique({
       where: {
         id
+      },
+      include: {
+        addresses: true
       }
     })
   }
@@ -62,12 +65,19 @@ export class OrganizationsProfilesRepository
     return await prisma.organizationProfile.findUnique({
       where: {
         slug
+      },
+      include: {
+        addresses: true
       }
     })
   }
 
   getAllOrganizationsProfiles = async () => {
-    return await prisma.organizationProfile.findMany()
+    return await prisma.organizationProfile.findMany({
+      include: {
+        addresses: true
+      }
+    })
   }
 
   deleteOrganizationProfile = async (id: string) => {

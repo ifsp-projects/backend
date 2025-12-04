@@ -1,23 +1,61 @@
-function isObject(item: any) {
+function isObject(item: any): boolean {
   return item && typeof item === 'object' && !Array.isArray(item)
 }
 
-export function deepMerge(target: any, source: any): any {
-  const output = Object.assign({}, target)
+function isArray(item: any): boolean {
+  return Array.isArray(item)
+}
 
-  if (isObject(target) && isObject(source)) {
-    Object.keys(source).forEach(key => {
-      if (isObject(source[key])) {
-        if (!(key in target)) {
-          Object.assign(output, { [key]: source[key] })
-        } else {
-          output[key] = deepMerge(target[key], source[key])
-        }
-      } else {
-        Object.assign(output, { [key]: source[key] })
-      }
-    })
+export function deepMerge(target: any, source: any): any {
+  if (source === null || source === undefined) {
+    return target
   }
 
-  return output
+
+  if (target === null || target === undefined) {
+    return source
+  }
+
+  if (isArray(target) && isArray(source)) {
+    const output = [...target]
+
+    source.forEach((item: unknown, index: number) => {
+      if (item !== null && item !== undefined) {
+        if (isObject(item) && isObject(output[index])) {
+          output[index] = deepMerge(output[index], item)
+        } else if (isArray(item) && isArray(output[index])) {
+          output[index] = deepMerge(output[index], item)
+        } else {
+          output[index] = item
+        }
+      }
+    })
+
+    return output
+  }
+
+  if (isObject(target) && isObject(source)) {
+    const output = { ...target }
+
+    Object.keys(source).forEach(key => {
+      const sourceValue = source[key]
+      const targetValue = target[key]
+
+      if (sourceValue === null || sourceValue === undefined) {
+        return
+      }
+
+      if (isArray(sourceValue)) {
+        output[key] = deepMerge(targetValue || [], sourceValue)
+      } else if (isObject(sourceValue)) {
+        output[key] = deepMerge(targetValue || {}, sourceValue)
+      } else {
+        output[key] = sourceValue
+      }
+    })
+
+    return output
+  }
+
+  return source
 }

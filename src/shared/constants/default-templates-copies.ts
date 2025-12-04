@@ -4,7 +4,28 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
     title: 'Get paid early save automatically everything your pay',
     description:
       'Supports small businesses with simple invoicing powerfull integrations and cash fdlow management tools',
-    anchor: 'Quero saber mais'
+    anchor: 'Quero saber mais',
+    heroImage: '/templates/undraw_different-love_58hd.svg'
+  },
+  ourMission: {
+    subtitle: 'Our mission',
+    title: "We've helped innovative companies",
+    description:
+      'Hundreds of all sizes and across all industries have made a big improvements with us',
+    tabs: [
+      {
+        title: '+500',
+        description: 'Pessoas auxiliadas'
+      },
+      {
+        title: '+25 KG',
+        description: 'De alimentos arrecadados'
+      },
+      {
+        title: '+2',
+        description: 'Abrigos disponibilizados'
+      }
+    ]
   },
   details: {
     label: 'Future Payment',
@@ -38,7 +59,9 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
   moreInfoAbout: {
     title: 'Crie o perfil da sua ONG',
     description:
-      'Cadastre sua organização de forma simples e gratuita. Adicione informações sobre sua missão, história e projetos para que mais pessoas conheçam e confiem no seu trabalho social.'
+      'Cadastre sua organização de forma simples e gratuita. Adicione informações sobre sua missão, história e projetos para que mais pessoas conheçam e confiem no seu trabalho social.',
+    heroImage:
+      'https://images.ctfassets.net/kftzwdyauwt9/IPgFYDUMeUtWcg2ze2IsP/118ea87d54734ef3f49b432ee2a35b56/DALL_E_2024-07-17_16.25.57_-_Close-up_of_soft_pink_flower_petals_with_a_gentle_motion_blur_on_a_light_lavender_background__c.png?w=3840&q=90&fm=webp'
   },
   depoiments: {
     title: 'Depoimentos',
@@ -48,6 +71,8 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
         content:
           'Me ajudou muito em conseguir a minha AWP safari mesh que sempre sonhei',
         author: {
+          image:
+            'https://sb.kaleidousercontent.com/67418/1920x1545/c5f15ac173/samuel-raita-ridxdghg7pw-unsplash.jpg',
           name: 'Getulio Aparecido dos Santos',
           city: 'Capivari, SP'
         }
@@ -56,6 +81,8 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
         content:
           'Me ajudou muito em conseguir a minha AWP safari mesh que sempre sonhei',
         author: {
+          image:
+            'https://sb.kaleidousercontent.com/67418/1920x1545/c5f15ac173/samuel-raita-ridxdghg7pw-unsplash.jpg',
           name: 'Getulio Aparecido dos Santos',
           city: 'Capivari, SP'
         }
@@ -64,6 +91,8 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
         content:
           'Me ajudou muito em conseguir a minha AWP safari mesh que sempre sonhei',
         author: {
+          image:
+            'https://sb.kaleidousercontent.com/67418/1920x1545/c5f15ac173/samuel-raita-ridxdghg7pw-unsplash.jpg',
           name: 'Getulio Aparecido dos Santos',
           city: 'Capivari, SP'
         }
