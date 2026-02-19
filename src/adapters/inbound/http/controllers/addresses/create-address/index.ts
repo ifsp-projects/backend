@@ -1,4 +1,4 @@
-import { AddressesRepository } from '@/core/ports/repositories/prisma/addresses-repository'
+import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
 import { CreateAddressUseCase } from '@/core/use-cases/addresses/create-address'
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'

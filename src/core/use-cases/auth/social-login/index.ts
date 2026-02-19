@@ -4,7 +4,7 @@ import { SocialLoginUseCasePayload, SocialLoginUseCaseReturn } from './types'
 import { InvalidSocialAccountError } from '@/core/domain/exceptions/auth'
 import { env } from '@/config/env'
 import { OAuth2Client } from 'google-auth-library'
-import { OrganizationsRepository } from '@/core/ports/repositories/prisma/organization-repository'
+import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 
 export class SocialLoginUseCase extends BaseAuth {
   private googleClient: OAuth2Client

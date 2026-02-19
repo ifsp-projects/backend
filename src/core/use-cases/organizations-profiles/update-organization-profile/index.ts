@@ -3,7 +3,7 @@ import type {
   UpdateOrganizationUseCaseReturn
 } from './types'
 import { OrganizationDoesNotExistError } from '@/core/domain/exceptions/organizations'
-import { OrganizationsProfilesRepository } from '@/core/ports/repositories/prisma/organization-profiles-repository'
+import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 
 export class UpdateOrganizationProfileUseCase {
   constructor(
@@ -23,7 +23,10 @@ export class UpdateOrganizationProfileUseCase {
     }
 
     const updatedOrganization =
-      await this.organizationsProfilesRepository.updateOrganizationProfile(id, payload)
+      await this.organizationsProfilesRepository.updateOrganizationProfile(
+        id,
+        payload
+      )
 
     return {
       organization: updatedOrganization

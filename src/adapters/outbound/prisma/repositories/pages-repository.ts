@@ -1,5 +1,5 @@
 import { Page, Prisma } from '@prisma/client'
-import { PagesInterface } from '../interfaces/pages-repository'
+import { PagesInterface } from '../../../../core/domain/ports/repositories/pages-repository'
 import { prisma } from '@/adapters/outbound/prisma/prisma'
 
 export class PagesRepository implements PagesInterface {

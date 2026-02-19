@@ -1,4 +1,4 @@
-import { OrganizationsRepository } from '@/core/ports/repositories/prisma/organization-repository'
+import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import { CreateOrganizationUseCase } from '@/core/use-cases/organizations/create-organization'
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'

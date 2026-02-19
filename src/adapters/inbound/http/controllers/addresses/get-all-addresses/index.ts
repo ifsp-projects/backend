@@ -1,4 +1,4 @@
-import { AddressesRepository } from '@/core/ports/repositories/prisma/addresses-repository'
+import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import type { FastifyReply, FastifyRequest } from 'fastify'

@@ -2,7 +2,7 @@ import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { socialLoginBodySchema } from './schemas'
 import { BaseAuth } from '@/core/use-cases/auth/base'
-import { OrganizationsRepository } from '@/core/ports/repositories/prisma/organization-repository'
+import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import { SocialLoginUseCase } from '@/core/use-cases/auth/social-login'
 
 export class SocialLoginController extends BaseAuth {

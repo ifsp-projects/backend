@@ -1,5 +1,5 @@
 import { GetOrganizationProfileByIdUseCaseReturn } from './types'
-import { OrganizationsProfilesRepository } from '@/core/ports/repositories/prisma/organization-profiles-repository'
+import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 import { OrganizationProfileDoesNotExistError } from '@/core/domain/exceptions/organizations-profiles'
 
 export class GetOrganizationProfileByIdUseCase {
@@ -7,7 +7,9 @@ export class GetOrganizationProfileByIdUseCase {
     protected readonly organizationsProfileRepository: OrganizationsProfilesRepository
   ) {}
 
-  execute = async (id: string): Promise<GetOrganizationProfileByIdUseCaseReturn> => {
+  execute = async (
+    id: string
+  ): Promise<GetOrganizationProfileByIdUseCaseReturn> => {
     const organizationProfile =
       await this.organizationsProfileRepository.getOrganizationProfileById(id)
 

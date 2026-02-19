@@ -1,4 +1,4 @@
-import { OrganizationsRepository } from '@/core/ports/repositories/prisma/organization-repository'
+import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { getOrganizationBySlugParamsSchema } from './schema'
@@ -23,4 +23,5 @@ export class GetOrganizationBySlugController {
   }
 }
 
-export const getOrganizationBySlugController = new GetOrganizationBySlugController()
+export const getOrganizationBySlugController =
+  new GetOrganizationBySlugController()

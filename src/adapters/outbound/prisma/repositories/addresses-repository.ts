@@ -1,5 +1,5 @@
 import { Prisma, Address } from '@prisma/client'
-import { AddressInterface } from '../interfaces/addresses-repository'
+import { AddressInterface } from '../../../../core/domain/ports/repositories/addresses-repository'
 import { randomUUID } from 'crypto'
 import { prisma } from '@/adapters/outbound/prisma/prisma'
 

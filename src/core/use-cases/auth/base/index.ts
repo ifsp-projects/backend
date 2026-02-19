@@ -1,4 +1,4 @@
-import { OrganizationsRepository } from '@/core/ports/repositories/prisma/organization-repository'
+import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 
 import { FastifyReply } from 'fastify'
 

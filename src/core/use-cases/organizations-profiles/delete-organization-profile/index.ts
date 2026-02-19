@@ -1,13 +1,15 @@
 import { OrganizationDoesNotExistError } from '@/core/domain/exceptions/organizations'
 import { DeleteOrganizationProfileUseCaseReturn } from './types'
-import { OrganizationsProfilesRepository } from '@/core/ports/repositories/prisma/organization-profiles-repository'
+import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 
 export class DeleteOrganizationProfileUseCase {
   constructor(
     protected readonly organizationsProfilesRepository: OrganizationsProfilesRepository
   ) {}
 
-  execute = async (id: string): Promise<DeleteOrganizationProfileUseCaseReturn> => {
+  execute = async (
+    id: string
+  ): Promise<DeleteOrganizationProfileUseCaseReturn> => {
     const organizationProfileAlreadyExists =
       await this.organizationsProfilesRepository.getOrganizationProfileById(id)
 

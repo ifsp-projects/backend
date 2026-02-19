@@ -1,5 +1,5 @@
 import { GetAllOrganizationsUseCaseReturn } from './types'
-import { OrganizationsProfilesRepository } from '@/core/ports/repositories/prisma/organization-profiles-repository'
+import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 import { OrganizationProfileDoesNotExistError } from '@/core/domain/exceptions/organizations-profiles'
 
 export class GetAllOrganizationsProfilesUseCase {
@@ -8,7 +8,8 @@ export class GetAllOrganizationsProfilesUseCase {
   ) {}
 
   execute = async (): Promise<GetAllOrganizationsUseCaseReturn> => {
-    const data = await this.organizationsProfilesRepository.getAllOrganizationsProfiles()
+    const data =
+      await this.organizationsProfilesRepository.getAllOrganizationsProfiles()
 
     if (!data) {
       throw new OrganizationProfileDoesNotExistError()

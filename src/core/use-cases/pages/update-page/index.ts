@@ -1,4 +1,4 @@
-import { PagesRepository } from '@/core/ports/repositories/prisma/pages-repository'
+import { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
 
 import { UpdatePageUseCasePayload, UpdatePageUseCaseReturn } from './types'
 import { PageDoesNotExistError } from '@/core/domain/exceptions/pages'

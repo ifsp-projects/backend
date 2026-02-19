@@ -1,4 +1,4 @@
-import { PagesRepository } from '@/core/ports/repositories/prisma/pages-repository'
+import { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { getPageBySlugParamsSchema } from './schema'

@@ -1,4 +1,4 @@
-import { PagesRepository } from '@/core/ports/repositories/prisma/pages-repository'
+import { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
 import { UpdatePageUseCase } from '@/core/use-cases/pages/update-page'
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'

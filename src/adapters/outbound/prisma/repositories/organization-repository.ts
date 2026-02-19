@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto'
 import {
   OrganizationInterface,
   OrganizationWithProfileInclude
-} from '../interfaces/organization-interface'
+} from '../../../../core/domain/ports/repositories/organization-repository'
 import { prisma } from '@/adapters/outbound/prisma/prisma'
 
 export class OrganizationsRepository implements OrganizationInterface {

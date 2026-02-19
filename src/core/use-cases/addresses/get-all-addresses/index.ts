@@ -1,4 +1,4 @@
-import { AddressesRepository } from '@/core/ports/repositories/prisma/addresses-repository'
+import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
 import { GetAllAddressesUseCaseReturn } from './types'
 import { AddressDoesNotExistError } from '@/core/domain/exceptions/addresses'
 

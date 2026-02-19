@@ -1,7 +1,7 @@
-import { OrganizationsRepository } from "@/core/ports/repositories/prisma/organization-repository"
-import { Prisma } from "@prisma/client"
-import { CreateOrganizationUseCaseReturn } from "./types"
-import { OrganizationAlreadyExistsError } from "@/core/domain/exceptions/organizations"
+import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
+import { Prisma } from '@prisma/client'
+import { CreateOrganizationUseCaseReturn } from './types'
+import { OrganizationAlreadyExistsError } from '@/core/domain/exceptions/organizations'
 
 export class CreateOrganizationUseCase {
   constructor(
@@ -29,8 +29,9 @@ export class CreateOrganizationUseCase {
       }
     }
 
-    const organization =
-      await this.organizationsRepository.createOrganization(payload)
+    const organization = await this.organizationsRepository.createOrganization(
+      payload
+    )
 
     return {
       organization

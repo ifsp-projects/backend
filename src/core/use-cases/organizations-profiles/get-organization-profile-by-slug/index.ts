@@ -1,6 +1,6 @@
 import { OrganizationDoesNotExistError } from '@/core/domain/exceptions/organizations'
 import { GetOrganizationProfileByEmailUseCaseReturn } from './types'
-import { OrganizationsProfilesRepository } from '@/core/ports/repositories/prisma/organization-profiles-repository'
+import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 
 export class GetOrganizationProfileBySlugUseCase {
   constructor(
