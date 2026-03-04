@@ -440,9 +440,179 @@ export const TERTIARY_TEMPLATE_DEFAULT_COPIES = {
   }
 }
 
+export const QUATERNARY_TEMPLATE_DEFAULT_COPIES = {
+  header: {
+    label: 'Projeto de extensão social',
+    title: 'Quando o Estado não chega,',
+    decoratedTitle: 'nós chegamos.',
+    description:
+      'Somos uma rede de voluntários e profissionais que atua nas lacunas deixadas pela ausência de políticas públicas. Diretos, presentes e sem burocracia.',
+    anchor: 'Conheça nossa história',
+    button: 'Quero ajudar',
+    stats: [
+      {
+        title: '500+',
+        description: 'Famílias atendidas'
+      },
+      {
+        title: '80+',
+        description: 'Voluntários ativos'
+      },
+      {
+        title: '12',
+        description: 'Cidades alcançadas'
+      }
+    ]
+  },
+  causes: {
+    label: 'Nossas causas',
+    title: 'Quatro frentes. Um objetivo.',
+    description:
+      'Concentramos esforços onde o impacto é mais urgente e menos assistido pelo poder público.',
+    cards: [
+      {
+        icon: 'utensils',
+        title: 'Segurança alimentar',
+        description:
+          'Nenhuma família deveria passar fome. Distribuímos alimentos frescos e cestas básicas toda semana nas regiões mais críticas.',
+        label: '340 famílias / mês'
+      },
+      {
+        icon: 'book-open',
+        title: 'Educação de base',
+        description:
+          'Reforço escolar, alfabetização de adultos e acesso a material didático para crianças fora do ciclo regular.',
+        label: '120 alunos ativos'
+      },
+      {
+        icon: 'stethoscope',
+        title: 'Saúde preventiva',
+        description:
+          'Mutirões de saúde com médicos voluntários, distribuição de medicamentos e campanhas de vacinação em áreas remotas.',
+        label: '8 mutirões realizados'
+      },
+      {
+        icon: 'shield-check',
+        title: 'Proteção e abrigo',
+        description:
+          'Suporte a famílias em situação de risco habitacional, com reformas emergenciais e encaminhamento para programas oficiais.',
+        label: '18 famílias protegidas'
+      }
+    ]
+  },
+  timeline: {
+    label: 'Nossa trajetória',
+    title: '14 anos construídos um passo de cada vez.',
+    cards: [
+      {
+        label: '2010',
+        title: 'O começo',
+        description:
+          'Tudo começou com 5 voluntários e um carro lotado de mantimentos. Primeira distribuição no bairro Jardim das Flores, atendendo 12 famílias.',
+        span: '12 famílias'
+      },
+      {
+        label: '2013',
+        title: 'Expansão para saúde',
+        description:
+          'Parceria com médicos voluntários deu origem aos mutirões de saúde. Em seis meses, mais de 400 consultas realizadas gratuitamente.',
+        span: '400+ consultas'
+      },
+      {
+        label: '2017',
+        title: 'Registro oficial',
+        description:
+          'Tornamo-nos uma ONG oficialmente registrada, abrindo portas para parcerias institucionais e captação estruturada de recursos.',
+        span: 'ONG registrada'
+      },
+      {
+        label: '2020',
+        title: 'Resposta à pandemia',
+        description:
+          'Em 72 horas após o decreto de lockdown, mobilizamos 200 voluntários e distribuímos 1.800 cestas básicas em toda a região.',
+        span: '1.800 cestas'
+      },
+      {
+        label: '2024',
+        title: 'Presente',
+        description:
+          'Atuamos em 12 cidades, com mais de 80 voluntários fixos e impacto mensal direto em 500 famílias. A história continua.',
+        span: '12 cidades'
+      }
+    ],
+    anchor: '#envolver',
+    anchorTitle: 'Fazer parte da história'
+  },
+  getInvolved: {
+    label: 'Como participar',
+    title: 'Existem muitas formas de fazer parte disso.',
+    description:
+      'Não acreditamos que ajudar exige grandes sacrifícios. Cada pessoa tem algo a oferecer — tempo, habilidade, recurso ou voz. Escolha o que faz sentido pra você.',
+    cards: [
+      {
+        icon: 'hand-heart',
+        title: 'Voluntariado em campo',
+        description:
+          'Atue diretamente nas comunidades em ações de distribuição, saúde e educação. Disponibilidade de meio período já é suficiente.'
+      },
+      {
+        icon: 'package',
+        title: 'Doação de itens',
+        description:
+          'Alimentos não-perecíveis, roupas em bom estado, materiais escolares e medicamentos são sempre bem-vindos em nossos pontos de coleta.'
+      },
+      {
+        icon: 'clock',
+        title: 'Doação recorrente',
+        description:
+          'Com R$30 por mês você garante alimentação de uma família por 30 dias. Qualquer valor, qualquer frequência, gera impacto real.'
+      },
+      {
+        icon: 'wrench',
+        title: 'Pro bono profissional',
+        description:
+          'Advogados, médicos, designers, contadores — se você tem uma habilidade, temos uma causa que precisa dela. Ofereça seu tempo.'
+      }
+    ],
+    anchorText:
+      'Precisamos de 15 voluntários para o mutirão de saúde em abril.',
+    anchor: 'Garantir minha vaga'
+  },
+  faq: {
+    anchor: 'Entrar em contato',
+    questions: [
+      {
+        title: 'Como as doações são utilizadas?',
+        description:
+          'Os recursos são destinados integralmente aos projetos sociais ativos, cobrindo custos operacionais, materiais e suporte às famílias atendidas, sempre com total transparência.'
+      },
+      {
+        title: 'Preciso ter experiência para ser voluntário?',
+        description:
+          'Não. Recebemos voluntários de todos os perfis e oferecemos orientação antes de cada ação. O que importa é a disposição de ajudar.'
+      },
+      {
+        title: 'Existe valor mínimo para doações?',
+        description:
+          'Não há valor mínimo. Qualquer contribuição, independente do montante, é aplicada diretamente nas comunidades atendidas.'
+      },
+      {
+        title: 'A organização é registrada oficialmente?',
+        description:
+          'Sim. Somos uma ONG devidamente registrada, com CNPJ ativo e auditoria contábil anual realizada por profissional independente.'
+      },
+      {
+        title: 'Como posso acompanhar o impacto da minha doação?',
+        description:
+          'Enviamos atualizações por e-mail a cada novo ciclo de ações e publicamos relatórios públicos no site com dados reais de cada projeto.'
+      }
+    ]
+  }
+} as const
+
 export const PAGE_TEMPLATES = {
   primary: PRIMARY_TEMPLATE_DEFAULT_COPIES,
   secondary: SECONDARY_TEMPLATE_DEFAULT_COPIES,
-  tertiary: PRIMARY_TEMPLATE_DEFAULT_COPIES,
-  quarternary: PRIMARY_TEMPLATE_DEFAULT_COPIES
+  tertiary: TERTIARY_TEMPLATE_DEFAULT_COPIES,
+  quarternary: QUATERNARY_TEMPLATE_DEFAULT_COPIES
 } as const
