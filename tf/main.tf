@@ -69,7 +69,7 @@ resource "google_compute_instance" "vm" {
 
   boot_disk {
     initialize_params {
-      image = "ubuntu-os-cloud/ubuntu-2204-lts"
+      image = "cos-cloud/cos-stable"
       size  = 30
     }
   }
@@ -89,18 +89,6 @@ resource "google_compute_instance" "vm" {
   metadata = {
     ssh-keys = "gcpuser:${var.ssh_public_key}"
   }
-
-  metadata_startup_script = <<-EOF
-    #!/bin/bash
-    apt-get update -y
-    apt-get install -y docker.io ca-certificates curl
-    curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
-    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list
-    apt-get update -y && apt-get install -y google-cloud-cli
-    systemctl start docker
-    systemctl enable docker
-    usermod -a -G docker gcpuser
-  EOF
 }
 
 output "vm_public_ip" {
