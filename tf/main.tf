@@ -37,6 +37,7 @@ resource "azurerm_container_registry" "acr" {
   location            = azurerm_resource_group.rg.location
   sku                 = "Basic"
   admin_enabled       = false
+  depends_on          = [azurerm_resource_group.rg]
 
   tags = {
     Environment = var.env
@@ -49,6 +50,7 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
+  depends_on          = [azurerm_resource_group.rg]
 }
 
 resource "azurerm_subnet" "subnet" {
@@ -64,12 +66,14 @@ resource "azurerm_public_ip" "pip" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
   sku                 = "Standard"
+  depends_on          = [azurerm_resource_group.rg]
 }
 
 resource "azurerm_network_security_group" "nsg" {
   name                = "${var.project_name}-nsg"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
+  depends_on          = [azurerm_resource_group.rg]
 
   security_rule {
     name                       = "allow-http"

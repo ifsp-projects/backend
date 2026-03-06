@@ -3,7 +3,7 @@ variable "env" {}
 
 variable "region" {
   description = "Azure region, e.g. eastus, westeurope"
-  default     = "eastus"
+  default     = "eastus2"
 }
 
 variable "ssh_public_key" {
