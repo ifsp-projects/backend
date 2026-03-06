@@ -11,7 +11,8 @@ env:
   REGION: ${{ vars.REGION }}
   IMAGE_TAG: ${{ github.sha }}
   NODE_VERSION: ${{ vars.NODE_VERSION }}
-  IMAGE_LIST: ${{ vars.NODE_IMAGE }}
+  ACR_LOGIN_SERVER: ${{ vars.ACR_LOGIN_SERVER }}
+  ECR_REPOSITORY: ifsp-extensao-api-module-prod
 
 jobs:
   build-deploy:
@@ -24,18 +25,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set credentials
-        run: |
-          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
-          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
-          echo "ENVIRONMENT_CREDENTIALS=prod" >> $GITHUB_ENV
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Azure Login
+        uses: azure/login@v1
         with:
-          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.REGION }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -45,78 +38,74 @@ jobs:
       - name: Terraform Init
         working-directory: ./tf
         run: terraform init
+        env:
+          ARM_CLIENT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}
+          ARM_CLIENT_SECRET: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
+          ARM_SUBSCRIPTION_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
+          ARM_TENANT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
 
       - name: Terraform Apply
         working-directory: ./tf
         run: |
           terraform apply -auto-approve
-          echo "EC2_HOST=$(terraform output -raw server_public_ip)" >> $GITHUB_ENV
+          echo "VM_HOST=$(terraform output -raw server_public_ip)" >> $GITHUB_ENV
+          echo "ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
         env:
-          TF_VAR_key_name: ${{ vars.EC2_KEY_NAME }}
+          ARM_CLIENT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}
+          ARM_CLIENT_SECRET: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
+          ARM_SUBSCRIPTION_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
+          ARM_TENANT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
+          TF_VAR_ssh_public_key: ${{ secrets.VM_SSH_PUBLIC_KEY }}
           TF_VAR_project_name: ${{ env.PROJECT_NAME }}
           TF_VAR_region: ${{ env.REGION }}
           TF_VAR_env: "prod"
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1.5.3
+      - name: Load .env from GitHub Secrets
+        run: echo "${{ secrets.APP_ENV_FILE }}" > .env
 
-      - name: Pull image
-        id: pull-ecr
+      - name: Login to ACR
         run: |
-          for IMAGE in $IMAGE_LIST; do
-            echo "Pulling image: $IMAGE"
-            docker pull "${{ steps.login-ecr.outputs.registry }}/$IMAGE"
-            docker tag "${{ steps.login-ecr.outputs.registry }}/$IMAGE" "$IMAGE"
-          done
+          az acr login --name ${{ env.ACR_LOGIN_SERVER }}
 
-      - name: Load .env From Secrets Manager
-        run: |
-          secret_data=$(aws secretsmanager get-secret-value --secret-id prod/ifsp-extensao-api --output json | jq -r '.SecretString')
-          echo "$secret_data" | jq -r 'to_entries[] | "\(.key)=\(.value)"' >> .env
-
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build, tag, and push image to ACR
         id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ifsp-extensao-api-module-prod
-          IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+          docker build -t $ACR_LOGIN_SERVER/$ECR_REPOSITORY:$IMAGE_TAG \
             -f Dockerfile \
             --build-arg NODE_VERSION="${{ env.NODE_VERSION }}" \
             --no-cache=true .
 
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          docker push $ACR_LOGIN_SERVER/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ACR_LOGIN_SERVER/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Copy .env to EC2
+      - name: Copy .env to VM
         uses: appleboy/scp-action@master
         with:
-          host: ${{ env.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
+          host: ${{ env.VM_HOST }}
+          username: azureuser
+          key: ${{ secrets.VM_SSH_KEY }}
           source: ".env"
-          target: "/home/ec2-user/app"
-          debug: true
+          target: "/home/azureuser/app"
 
-      - name: Deploy to EC2 via SSH
+      - name: Deploy to Azure VM via SSH
         uses: appleboy/ssh-action@master
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ACR_LOGIN_SERVER: ${{ env.ACR_LOGIN_SERVER }}
           ECR_REPOSITORY: ifsp-extensao-api-module-prod
           IMAGE_TAG: ${{ github.sha }}
           CONTAINER_NAME: api-ifsp
         with:
-          host: ${{ env.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
-          envs: ECR_REGISTRY,ECR_REPOSITORY,IMAGE_TAG,CONTAINER_NAME
+          host: ${{ env.VM_HOST }}
+          username: azureuser
+          key: ${{ secrets.VM_SSH_KEY }}
+          envs: ACR_LOGIN_SERVER,ECR_REPOSITORY,IMAGE_TAG,CONTAINER_NAME
           script_stop: true
           script: |
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY
+            # VM uses Managed Identity — login to ACR without stored credentials
+            az login --identity
+            az acr login --name $ACR_LOGIN_SERVER
 
-            docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            docker pull $ACR_LOGIN_SERVER/$ECR_REPOSITORY:$IMAGE_TAG
 
             docker stop $CONTAINER_NAME || true
             docker rm $CONTAINER_NAME || true
@@ -124,8 +113,8 @@ jobs:
             docker run -d \
               --name $CONTAINER_NAME \
               --restart unless-stopped \
-              --env-file /home/ec2-user/app/.env \
+              --env-file /home/azureuser/app/.env \
               -p 80:8000 \
-              $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+              $ACR_LOGIN_SERVER/$ECR_REPOSITORY:$IMAGE_TAG
 
             docker system prune -f
