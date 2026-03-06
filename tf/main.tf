@@ -130,7 +130,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   name                = "${var.project_name}-vm"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  size                = "Standard_B1ms"
+  size                = "Standard_B1s"
 
   admin_username = "azureuser"
 
