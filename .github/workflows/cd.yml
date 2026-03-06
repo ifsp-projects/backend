@@ -60,6 +60,11 @@ jobs:
           TF_VAR_project_id: ${{ env.GCP_PROJECT_ID }}
           TF_VAR_env: "prod"
 
+      - name: Wait for VM startup script
+        run: |
+          echo "Waiting for VM to be ready..."
+          sleep 120
+
       - name: Load .env from GitHub Secrets
         run: echo "${{ secrets.APP_ENV_FILE }}" > .env
 
