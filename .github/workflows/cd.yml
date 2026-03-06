@@ -28,11 +28,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          client-id: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}
-          tenant-id: ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
-          subscription-id: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
-          client-secret: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
-          auth-type: SERVICE_PRINCIPAL
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
