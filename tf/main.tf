@@ -37,7 +37,7 @@ resource "google_compute_firewall" "rules" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22", "80", "8000"]
+    ports    = ["22", "80"]
   }
 
   source_ranges = ["0.0.0.0/0"]
@@ -87,7 +87,7 @@ resource "google_compute_instance" "vm" {
   }
 
   metadata = {
-    ssh-keys = "gcpuser:${var.ssh_public_key}"
+    ssh-keys = "chronos:${var.ssh_public_key}"
   }
 }
 
