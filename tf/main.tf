@@ -69,7 +69,7 @@ resource "google_compute_instance" "vm" {
 
   boot_disk {
     initialize_params {
-      image = "cos-cloud/cos-stable"
+      image = "ubuntu-os-cloud/ubuntu-2204-lts"
       size  = 30
     }
   }
@@ -87,8 +87,18 @@ resource "google_compute_instance" "vm" {
   }
 
   metadata = {
-    ssh-keys = "chronos:${var.ssh_public_key}"
+    ssh-keys = "gcpuser:${var.ssh_public_key}"
   }
+
+  # Startup script mínimo — só Docker, sem gcloud (~2 min)
+  metadata_startup_script = <<-EOF
+    #!/bin/bash
+    set -e
+    apt-get update -y
+    apt-get install -y docker.io
+    systemctl enable --now docker
+    usermod -aG docker gcpuser
+  EOF
 }
 
 output "vm_public_ip" {

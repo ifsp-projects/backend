@@ -76,10 +76,10 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           host: ${{ env.VM_HOST }}
-          username: chronos
+          username: gcpuser
           key: ${{ secrets.VM_SSH_KEY }}
           source: ".env"
-          target: "/home/chronos/app"
+          target: "/home/gcpuser/app"
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@master
@@ -91,26 +91,28 @@ jobs:
           REGION: ${{ env.REGION }}
         with:
           host: ${{ env.VM_HOST }}
-          username: chronos
+          username: gcpuser
           key: ${{ secrets.VM_SSH_KEY }}
           envs: REGISTRY_URL,IMAGE_REPOSITORY,IMAGE_TAG,CONTAINER_NAME,REGION
           script: |
+            # Aguarda Docker estar pronto (caso VM tenha acabado de ser criada)
+            until sudo docker info >/dev/null 2>&1; do sleep 3; done
+
             TOKEN=$(curl -sf "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" \
               -H "Metadata-Flavor: Google" | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
 
-            echo $TOKEN | docker login -u oauth2accesstoken --password-stdin https://$REGION-docker.pkg.dev
+            echo $TOKEN | sudo docker login -u oauth2accesstoken --password-stdin https://$REGION-docker.pkg.dev
 
-            docker pull $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG
+            sudo docker pull $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG
 
-            docker stop $CONTAINER_NAME 2>/dev/null || true
-            docker rm $CONTAINER_NAME 2>/dev/null || true
+            sudo docker stop $CONTAINER_NAME 2>/dev/null || true
+            sudo docker rm $CONTAINER_NAME 2>/dev/null || true
 
-            docker run -d \
+            sudo docker run -d \
               --name $CONTAINER_NAME \
               --restart unless-stopped \
-              --env-file /home/chronos/app/.env \
+              --env-file /home/gcpuser/app/.env \
               -p 80:8000 \
               $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG
 
-            docker system prune -f
-            
+            sudo docker system prune -f
