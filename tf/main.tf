@@ -1,155 +1,190 @@
 terraform {
   required_version = ">=1.0.0"
-  backend "s3" {
-    encrypt = true
-    key     = "tf/terraform.tfstate"
-    bucket  = "ifsp-extensao-api-tf-states"
-    region  = "us-east-1"
+
+  backend "azurerm" {
+    resource_group_name  = "ifsp-backend-capivara-solidaria"
+    storage_account_name = "ifspextensaotfstate"
+    container_name       = "tfstate"
+    key                  = "tf/terraform.tfstate"
   }
+
   required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 4.22.0"
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">=3.0.0"
     }
   }
 }
 
-provider "aws" {
-  region = var.region
-  default_tags {
-    tags = {
-      Environment = var.env
-      Project     = var.project_name
-      ManagedBy   = "terraform"
-    }
-  }
+provider "azurerm" {
+  features {}
 }
 
-resource "aws_ecr_repository" "ecr_api_images_repository" {
-  name                 = "ifsp-extensao-api-module-prod"
-  image_tag_mutability = "MUTABLE"
-  force_delete         = true
-}
-
-resource "aws_default_vpc" "default" {
-  tags = {
-    Name = "Default VPC"
-  }
-}
-
-resource "aws_security_group" "app_sg" {
-  name        = "${var.project_name}-sg"
-  description = "Enable SSH and application PORT"
-  vpc_id      = aws_default_vpc.default.id
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "HTTP Publico"
-  }
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "SSH access for GitHub Actions and admin"
-  }
-
-  ingress {
-    from_port   = 8000
-    to_port     = 8000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Direct app access (debug only)"
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "azurerm_resource_group" "rg" {
+  name     = "${var.project_name}-rg"
+  location = var.region 
 
   tags = {
-    Name = "${var.project_name}-sg"
+    Environment = var.env
+    Project     = var.project_name
+    ManagedBy   = "terraform"
   }
 }
 
-resource "aws_iam_role" "ec2_role" {
-  name = "${var.project_name}-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action    = "sts:AssumeRole"
-      Effect    = "Allow"
-      Principal = { Service = "ec2.amazonaws.com" }
-    }]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "ecr_read_only" {
-  role       = aws_iam_role.ec2_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-}
-
-resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "${var.project_name}-profile"
-  role = aws_iam_role.ec2_role.name
-}
-
-data "aws_ami" "amazon_linux" {
-  most_recent = true
-  owners      = ["amazon"]
-  filter {
-    name   = "name"
-    values = ["al2023-ami-2023.*-x86_64"]
-  }
-}
-
-resource "aws_instance" "app_server" {
-  ami           = data.aws_ami.amazon_linux.id
-  instance_type = "t2.micro"
-
-  key_name = var.key_name
-
-  vpc_security_group_ids = [aws_security_group.app_sg.id]
-  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
-
-  associate_public_ip_address = true
-
-  # Install Docker and Start
-  user_data = <<-EOF
-              #!/bin/bash
-              dnf update -y
-              dnf install -y docker
-              systemctl start docker
-              systemctl enable docker
-              usermod -a -G docker ec2-user
-              EOF
+resource "azurerm_container_registry" "acr" {
+  name                = "${replace(var.project_name, "-", "")}acr" 
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  sku                 = "Basic"
+  admin_enabled       = false
 
   tags = {
-    Name = "${var.project_name}-server"
+    Environment = var.env
+    Project     = var.project_name
   }
 }
 
-resource "aws_eip" "lb" {
-  instance = aws_instance.app_server.id
-  domain   = "vpc"
+resource "azurerm_virtual_network" "vnet" {
+  name                = "${var.project_name}-vnet"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
 }
 
-output "ecr_repository_url" {
-  value = aws_ecr_repository.ecr_api_images_repository.repository_url
+resource "azurerm_subnet" "subnet" {
+  name                 = "${var.project_name}-subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
+}
+
+resource "azurerm_public_ip" "pip" {
+  name                = "${var.project_name}-pip"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
+resource "azurerm_network_security_group" "nsg" {
+  name                = "${var.project_name}-nsg"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  security_rule {
+    name                       = "allow-http"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "allow-ssh"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "allow-app-debug"
+    priority                   = 120
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "8000"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+}
+
+resource "azurerm_network_interface" "nic" {
+  name                = "${var.project_name}-nic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.subnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.pip.id
+  }
+}
+
+resource "azurerm_network_interface_security_group_association" "nsg_assoc" {
+  network_interface_id      = azurerm_network_interface.nic.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
+}
+
+resource "azurerm_linux_virtual_machine" "vm" {
+  name                = "${var.project_name}-vm"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  size                = "Standard_B1s"
+
+  admin_username = "azureuser"
+
+  admin_ssh_key {
+    username   = "azureuser"
+    public_key = var.ssh_public_key
+  }
+
+  network_interface_ids = [azurerm_network_interface.nic.id]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts-gen2"
+    version   = "latest"
+  }
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  custom_data = base64encode(<<-EOF
+    #!/bin/bash
+    apt-get update -y
+    apt-get install -y docker.io ca-certificates curl
+    curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+    systemctl start docker
+    systemctl enable docker
+    usermod -a -G docker azureuser
+    EOF
+  )
+
+  tags = {
+    Environment = var.env
+    Project     = var.project_name
+  }
+}
+
+resource "azurerm_role_assignment" "acr_pull" {
+  scope                = azurerm_container_registry.acr.id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_linux_virtual_machine.vm.identity[0].principal_id
+}
+
+output "acr_login_server" {
+  value = azurerm_container_registry.acr.login_server
 }
 
 output "server_public_ip" {
-  value       = aws_eip.lb.public_ip
-  description = "IP to acecess the API (http://IP:8000) or SSH (ssh -i key.pem ec2-user@IP)"
-}
-
-output "server_dns" {
-  value = aws_instance.app_server.public_dns
+  value       = azurerm_public_ip.pip.ip_address
+  description = "Public IP to access the API or SSH"
 }
