@@ -55,6 +55,12 @@ resource "google_project_iam_member" "artifact_reader" {
   member  = "serviceAccount:${google_service_account.vm_sa.email}"
 }
 
+resource "google_service_account_iam_member" "sa_user" {
+  service_account_id = google_service_account.vm_sa.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:github-actions-capivara-solida@metriq-seo.iam.gserviceaccount.com"
+}
+
 resource "google_compute_instance" "vm" {
   name         = "${var.project_name}-vm"
   machine_type = "e2-micro"
