@@ -18,7 +18,7 @@ jobs:
   build-deploy:
     name: "Build and Deploy"
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
