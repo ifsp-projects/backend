@@ -1,194 +1,107 @@
 terraform {
   required_version = ">=1.0.0"
 
-  backend "azurerm" {
-    resource_group_name  = "ifsp-backend-capivara-solidaria"
-    storage_account_name = "ifspextensaotfstate"
-    container_name       = "tfstate"
-    key                  = "tf/terraform.tfstate"
+  backend "gcs" {
+    bucket = "ifsp-extensao-tfstate"
+    prefix = "tf/terraform.tfstate"
   }
 
   required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = ">=3.0.0"
+    google = {
+      source  = "hashicorp/google"
+      version = ">=5.0.0"
     }
   }
 }
 
-provider "azurerm" {
-  features {}
+provider "google" {
+  project = var.project_id
+  region  = var.region
+  zone    = var.zone
 }
 
-resource "azurerm_resource_group" "rg" {
-  name     = "${var.project_name}-rg"
-  location = var.region 
-
-  tags = {
-    Environment = var.env
-    Project     = var.project_name
-    ManagedBy   = "terraform"
-  }
+resource "google_artifact_registry_repository" "repo" {
+  location      = var.region
+  repository_id = "${var.project_name}-repo"
+  format        = "DOCKER"
 }
 
-resource "azurerm_container_registry" "acr" {
-  name                = "${replace(var.project_name, "-", "")}acr" 
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  sku                 = "Basic"
-  admin_enabled       = false
-  depends_on          = [azurerm_resource_group.rg]
-
-  tags = {
-    Environment = var.env
-    Project     = var.project_name
-  }
+resource "google_compute_address" "static_ip" {
+  name   = "${var.project_name}-ip"
+  region = var.region
 }
 
-resource "azurerm_virtual_network" "vnet" {
-  name                = "${var.project_name}-vnet"
-  address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  depends_on          = [azurerm_resource_group.rg]
+resource "google_compute_firewall" "rules" {
+  name    = "${var.project_name}-firewall"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22", "80", "8000"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+  target_tags   = [var.project_name]
 }
 
-resource "azurerm_subnet" "subnet" {
-  name                 = "${var.project_name}-subnet"
-  resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.1.0/24"]
+resource "google_service_account" "vm_sa" {
+  account_id   = "${var.project_name}-sa"
+  display_name = "Service Account for ${var.project_name} VM"
 }
 
-resource "azurerm_public_ip" "pip" {
-  name                = "${var.project_name}-pip"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Static"
-  sku                 = "Standard"
-  depends_on          = [azurerm_resource_group.rg]
+resource "google_project_iam_member" "artifact_reader" {
+  project = var.project_id
+  role    = "roles/artifactregistry.reader"
+  member  = "serviceAccount:${google_service_account.vm_sa.email}"
 }
 
-resource "azurerm_network_security_group" "nsg" {
-  name                = "${var.project_name}-nsg"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  depends_on          = [azurerm_resource_group.rg]
+resource "google_compute_instance" "vm" {
+  name         = "${var.project_name}-vm"
+  machine_type = "e2-micro"
+  zone         = var.zone
+  tags         = [var.project_name]
 
-  security_rule {
-    name                       = "allow-http"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "80"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
+  boot_disk {
+    initialize_params {
+      image = "ubuntu-os-cloud/ubuntu-2204-lts"
+      size  = 30
+    }
   }
 
-  security_rule {
-    name                       = "allow-ssh"
-    priority                   = 110
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
+  network_interface {
+    network = "default"
+    access_config {
+      nat_ip = google_compute_address.static_ip.address
+    }
   }
 
-  security_rule {
-    name                       = "allow-app-debug"
-    priority                   = 120
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "8000"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-}
-
-resource "azurerm_network_interface" "nic" {
-  name                = "${var.project_name}-nic"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = azurerm_subnet.subnet.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.pip.id
-  }
-}
-
-resource "azurerm_network_interface_security_group_association" "nsg_assoc" {
-  network_interface_id      = azurerm_network_interface.nic.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
-}
-
-resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "${var.project_name}-vm"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  size                = "Standard_B1s"
-
-  admin_username = "azureuser"
-
-  admin_ssh_key {
-    username   = "azureuser"
-    public_key = var.ssh_public_key
+  service_account {
+    email  = google_service_account.vm_sa.email
+    scopes = ["cloud-platform"]
   }
 
-  network_interface_ids = [azurerm_network_interface.nic.id]
-
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+  metadata = {
+    ssh-keys = "gcpuser:${var.ssh_public_key}"
   }
 
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts-gen2"
-    version   = "latest"
-  }
-
-  identity {
-    type = "SystemAssigned"
-  }
-
-  custom_data = base64encode(<<-EOF
+  metadata_startup_script = <<-EOF
     #!/bin/bash
     apt-get update -y
     apt-get install -y docker.io ca-certificates curl
-    curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+    curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list
+    apt-get update -y && apt-get install -y google-cloud-cli
     systemctl start docker
     systemctl enable docker
-    usermod -a -G docker azureuser
-    EOF
-  )
-
-  tags = {
-    Environment = var.env
-    Project     = var.project_name
-  }
+    usermod -a -G docker gcpuser
+  EOF
 }
 
-resource "azurerm_role_assignment" "acr_pull" {
-  scope                = azurerm_container_registry.acr.id
-  role_definition_name = "AcrPull"
-  principal_id         = azurerm_linux_virtual_machine.vm.identity[0].principal_id
-}
-
-output "acr_login_server" {
-  value = azurerm_container_registry.acr.login_server
-}
-
-output "server_public_ip" {
-  value       = azurerm_public_ip.pip.ip_address
+output "vm_public_ip" {
+  value       = google_compute_address.static_ip.address
   description = "Public IP to access the API or SSH"
+}
+
+output "artifact_registry_url" {
+  value = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.repo.repository_id}"
 }

@@ -8,11 +8,14 @@ on:
 
 env:
   PROJECT_NAME: ${{ vars.PROJECT_NAME }}
+  GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+  # REGION: us-east1
+  # ZONE: us-east1-b
   REGION: ${{ vars.REGION }}
+  ZONE: ${{ vars.ZONE }}
   IMAGE_TAG: ${{ github.sha }}
   NODE_VERSION: ${{ vars.NODE_VERSION }}
-  ACR_LOGIN_SERVER: ${{ vars.ACR_LOGIN_SERVER }}
-  ECR_REPOSITORY: ifsp-extensao-api-module-prod
+  IMAGE_REPOSITORY: ifsp-extensao-api-module-prod
 
 jobs:
   build-deploy:
@@ -25,10 +28,13 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Azure Login
-        uses: azure/login@v1
+      - name: GCP Auth
+        uses: google-github-actions/auth@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -39,73 +45,61 @@ jobs:
         working-directory: ./tf
         run: terraform init
         env:
-          ARM_CLIENT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}
-          ARM_CLIENT_SECRET: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
-          ARM_SUBSCRIPTION_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
-          ARM_TENANT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Terraform Apply
         working-directory: ./tf
         run: |
           terraform apply -auto-approve
-          echo "VM_HOST=$(terraform output -raw server_public_ip)" >> $GITHUB_ENV
-          echo "ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
+          echo "VM_HOST=$(terraform output -raw vm_public_ip)" >> $GITHUB_ENV
+          echo "REGISTRY_URL=$(terraform output -raw artifact_registry_url)" >> $GITHUB_ENV
         env:
-          ARM_CLIENT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}
-          ARM_CLIENT_SECRET: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
-          ARM_SUBSCRIPTION_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
-          ARM_TENANT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
           TF_VAR_ssh_public_key: ${{ secrets.VM_SSH_PUBLIC_KEY }}
           TF_VAR_project_name: ${{ env.PROJECT_NAME }}
-          TF_VAR_region: ${{ env.REGION }}
+          TF_VAR_project_id: ${{ env.GCP_PROJECT_ID }}
           TF_VAR_env: "prod"
 
       - name: Load .env from GitHub Secrets
         run: echo "${{ secrets.APP_ENV_FILE }}" > .env
 
-      - name: Login to ACR
-        run: |
-          az acr login --name ${{ env.ACR_LOGIN_SERVER }}
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
-      - name: Build, tag, and push image to ACR
-        id: build-image
+      - name: Build, tag, and push image
         run: |
-          docker build -t $ACR_LOGIN_SERVER/$ECR_REPOSITORY:$IMAGE_TAG \
+          docker build -t $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG \
             -f Dockerfile \
             --build-arg NODE_VERSION="${{ env.NODE_VERSION }}" \
             --no-cache=true .
-
-          docker push $ACR_LOGIN_SERVER/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ACR_LOGIN_SERVER/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          docker push $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG
 
       - name: Copy .env to VM
         uses: appleboy/scp-action@master
         with:
           host: ${{ env.VM_HOST }}
-          username: azureuser
+          username: gcpuser
           key: ${{ secrets.VM_SSH_KEY }}
           source: ".env"
-          target: "/home/azureuser/app"
+          target: "/home/gcpuser/app"
 
-      - name: Deploy to Azure VM via SSH
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@master
         env:
-          ACR_LOGIN_SERVER: ${{ env.ACR_LOGIN_SERVER }}
-          ECR_REPOSITORY: ifsp-extensao-api-module-prod
+          REGISTRY_URL: ${{ env.REGISTRY_URL }}
+          IMAGE_REPOSITORY: ifsp-extensao-api-module-prod
           IMAGE_TAG: ${{ github.sha }}
           CONTAINER_NAME: api-ifsp
+          REGION: us-east1
         with:
           host: ${{ env.VM_HOST }}
-          username: azureuser
+          username: gcpuser
           key: ${{ secrets.VM_SSH_KEY }}
-          envs: ACR_LOGIN_SERVER,ECR_REPOSITORY,IMAGE_TAG,CONTAINER_NAME
+          envs: REGISTRY_URL,IMAGE_REPOSITORY,IMAGE_TAG,CONTAINER_NAME,REGION
           script_stop: true
           script: |
-            # VM uses Managed Identity — login to ACR without stored credentials
-            az login --identity
-            az acr login --name $ACR_LOGIN_SERVER
-
-            docker pull $ACR_LOGIN_SERVER/$ECR_REPOSITORY:$IMAGE_TAG
+            gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
+            docker pull $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG
 
             docker stop $CONTAINER_NAME || true
             docker rm $CONTAINER_NAME || true
@@ -113,8 +107,9 @@ jobs:
             docker run -d \
               --name $CONTAINER_NAME \
               --restart unless-stopped \
-              --env-file /home/azureuser/app/.env \
+              --env-file /home/gcpuser/app/.env \
               -p 80:8000 \
-              $ACR_LOGIN_SERVER/$ECR_REPOSITORY:$IMAGE_TAG
+              $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG
 
             docker system prune -f
+            
