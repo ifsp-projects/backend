@@ -14,6 +14,10 @@ import { addressesRoutes } from './adapters/inbound/http/controllers/addresses/r
 import { pagesRoutes } from './adapters/inbound/http/controllers/pages/routes'
 
 export const app = fastify({
+  logger:
+  process.env.NODE_ENV === 'production'
+    ? { level: 'info' }
+    : { transport: { target: 'pino-pretty' } },
   connectionTimeout: 600000, // 10 minutes
   keepAliveTimeout: 605000, // 10 minutes + 5 seconds buffer
   requestTimeout: 600000 // 10 minutes for the entire request
