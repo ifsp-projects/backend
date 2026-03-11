@@ -38,8 +38,28 @@ export class OrganizationsProfilesRepository
 
   updateOrganizationProfile = async (
     id: string,
-    { email: _, ...payload }: Prisma.OrganizationUncheckedUpdateInput
+    payload: Prisma.OrganizationProfileUpdateInput,
+    pageId?: string
   ) => {
+    if (payload.design_template) {
+      console.log(`page ID: ${pageId}`)
+
+      const template = typeof payload.design_template === 'string'
+        ? payload.design_template
+        : payload.design_template.set
+    
+      if (template) {
+        await prisma.page.update({
+          where: {
+            id: pageId
+          },
+          data: {
+            sections: PAGE_TEMPLATES[template as keyof typeof PAGE_TEMPLATES]
+          }
+        })
+      }
+    }
+
     return await prisma.organizationProfile.update({
       where: {
         id

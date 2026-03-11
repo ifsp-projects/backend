@@ -14,6 +14,7 @@ const isPrismaOngCategory = (val: string): val is OngCategory => {
 }
 
 export const updateOrganizationBodySchema = z.object({
+  slug: z.string().nonempty(),
   logo: z.string().optional(),
   phone: z.string().optional(),
   ong_description: z.string().optional(),

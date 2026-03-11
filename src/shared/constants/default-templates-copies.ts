@@ -264,22 +264,22 @@ export const TERTIARY_TEMPLATE_DEFAULT_COPIES = {
       'Nossa metodologia é simples: escutar antes de agir. Cada projeto nasce de uma demanda real, mapeada junto às famílias atendidas. Porque as melhores soluções vêm de dentro da própria comunidade.',
     stats: [
       {
-        icon: 'people-group',
+        icon: 'like-thumbs-up-sticker',
         value: '+500',
         label: 'Pessoas auxiliadas'
       },
       {
-        icon: 'wheat',
+        icon: 'like-thumbs-up-sticker',
         value: '+25kg',
         label: 'Alimentos arrecadados'
       },
       {
-        icon: 'home',
+        icon: 'like-thumbs-up-sticker',
         value: '+18',
         label: 'Casas reformadas'
       },
       {
-        icon: 'heart-handshake',
+        icon: 'like-thumbs-up-sticker',
         value: '+80',
         label: 'Voluntários ativos'
       }
@@ -290,12 +290,32 @@ export const TERTIARY_TEMPLATE_DEFAULT_COPIES = {
     title: 'Do diagnóstico ao impacto — veja nossa jornada',
     description:
       'Cada etapa do nosso processo foi desenhada para garantir eficiência, cuidado e transparência com quem doa e com quem recebe.',
-    cards: {
-      icon: 'clipboard-list',
-      title: 'Mapeamento',
-      description:
-        'Identificamos famílias e comunidades em situação de vulnerabilidade por meio de parcerias com lideranças locais.'
-    },
+    cards: [
+      {
+        icon: 'like-thumbs-up-sticker',
+        title: 'Mapeamento',
+        description:
+          'Identificamos famílias e comunidades em situação de vulnerabilidade por meio de parcerias com lideranças locais.'
+      },
+      {
+        icon: 'like-thumbs-up-sticker',
+        title: 'Mapeamento',
+        description:
+          'Identificamos famílias e comunidades em situação de vulnerabilidade por meio de parcerias com lideranças locais.'
+      },
+      {
+        icon: 'like-thumbs-up-sticker',
+        title: 'Mapeamento',
+        description:
+          'Identificamos famílias e comunidades em situação de vulnerabilidade por meio de parcerias com lideranças locais.'
+      },
+      {
+        icon: 'like-thumbs-up-sticker',
+        title: 'Mapeamento',
+        description:
+          'Identificamos famílias e comunidades em situação de vulnerabilidade por meio de parcerias com lideranças locais.'
+      }
+    ],
     anchor: 'Ver projetos ativos'
   },
   initiatives: {
@@ -471,28 +491,28 @@ export const QUATERNARY_TEMPLATE_DEFAULT_COPIES = {
       'Concentramos esforços onde o impacto é mais urgente e menos assistido pelo poder público.',
     cards: [
       {
-        icon: 'utensils',
+        icon: 'like-thumbs-up-sticker',
         title: 'Segurança alimentar',
         description:
           'Nenhuma família deveria passar fome. Distribuímos alimentos frescos e cestas básicas toda semana nas regiões mais críticas.',
         label: '340 famílias / mês'
       },
       {
-        icon: 'book-open',
+        icon: 'like-thumbs-up-sticker',
         title: 'Educação de base',
         description:
           'Reforço escolar, alfabetização de adultos e acesso a material didático para crianças fora do ciclo regular.',
         label: '120 alunos ativos'
       },
       {
-        icon: 'stethoscope',
+        icon: 'like-thumbs-up-sticker',
         title: 'Saúde preventiva',
         description:
           'Mutirões de saúde com médicos voluntários, distribuição de medicamentos e campanhas de vacinação em áreas remotas.',
         label: '8 mutirões realizados'
       },
       {
-        icon: 'shield-check',
+        icon: 'like-thumbs-up-sticker',
         title: 'Proteção e abrigo',
         description:
           'Suporte a famílias em situação de risco habitacional, com reformas emergenciais e encaminhamento para programas oficiais.',
@@ -550,25 +570,25 @@ export const QUATERNARY_TEMPLATE_DEFAULT_COPIES = {
       'Não acreditamos que ajudar exige grandes sacrifícios. Cada pessoa tem algo a oferecer — tempo, habilidade, recurso ou voz. Escolha o que faz sentido pra você.',
     cards: [
       {
-        icon: 'hand-heart',
+        icon: 'like-thumbs-up-sticker',
         title: 'Voluntariado em campo',
         description:
           'Atue diretamente nas comunidades em ações de distribuição, saúde e educação. Disponibilidade de meio período já é suficiente.'
       },
       {
-        icon: 'package',
+        icon: 'like-thumbs-up-sticker',
         title: 'Doação de itens',
         description:
           'Alimentos não-perecíveis, roupas em bom estado, materiais escolares e medicamentos são sempre bem-vindos em nossos pontos de coleta.'
       },
       {
-        icon: 'clock',
+        icon: 'like-thumbs-up-sticker',
         title: 'Doação recorrente',
         description:
           'Com R$30 por mês você garante alimentação de uma família por 30 dias. Qualquer valor, qualquer frequência, gera impacto real.'
       },
       {
-        icon: 'wrench',
+        icon: 'like-thumbs-up-sticker',
         title: 'Pro bono profissional',
         description:
           'Advogados, médicos, designers, contadores — se você tem uma habilidade, temos uma causa que precisa dela. Ofereça seu tempo.'
