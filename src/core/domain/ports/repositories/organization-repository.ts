@@ -1,4 +1,4 @@
-import { Organization, Prisma } from '@prisma/client'
+import { Organization, Prisma } from '@prisma-generated'
 
 export type OrganizationWithProfileInclude = Prisma.OrganizationGetPayload<{
   include: {

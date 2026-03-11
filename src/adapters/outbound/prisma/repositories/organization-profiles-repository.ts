@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@prisma-generated'
 import { randomUUID } from 'crypto'
 import { prisma } from '@/adapters/outbound/prisma/prisma'
 import { PAGE_TEMPLATES } from '@/shared/constants/default-templates-copies'

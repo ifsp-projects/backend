@@ -1,5 +1,5 @@
 import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@prisma-generated'
 import { CreateAddressUseCaseReturn } from './types'
 
 export class CreateAddressUseCase {

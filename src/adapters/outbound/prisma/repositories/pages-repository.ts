@@ -1,4 +1,4 @@
-import { Page, Prisma } from '@prisma/client'
+import { Page, Prisma } from '@prisma-generated'
 import { PagesInterface } from '../../../../core/domain/ports/repositories/pages-repository'
 import { prisma } from '@/adapters/outbound/prisma/prisma'
 

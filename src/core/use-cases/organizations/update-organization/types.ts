@@ -1,4 +1,4 @@
-import { Organization, Prisma } from '@prisma/client'
+import { Organization, Prisma } from '@prisma-generated'
 
 export interface UpdateOrganizationPayload
   extends Omit<Prisma.OrganizationUncheckedUpdateInput, 'id'> {

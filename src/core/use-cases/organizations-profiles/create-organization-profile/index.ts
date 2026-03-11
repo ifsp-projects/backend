@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma-generated'
 import { CreateOrganizationProfileUseCaseReturn } from './types'
 import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 import { OrganizationProfileAlreadyExistsError } from '@/core/domain/exceptions/organizations-profiles'

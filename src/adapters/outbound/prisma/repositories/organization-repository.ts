@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@prisma-generated'
 import { randomUUID } from 'crypto'
 import {
   OrganizationInterface,

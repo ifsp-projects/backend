@@ -1,4 +1,4 @@
-import { Organization } from '@prisma/client'
+import { Organization } from '@prisma-generated'
 
 export interface GetOrganizationByIdUseCaseReturn {
   organization: Organization

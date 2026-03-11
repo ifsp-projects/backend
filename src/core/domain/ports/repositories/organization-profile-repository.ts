@@ -1,4 +1,4 @@
-import { OrganizationProfile, Prisma } from '@prisma/client'
+import { OrganizationProfile, Prisma } from '@prisma-generated'
 
 export interface OrganizationInterface {
   createOrganizationProfile: (

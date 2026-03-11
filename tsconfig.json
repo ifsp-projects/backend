@@ -4,25 +4,27 @@
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
-    "esModuleInterop": true,
     "experimentalDecorators": true, 
     "emitDecoratorMetadata": true, 
     "incremental": false,
     "isolatedModules": true,
     "lib": ["es2022", "DOM", "DOM.Iterable"],
-    "module": "NodeNext",
     "moduleDetection": "force",
-    "moduleResolution": "NodeNext",
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true,
-    "target": "ES2022",
     "outDir": "dist",
     "rootDir": "src",
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*"],
+      "@prisma-generated": ["./prisma/generated/prisma"],
+      "@prisma-generated/*": ["./prisma/generated/prisma/*"]
+    },
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2023",
+    "strict": true,
+    "esModuleInterop": true
   },
   "files": ["src/shared/types/global.d.ts"],
   "include": ["src/**/*.ts", "src/**/*.d.ts"],

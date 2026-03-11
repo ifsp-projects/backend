@@ -1,4 +1,4 @@
-import { Page, Prisma } from '@prisma/client'
+import { Page, Prisma } from '@prisma-generated'
 
 export interface UpdatePageUseCasePayload
   extends Omit<Prisma.PageUncheckedUpdateInput, 'id'> {

@@ -1,4 +1,4 @@
-import { Address } from '@prisma/client'
+import { Address } from '@prisma-generated'
 
 export interface GetAddressByIdUseCaseReturn {
   address: Address

@@ -1,4 +1,4 @@
-import { Address, Prisma } from '@prisma/client'
+import { Address, Prisma } from '@prisma-generated'
 
 export interface UpdateAdddressPayload
   extends Omit<Prisma.AddressUncheckedUpdateInput, 'id'> {

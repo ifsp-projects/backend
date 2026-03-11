@@ -1,4 +1,4 @@
-import { OngCategory } from '@prisma/client'
+import { OngCategory } from '@prisma-generated'
 
 export const HUBSPOT_ONG_VALUES: string[] = [
   'Animais',
@@ -34,13 +34,10 @@ export const isHubspotOngValue = (value: unknown): value is HubspotOngValue => {
 
 export const HUBSPOT_ONG_VALUES_SET = new Set(HUBSPOT_ONG_VALUES)
 
-export const HubspotOngValueEnum = HUBSPOT_ONG_VALUES.reduce(
-  (acc, value) => {
-    acc[value] = value
-    return acc
-  },
-  {} as Record<HubspotOngValue, HubspotOngValue>
-)
+export const HubspotOngValueEnum = HUBSPOT_ONG_VALUES.reduce((acc, value) => {
+  acc[value] = value
+  return acc
+}, {} as Record<HubspotOngValue, HubspotOngValue>)
 
 export const HUBSPOT_TO_PRISMA_ONG_CATEGORY: Record<
   HubspotOngValue,

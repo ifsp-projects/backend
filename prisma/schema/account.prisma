@@ -49,6 +49,7 @@ model OrganizationProfile {
   updated_at      DateTime @updatedAt
   created_at      DateTime @default(now())
   phone           String
+  ong_description String?
   design_template String   @default("primary")
 
   ong_type  OngCategory?

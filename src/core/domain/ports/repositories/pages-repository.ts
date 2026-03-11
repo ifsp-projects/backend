@@ -1,4 +1,4 @@
-import { Page, Prisma } from '@prisma/client'
+import { Page, Prisma } from '@prisma-generated'
 
 export interface PagesInterface {
   getPageBySlug: (slug: string) => Promise<Page | null>

@@ -1,5 +1,5 @@
 import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@prisma-generated'
 import { CreateOrganizationUseCaseReturn } from './types'
 import { OrganizationAlreadyExistsError } from '@/core/domain/exceptions/organizations'
 
