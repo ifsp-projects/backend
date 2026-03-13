@@ -2,7 +2,7 @@ import { Address, Prisma } from '@prisma-generated'
 
 export interface AddressInterface {
   createAddress: (
-    payload: Prisma.OrganizationUncheckedCreateInput
+    payload: Prisma.AddressUncheckedCreateInput
   ) => Promise<Address>
   getAllAddresses: () => Promise<Address[]>
   getAddressById: (id: string) => Promise<Address | null>

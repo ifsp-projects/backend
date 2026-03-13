@@ -42,8 +42,6 @@ export class OrganizationsProfilesRepository
     pageId?: string
   ) => {
     if (payload.design_template) {
-      console.log(`page ID: ${pageId}`)
-
       const template = typeof payload.design_template === 'string'
         ? payload.design_template
         : payload.design_template.set

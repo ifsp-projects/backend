@@ -27,16 +27,27 @@ enum UserRoleEnum {
   editor
 }
 
+enum AccountStatus {
+  active
+  inactive
+}
+
 model Organization {
-  id          String   @id @default(uuid())
-  email       String   @unique
-  updated_at  DateTime @updatedAt
-  created_at  DateTime @default(now())
-  is_user_new Boolean  @default(true)
+  id          String    @id @default(uuid())
+  email       String    @unique
+  updated_at  DateTime  @updatedAt
+  created_at  DateTime  @default(now())
+  deleted_at  DateTime?
+  is_user_new Boolean   @default(true)
+
+  account_status AccountStatus @default(inactive)
 
   page_content         Page?
   organization_profile OrganizationProfile?
+  invite_tokens        InviteToken[]
 
+  @@index([account_status])
+  @@index([deleted_at])
   @@map("organizations")
 }
 
@@ -57,22 +68,44 @@ model OrganizationProfile {
 
   organization Organization @relation(fields: [ong_id], references: [id])
 
+  @@index([ong_type])
   @@map("organizations_profiles")
 }
 
 model Address {
-  id                      String   @id @default(uuid())
+  id                      String    @id @default(uuid())
   street                  String?
   number                  String?
   complement              String?
   city                    String?
   state                   String?
   postal_code             String?
-  organization_profile_id String?
-  updated_at              DateTime @updatedAt
-  created_at              DateTime @default(now())
+  organization_profile_id String
+  updated_at              DateTime  @updatedAt
+  created_at              DateTime  @default(now())
+  deleted_at              DateTime?
+  is_primary              Boolean   @default(false)
 
-  organizationProfile OrganizationProfile? @relation(fields: [organization_profile_id], references: [id])
+  organizationProfile OrganizationProfile @relation(fields: [organization_profile_id], references: [id])
 
+  @@index([organization_profile_id])
+  @@index([deleted_at])
   @@map("addresses")
+}
+
+model InviteToken {
+  id              String    @id @default(uuid())
+  token           String    @unique @default(uuid())
+  email           String
+  organization_id String
+  expires_at      DateTime
+  used_at         DateTime?
+  created_at      DateTime  @default(now())
+  cancelled_at    DateTime?
+
+  organization Organization @relation(fields: [organization_id], references: [id])
+
+  @@index([token])
+  @@index([email])
+  @@map("invite_tokens")
 }
