@@ -11,3 +11,33 @@ export class InvalidSocialAccountError extends ControllerError {
     super('Invalid social account.')
   }
 }
+
+export class WrongPasswordError extends ControllerError {
+  constructor(public status = 401) {
+    super('Invalid credentials.')
+  }
+}
+
+export class SessionNotFoundError extends ControllerError {
+  constructor(public status = 404) {
+    super('Session not found.')
+  }
+}
+
+export class SessionRevokedError extends ControllerError {
+  constructor(public status = 401) {
+    super('Session already revoked.')
+  }
+}
+
+export class InvalidSessionError extends ControllerError {
+  constructor(public status = 401) {
+    super('Invalid session.')
+  }
+}
+
+export class InvalidTokenError extends ControllerError {
+  constructor(public status = 401) {
+    super('Invalid or expired token.')
+  }
+}

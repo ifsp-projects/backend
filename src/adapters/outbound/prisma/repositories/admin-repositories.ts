@@ -1,8 +1,9 @@
-import { InviteToken, Prisma } from '@prisma-generated'
-
 import { randomUUID } from 'crypto'
 import { prisma } from '@/adapters/outbound/prisma/prisma'
-import { AdminInterface } from '@/core/domain/ports/repositories/admin-repository'
+import {
+  AdminInterface,
+  TokenValidationResponse
+} from '@/core/domain/ports/repositories/admin-repository'
 import { CreateInviteTokenUseCasePayload } from '@/core/use-cases/admin/create-and-send-invite/types'
 
 export class AdminRepository implements AdminInterface {
@@ -29,11 +30,11 @@ export class AdminRepository implements AdminInterface {
     })
 
     if (!existingInvite) {
-      throw new Error('Invite not found')
+      return null
     }
 
     if (existingInvite.used_at) {
-      throw new Error('Invite already used')
+      return null
     }
 
     // Invalidated old token
@@ -58,9 +59,7 @@ export class AdminRepository implements AdminInterface {
     return refreshedInvite
   }
 
-  createAndSendInvite = async (
-    payload: CreateInviteTokenUseCasePayload
-  ) => {
+  createAndSendInvite = async (payload: CreateInviteTokenUseCasePayload) => {
     return await prisma.inviteToken.create({
       data: {
         id: randomUUID(),
@@ -77,5 +76,76 @@ export class AdminRepository implements AdminInterface {
         id
       }
     })
+  }
+
+  useInviteToken = async (token: string) => {
+    const existingInvite = await prisma.inviteToken.findFirst({
+      where: {
+        token
+      }
+    })
+
+    if (!existingInvite) {
+      return null
+    }
+
+    if (existingInvite.used_at) {
+      return null
+    }
+
+    await prisma.inviteToken.update({
+      where: {
+        token
+      },
+      data: {
+        used_at: new Date(Date.now())
+      }
+    })
+
+    return null
+  }
+
+  getInviteByToken = async (token: string) => {
+    return await prisma.inviteToken.findFirst({
+      where: {
+        token
+      }
+    })
+  }
+
+  validateToken = async (token: string): Promise<TokenValidationResponse> => {
+    const invite = await prisma.inviteToken.findUnique({
+      where: { token }
+    })
+
+    if (!invite)
+      return {
+        valid: false,
+        reason: 'not_found'
+      }
+
+    if (invite.used_at)
+      return {
+        valid: false,
+        reason: 'used'
+      }
+
+    if (invite.cancelled_at)
+      return {
+        valid: false,
+        reason: 'cancelled'
+      }
+
+    if (invite.expires_at < new Date())
+      return {
+        valid: false,
+        reason: 'expired'
+      }
+
+    return {
+      valid: true,
+      email: invite.email,
+      organizationId: invite.organization_id
+    }
   }
 }

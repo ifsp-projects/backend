@@ -16,7 +16,7 @@ export class SocialLoginController extends BaseAuth {
     this.useCase = new SocialLoginUseCase(organizationsRepository)
   }
 
-  @Route('POST', '/social-login')
+  @Route('POST', '/auth/social')
   async sociaLogin(
     request: FastifyRequest,
     reply: FastifyReply

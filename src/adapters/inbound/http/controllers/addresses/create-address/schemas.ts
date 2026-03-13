@@ -7,5 +7,6 @@ export const createAddressBodySchema = z.object({
   city: z.string().optional(),
   state: z.string().optional(),
   postal_code: z.string().optional(),
-  organization_profile_id: z.string().nonempty('Esse campo é obrigatório')
+  organization_profile_id: z.string().nonempty('Esse campo é obrigatório'),
+  is_primary: z.boolean().default(false)
 })

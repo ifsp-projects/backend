@@ -13,7 +13,7 @@ export class RefreshTokenController extends BaseAuth {
     this.organizationsRepository = organizationsRepository
   }
 
-  @Route('POST', '/refresh-token', {
+  @Route('POST', '/auth/social/refresh-token', {
     middlewares: [verifyJWT]
   })
   async refreshToken(

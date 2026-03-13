@@ -1,29 +1,29 @@
 import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
 import {
-  InviteTokenAlreadyCancelledError,
   InviteTokenAlreadyUsedError,
+  InviteTokenAlreadyCancelledError,
   InviteTokenDoesNotExistError
 } from '@/core/domain/exceptions/admin'
 
-export class CancelPendingInviteUseCase {
+export class UseInviteTokenUseCase {
   constructor(protected readonly adminRepository: AdminRepository) {}
 
-  execute = async (id: string): Promise<null> => {
-    const inviteExists = await this.adminRepository.getInviteTokenById(id)
+  execute = async (token: string): Promise<null> => {
+    const inviteToken = await this.adminRepository.getInviteByToken(token)
 
-    if (!inviteExists) {
+    if (!inviteToken) {
       throw new InviteTokenDoesNotExistError()
     }
 
-    if (inviteExists.cancelled_at) {
+    if (inviteToken.cancelled_at) {
       throw new InviteTokenAlreadyCancelledError()
     }
 
-    if (inviteExists.used_at) {
+    if (inviteToken.used_at) {
       throw new InviteTokenAlreadyUsedError()
     }
 
-    await this.adminRepository.cancelPendingInvite(id)
+    await this.adminRepository.useInviteToken(token)
 
     return null
   }
