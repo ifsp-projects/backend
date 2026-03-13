@@ -32,4 +32,17 @@ export class AuthRepository implements AuthInterface {
       })
       .catch(() => null)
   }
+
+  updatePassword = async (id: string, password: string) => {
+    await prisma.organization.update({
+      where: {
+        id
+      },
+      data: {
+        password
+      }
+    })
+
+    return null
+  }
 }

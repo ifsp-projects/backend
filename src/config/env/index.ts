@@ -9,7 +9,10 @@ const schema = z.object({
   JWT_SECRET: z.string(),
   GOOGLE_CLIENT_ID: z.string(),
   DEBUG: z.string(),
-  WEBPAGE_BASE_URL: z.string()
+  WEBPAGE_BASE_URL: z.string(),
+  RESEND_API_KEY: z.string(),
+  APP_URL: z.string(),
+  EMAIL_FROM: z.string()
 })
 
 const parsed = schema.safeParse(process.env)

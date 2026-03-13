@@ -51,11 +51,6 @@ export class AdminRepository implements AdminInterface {
       }
     })
 
-    // await sendInviteEmail({
-    //   to: newInvite.email,
-    //   token: newInvite.token
-    // })
-
     return refreshedInvite
   }
 
@@ -99,6 +94,15 @@ export class AdminRepository implements AdminInterface {
       },
       data: {
         used_at: new Date(Date.now())
+      }
+    })
+
+    await prisma.organization.update({
+      where: {
+        id: existingInvite.email
+      },
+      data: {
+        account_status: 'active'
       }
     })
 

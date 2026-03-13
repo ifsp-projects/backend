@@ -1,5 +1,5 @@
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
-import type { FastifyReply } from 'fastify'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
 import { ListAllInvitesUseCase } from '@/core/use-cases/admin/list-all-invites'
 
@@ -13,7 +13,7 @@ export class ListAllInvitesController {
   }
 
   @Route('GET', '/admin/invites')
-  async execute(reply: FastifyReply): Promise<void> {
+  async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const response = await this.useCase.execute()
 
     return reply.status(200).send(response)

@@ -1,7 +1,6 @@
 import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
 import { CreateAddressUseCase } from '@/core/use-cases/addresses/create-address'
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
-import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { createAddressBodySchema } from './schemas'
 
@@ -14,9 +13,7 @@ export class CreateAddressController {
     this.useCase = new CreateAddressUseCase(this.addressRepository)
   }
 
-  @Route('POST', '/addresses', {
-    middlewares: [verifyJWT]
-  })
+  @Route('POST', '/addresses')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

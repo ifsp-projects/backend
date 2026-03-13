@@ -4,14 +4,27 @@ import { verifyJWT } from '../../../middlewares/verify-jwt'
 import { Route } from '../../../decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { createAndSendInviteBodySchema } from './schema'
+import { ResendRepository } from '@/shared/infra/email/resend'
+import { SendInviteUseCase } from '@/core/use-cases/email/send-invite'
 
 export class CreateAndSendInviteController {
   private adminRepository: AdminRepository
-  private useCase: CreateInviteTokenUseCase
+  private resendRepository: ResendRepository
+
+  private createInviteTokenUseCase: CreateInviteTokenUseCase
+  private sendEmailUseCase: SendInviteUseCase
 
   constructor() {
     this.adminRepository = new AdminRepository()
-    this.useCase = new CreateInviteTokenUseCase(this.adminRepository)
+    this.resendRepository = new ResendRepository()
+
+    this.createInviteTokenUseCase = new CreateInviteTokenUseCase(
+      this.adminRepository
+    )
+    this.sendEmailUseCase = new SendInviteUseCase(
+      this.adminRepository,
+      this.resendRepository
+    )
   }
 
   @Route('POST', '/admin/invites', {
@@ -23,7 +36,12 @@ export class CreateAndSendInviteController {
   ): Promise<void> {
     const payload = createAndSendInviteBodySchema.parse(request.body)
 
-    const response = await this.useCase.execute(payload)
+    const response = await this.createInviteTokenUseCase.execute(payload)
+
+    await this.sendEmailUseCase.execute({
+      email: payload.email,
+      organization_id: response.inviteToken.organization_id
+    })
 
     return reply.status(201).send(response)
   }

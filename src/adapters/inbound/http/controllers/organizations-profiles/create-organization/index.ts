@@ -1,5 +1,4 @@
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
-import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { createOrganizationProfileBodySchema } from './schemas'
 import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
@@ -16,9 +15,7 @@ export class CreateOrganizationProfileController {
     )
   }
 
-  @Route('POST', '/organizations-profiles', {
-    middlewares: [verifyJWT]
-  })
+  @Route('POST', '/organizations-profiles')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

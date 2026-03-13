@@ -1,3 +1,4 @@
+import { changePasswordController } from './change-password'
 import { loginUserController } from './login-user'
 import { logoutUserController } from './logout-user'
 import { refreshTokenController } from './refresh-token'
@@ -9,5 +10,6 @@ export const authRoutes = [
   socialLoginController,
   loginUserController,
   logoutUserController,
-  ssoRefreshTokenController
+  ssoRefreshTokenController,
+  changePasswordController
 ]

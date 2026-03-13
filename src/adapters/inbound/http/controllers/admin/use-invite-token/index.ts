@@ -1,5 +1,4 @@
 import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
-import { verifyJWT } from '../../../middlewares/verify-jwt'
 import { Route } from '../../../decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { useInviteTokenBodySchema } from './schema'
@@ -14,9 +13,7 @@ export class UseInviteTokenController {
     this.useCase = new UseInviteTokenUseCase(this.adminRepository)
   }
 
-  @Route('POST', '/admin/invites/token', {
-    middlewares: [verifyJWT]
-  })
+  @Route('POST', '/admin/invites/token')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply
