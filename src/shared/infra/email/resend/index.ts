@@ -34,7 +34,7 @@ export class ResendRepository implements EmailInterface {
     const inviteUrl = `${this.appUrl}/onboarding/reset-password?token=${payload.token}`
 
     const { data, error } = await this.client.emails.send({
-      from: this.fromAddress,
+      from: `Capivara Solidária <${this.fromAddress}>`,
       to: payload.to,
       subject: 'You have been invited to join the platform',
       html: renderInviteEmail({
