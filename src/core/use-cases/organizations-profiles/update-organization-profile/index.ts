@@ -18,8 +18,6 @@ export class UpdateOrganizationProfileUseCase {
   ): Promise<UpdateOrganizationUseCaseReturn> => {
     const { id } = payload
 
-    console.log(`slug: ${payload.slug}`)
-
     const organizationExists =
       await this.organizationsProfilesRepository.getOrganizationProfileById(id)
 
@@ -31,8 +29,6 @@ export class UpdateOrganizationProfileUseCase {
 
     if (payload.design_template) {
       const page = await this.pagesRepository.getPageBySlug(payload.slug as string)
-
-      console.log(page)
 
       updatedOrganization = await this.organizationsProfilesRepository.updateOrganizationProfile(
         id,

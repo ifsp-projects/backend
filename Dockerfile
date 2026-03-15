@@ -1,7 +1,7 @@
 FROM node:22.16-alpine AS base
 
-RUN apk add --no-cache libc6-compat openssl
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN apk add --no-cache libc6-compat openssl \
+    && corepack enable && corepack prepare pnpm@10.17.1 --activate
 
 WORKDIR /app
 
@@ -22,8 +22,8 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 fastify
+RUN addgroup --system --gid 1001 nodejs \
+    && adduser --system --uid 1001 fastify --ingroup nodejs
 
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder --chown=fastify:nodejs /app/node_modules ./node_modules

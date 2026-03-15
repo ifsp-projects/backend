@@ -9,7 +9,7 @@ export class UseInviteTokenUseCase {
   constructor(protected readonly adminRepository: AdminRepository) {}
 
   execute = async (token: string): Promise<null> => {
-    const inviteToken = await this.adminRepository.getInviteByToken(token)
+    const inviteToken = await this.adminRepository.getInviteTokenById(token)
 
     if (!inviteToken) {
       throw new InviteTokenDoesNotExistError()

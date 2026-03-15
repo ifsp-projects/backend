@@ -56,7 +56,11 @@ export class OrganizationsRepository implements OrganizationInterface {
         email
       },
       include: {
-        organization_profile: true
+        organization_profile: {
+          include: {
+            addresses: true
+          }
+        }
       }
     })
   }

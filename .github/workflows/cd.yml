@@ -95,7 +95,6 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           envs: REGISTRY_URL,IMAGE_REPOSITORY,IMAGE_TAG,CONTAINER_NAME,REGION
           script: |
-            # Aguarda Docker estar pronto (caso VM tenha acabado de ser criada)
             until sudo docker info >/dev/null 2>&1; do sleep 3; done
 
             TOKEN=$(curl -sf "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" \

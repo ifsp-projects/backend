@@ -76,7 +76,7 @@ export class AdminRepository implements AdminInterface {
   useInviteToken = async (token: string) => {
     const existingInvite = await prisma.inviteToken.findFirst({
       where: {
-        token
+        id: token
       }
     })
 
@@ -90,7 +90,7 @@ export class AdminRepository implements AdminInterface {
 
     await prisma.inviteToken.update({
       where: {
-        token
+        id: token
       },
       data: {
         used_at: new Date(Date.now())
