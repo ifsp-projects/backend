@@ -1,7 +1,7 @@
 import { FastifyInstance, onRequestHookHandler } from 'fastify'
 
 type RouteOptions = {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'CREATE'
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
   path: string
   schema?: object
   middlewares?: onRequestHookHandler[]
@@ -10,7 +10,7 @@ type RouteOptions = {
 const routes: { target: any; options: RouteOptions; handlerName: string }[] = []
 
 export function Route(
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'CREATE',
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
   path: string,
   options?: {
     schema?: object

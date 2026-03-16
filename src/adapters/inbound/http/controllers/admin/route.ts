@@ -6,7 +6,7 @@ import { regenerateAndResendInviteController } from './regenerate-token-and-rese
 import { useInviteTokenController } from './use-invite-token'
 import { validateInviteTokenController } from './validate-invite-token'
 
-export const AdminRoutes = [
+export const adminRoutes = [
   createAndSendInviteController,
   regenerateAndResendInviteController,
   listAllInvitesController,

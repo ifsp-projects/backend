@@ -12,7 +12,7 @@ import { organizationsProfilesRoutes } from './adapters/inbound/http/controllers
 import { authRoutes } from './adapters/inbound/http/controllers/auth/routes'
 import { addressesRoutes } from './adapters/inbound/http/controllers/addresses/route'
 import { pagesRoutes } from './adapters/inbound/http/controllers/pages/routes'
-import { AdminRoutes } from './adapters/inbound/http/controllers/admin/route'
+import { adminRoutes } from './adapters/inbound/http/controllers/admin/route'
 
 export const app = fastify({
   logger:
@@ -59,7 +59,7 @@ registerRoutes(app, organizationsProfilesRoutes)
 registerRoutes(app, addressesRoutes)
 registerRoutes(app, pagesRoutes)
 registerRoutes(app, authRoutes)
-registerRoutes(app, AdminRoutes)
+registerRoutes(app, adminRoutes)
 
 app.get('/', (_, reply) => {
   return reply.send({
