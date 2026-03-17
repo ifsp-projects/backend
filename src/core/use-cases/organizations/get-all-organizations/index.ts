@@ -5,10 +5,10 @@ import { GetAllOrganizationsUseCaseReturn } from './types'
 export class GetAllOrganizationsUseCase {
   constructor(
     protected readonly organizationsRepository: OrganizationsRepository
-  ) {}
+  ) { }
 
-  execute = async (): Promise<GetAllOrganizationsUseCaseReturn> => {
-    const data = await this.organizationsRepository.getAllOrganizations()
+  execute = async (filters?: { name?: string }): Promise<GetAllOrganizationsUseCaseReturn> => {
+    const data = await this.organizationsRepository.getAllOrganizations(filters)
 
     if (!data) {
       throw new OrganizationDoesNotExistError()

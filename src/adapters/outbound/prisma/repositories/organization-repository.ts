@@ -65,8 +65,11 @@ export class OrganizationsRepository implements OrganizationInterface {
     })
   }
 
-  getAllOrganizations = async () => {
+  getAllOrganizations = async (filters?: { name?: string }) => {
     return await prisma.organization.findMany({
+      where: filters?.name
+        ? { organization_profile: { name: { contains: filters.name, mode: 'insensitive' } } }
+        : undefined,
       include: {
         organization_profile: true
       }

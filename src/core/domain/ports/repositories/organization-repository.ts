@@ -10,7 +10,7 @@ export interface OrganizationInterface {
   createOrganization: (
     payload: Prisma.OrganizationUncheckedCreateInput
   ) => Promise<Organization>
-  getAllOrganizations: () => Promise<Organization[]>
+  getAllOrganizations: (filters?: { name?: string }) => Promise<Organization[]>
   getOrganizationById: (
     id: string
   ) => Promise<OrganizationWithProfileInclude | null>

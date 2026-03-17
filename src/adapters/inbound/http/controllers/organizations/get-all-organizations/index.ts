@@ -2,6 +2,7 @@ import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { GetAllOrganizationsUseCase } from '@/core/use-cases/organizations/get-all-organizations'
+import { getAllOrganizationsQuerySchema } from './schema'
 
 export class GetAllOrganizationsController {
   private organizationRepository: OrganizationsRepository
@@ -14,7 +15,9 @@ export class GetAllOrganizationsController {
 
   @Route('GET', '/organizations')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const response = await this.useCase.execute()
+    const { name } = getAllOrganizationsQuerySchema.parse(request.query)
+
+    const response = await this.useCase.execute({ name })
 
     return reply.status(200).send(response)
   }
