@@ -1,4 +1,4 @@
-import { Organization, Prisma } from '@prisma-generated'
+import { OngCategory, Organization, Prisma } from '@prisma-generated'
 
 export type OrganizationWithProfileInclude = Prisma.OrganizationGetPayload<{
   include: {
@@ -10,7 +10,7 @@ export interface OrganizationInterface {
   createOrganization: (
     payload: Prisma.OrganizationUncheckedCreateInput
   ) => Promise<Organization>
-  getAllOrganizations: (filters?: { name?: string }) => Promise<Organization[]>
+  getAllOrganizations: (filters?: { name?: string; ong_type?: OngCategory }) => Promise<Organization[]>
   getOrganizationById: (
     id: string
   ) => Promise<OrganizationWithProfileInclude | null>

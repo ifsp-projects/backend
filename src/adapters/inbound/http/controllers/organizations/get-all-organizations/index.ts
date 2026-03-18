@@ -15,9 +15,9 @@ export class GetAllOrganizationsController {
 
   @Route('GET', '/organizations')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const { name } = getAllOrganizationsQuerySchema.parse(request.query)
+    const { name, ong_type } = getAllOrganizationsQuerySchema.parse(request.query)
 
-    const response = await this.useCase.execute({ name })
+    const response = await this.useCase.execute({ name, ong_type })
 
     return reply.status(200).send(response)
   }
