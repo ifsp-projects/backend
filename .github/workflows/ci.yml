@@ -41,4 +41,5 @@ jobs:
 
       - name: Run Build
         run: |
+          mv prisma.config.ts prisma.config.ts.bak
           pnpm run build

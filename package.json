@@ -36,11 +36,6 @@
     "uuid": "^13.0.0",
     "zod": "^4.1.12"
   },
-  "pnpm": {
-    "overrides": {
-      "zeptomatch": "1.2.2"
-    }
-  },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.3",
