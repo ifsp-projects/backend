@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api'
 
 import { NodeSDK } from '@opentelemetry/sdk-node'

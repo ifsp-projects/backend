@@ -14,8 +14,6 @@ import { addressesRoutes } from './adapters/inbound/http/controllers/addresses/r
 import { pagesRoutes } from './adapters/inbound/http/controllers/pages/routes'
 import { adminRoutes } from './adapters/inbound/http/controllers/admin/route'
 
-import './shared/infra/telemetry/otel'
-
 export const app = fastify({
   logger:
   process.env.NODE_ENV === 'production'
