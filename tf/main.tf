@@ -99,6 +99,7 @@ resource "google_compute_instance" "vm" {
     systemctl enable --now docker
     usermod -aG docker gcpuser
     mkdir -p /opt/otel
+    chown -R gcpuser:gcpuser /opt/otel
   EOF
 }
 
