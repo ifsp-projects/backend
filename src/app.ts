@@ -85,3 +85,7 @@ app.get('/health', (_, reply) => {
     status: 'healthy'
   })
 })
+
+app.get('/favicon.ico', (request, reply) => {
+  return reply.status(204).send()
+})
