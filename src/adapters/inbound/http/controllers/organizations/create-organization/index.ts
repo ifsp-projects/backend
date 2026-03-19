@@ -4,6 +4,7 @@ import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { createOrganizationBodySchema } from './schemas'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class CreateOrganizationController {
   private organizationRepository: OrganizationsRepository
@@ -17,6 +18,7 @@ export class CreateOrganizationController {
   @Route('POST', '/organizations', {
     middlewares: [verifyJWT]
   })
+  @Trace('organizations.create_organization')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

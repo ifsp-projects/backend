@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { createOrganizationProfileBodySchema } from './schemas'
 import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 import { CreateOrganizationProfileUseCase } from '@/core/use-cases/organizations-profiles/create-organization-profile'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class CreateOrganizationProfileController {
   private organizationProfileRepository: OrganizationsProfilesRepository
@@ -16,6 +17,7 @@ export class CreateOrganizationProfileController {
   }
 
   @Route('POST', '/organizations-profiles')
+  @Trace('organizations-profiles.create_organization_profile')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

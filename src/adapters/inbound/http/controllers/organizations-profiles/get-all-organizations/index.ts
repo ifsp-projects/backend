@@ -2,6 +2,7 @@ import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { GetAllOrganizationsProfilesUseCase } from '@/core/use-cases/organizations-profiles/get-all-organizations-profiles'
 import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class GetAllOrganizationsProfilesController {
   private organizationProfileRepository: OrganizationsProfilesRepository
@@ -15,6 +16,7 @@ export class GetAllOrganizationsProfilesController {
   }
 
   @Route('GET', '/organizations-profiles')
+  @Trace('organizations-profiles.get_all_organization_profiles')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const response = await this.useCase.execute()
 

@@ -4,6 +4,7 @@ import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { UpdateAddressUseCase } from '@/core/use-cases/addresses/update-address'
 import { updateAddressBodySchema, updateAddressParamsSchema } from './schemas'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class UpdateAddressController {
   private addressRepository: AddressesRepository
@@ -17,6 +18,7 @@ export class UpdateAddressController {
   @Route('PATCH', '/addresses/:id', {
     middlewares: [verifyJWT]
   })
+  @Trace('addresses.update_address')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

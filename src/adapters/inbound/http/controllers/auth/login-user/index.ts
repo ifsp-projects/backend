@@ -6,6 +6,7 @@ import { LoginUseCase } from '@/core/use-cases/auth/login-user'
 import { JwtService } from '@/shared/infra/auth/jwt'
 import { env } from '@/config/env'
 import { loginSchema } from './schema'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class LoginUserController {
   private authRepository: AuthRepository
@@ -27,6 +28,7 @@ export class LoginUserController {
   }
 
   @Route('POST', '/auth/sso/login')
+  @Trace('auth.sso_login')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

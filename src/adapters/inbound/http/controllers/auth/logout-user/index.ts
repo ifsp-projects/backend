@@ -4,6 +4,7 @@ import { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-rep
 import { logoutSchema } from './schema'
 import { LogoutUseCase } from '@/core/use-cases/auth/logout-user'
 import { verifyJWT } from '../../../middlewares/verify-jwt'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class LogoutUserController {
   private authRepository: AuthRepository
@@ -19,6 +20,7 @@ export class LogoutUserController {
   @Route('POST', '/auth/sso/logout', {
     middlewares: [verifyJWT]
   })
+  @Trace('auth.sso_logout')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

@@ -10,6 +10,10 @@ exporters:
   prometheus:
     endpoint: 0.0.0.0:8889
     send_timestamps: true
+  otlphttp/tempo: 
+    endpoint: http://tempo:4318
+    tls:
+      insecure: true
 
 processors:
   batch:
@@ -33,4 +37,4 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [debug]
+      exporters: [debug, otlphttp/tempo]

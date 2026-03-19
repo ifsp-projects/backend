@@ -3,6 +3,7 @@ import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { getOrganizationByEmailParamsSchema } from './schema'
 import { GetOrganizationByEmailUseCase } from '@/core/use-cases/organizations/get-organization-by-email'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class GetOrganizationByEmailController {
   private organizationRepository: OrganizationsRepository
@@ -16,6 +17,7 @@ export class GetOrganizationByEmailController {
   }
 
   @Route('GET', '/organizations/email/:email')
+  @Trace('organizations.get_organization_by_email')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { email } = getOrganizationByEmailParamsSchema.parse(request.params)
 

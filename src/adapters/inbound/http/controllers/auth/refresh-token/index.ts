@@ -3,6 +3,7 @@ import { BaseAuth } from '@/core/use-cases/auth/base'
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { verifyJWT } from '../../../middlewares/verify-jwt'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class RefreshTokenController extends BaseAuth {
   organizationsRepository = new OrganizationsRepository()
@@ -16,6 +17,7 @@ export class RefreshTokenController extends BaseAuth {
   @Route('POST', '/auth/social/refresh-token', {
     middlewares: [verifyJWT]
   })
+  @Trace('auth.social_refresh_token')
   async refreshToken(
     request: FastifyRequest,
     reply: FastifyReply

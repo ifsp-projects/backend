@@ -4,6 +4,7 @@ import { Route } from '../../../decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { validateInviteTokenParamsSchema } from './schema'
 import { ValidateInviteTokenUseCase } from '@/core/use-cases/admin/validate-invite-token'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class ValidateInviteTokenController {
   private adminRepository: AdminRepository
@@ -15,6 +16,7 @@ export class ValidateInviteTokenController {
   }
 
   @Route('GET', '/admin/invites/validate/:token')
+  @Trace('admin.validate_invite_token')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

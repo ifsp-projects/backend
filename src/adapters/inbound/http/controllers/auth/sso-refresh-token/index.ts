@@ -6,6 +6,7 @@ import { verifyJWT } from '../../../middlewares/verify-jwt'
 import { RefreshTokenUseCase } from '@/core/use-cases/auth/sso-refresh-token'
 import { JwtService } from '@/shared/infra/auth/jwt'
 import { env } from '@/config/env'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class SSORefreshTokenController {
   private authRepository: AuthRepository
@@ -23,6 +24,7 @@ export class SSORefreshTokenController {
   @Route('POST', '/auth/sso/refresh-token', {
     middlewares: [verifyJWT]
   })
+  @Trace('auth.sso_refresh_token')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

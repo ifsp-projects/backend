@@ -4,6 +4,7 @@ import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { DeleteAddressUseCase } from '@/core/use-cases/addresses/delete-address'
 import { deleteAddressParamsSchema } from './schemas'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class DeleteAddressController {
   private addressRepository: AddressesRepository
@@ -17,6 +18,7 @@ export class DeleteAddressController {
   @Route('DELETE', '/addresses/:id', {
     middlewares: [verifyJWT]
   })
+  @Trace('addresses.delete_address')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

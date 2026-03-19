@@ -4,6 +4,7 @@ import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { updatePageBodySchema, updatePageParamsSchema } from './schema'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class UpdatePageController {
   private pagesRepository: PagesRepository
@@ -17,6 +18,7 @@ export class UpdatePageController {
   @Route('PATCH', '/pages/:id', {
     middlewares: [verifyJWT]
   })
+  @Trace('pages.update_page')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { id } = updatePageParamsSchema.parse(request.params)
 

@@ -1,0 +1,61 @@
+services:
+  opentelemetry-collector:
+    hostname: opentelemetry-collector
+    image: otel/opentelemetry-collector:latest
+    command: [ "--config=/etc/otel-collector-config.yml", "--feature-gates=pkg.translator.prometheus.NormalizeName" ]
+    volumes:
+      - ./devops/otel/collector-config.dev.yaml:/etc/otel-collector-config.yml
+    restart: unless-stopped
+    environment:
+      - DEPLOY_ENV=dev
+    ports:
+      - "8888:8888" # Prometheus metrics exposed by the collector
+      - "8889:8889" # Prometheus exporter metrics
+      - "4317:4317" # OTLP gRPC receiver
+    depends_on:
+      - prometheus
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./devops/grafana/provisioning:/etc/grafana/provisioning
+      - ./data/grafana-data:/var/lib/grafana
+      - /etc/localtime:/etc/localtime:ro
+
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_INSTALL_PLUGINS=https://storage.googleapis.com/integration-artifacts/grafana-exploretraces-app/grafana-exploretraces-app-latest.zip;grafana-traces-app
+
+    links:
+      - opentelemetry-collector
+      - prometheus
+
+  tempo:
+    image: grafana/tempo:latest
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./devops/tempo/tempo.yaml:/etc/tempo.yaml
+      - ./data/tempo-data:/var/tempo
+    ports:
+      - "3200:3200"   # Tempo HTTP API
+      - "4318:4318"   # OTLP HTTP (for collector to push traces)
+
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - --config.file=/etc/prometheus.yaml
+      - --web.enable-remote-write-receiver
+      - --enable-feature=otlp-write-receiver
+      - --enable-feature=exemplar-storage
+      - --enable-feature=native-histograms
+    volumes:
+      - ./devops/grafana/prometheus.yaml:/etc/prometheus.yaml
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/prometheus-data:/prometheus
+    ports:
+      - "9090:9090"

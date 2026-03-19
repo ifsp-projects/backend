@@ -7,6 +7,7 @@ import {
   updateOrganizationParamsSchema
 } from './schema'
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class UpdateOrganizationController {
   private organizationRepository: OrganizationsRepository
@@ -20,6 +21,7 @@ export class UpdateOrganizationController {
   @Route('PATCH', '/organizations/:id', {
     middlewares: [verifyJWT]
   })
+  @Trace('organizations.update_organization')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { id } = updateOrganizationParamsSchema.parse(request.params)
 

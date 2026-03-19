@@ -3,6 +3,7 @@ import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { getOrganizationBySlugParamsSchema } from './schema'
 import { GetOrganizationBySlugUseCase } from '@/core/use-cases/organizations/get-organization-by-slug'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class GetOrganizationBySlugController {
   private organizationRepository: OrganizationsRepository
@@ -14,6 +15,7 @@ export class GetOrganizationBySlugController {
   }
 
   @Route('GET', '/organizations/slug/:slug')
+  @Trace('organizations.get_organization_by_slug')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { slug } = getOrganizationBySlugParamsSchema.parse(request.params)
 

@@ -4,6 +4,7 @@ import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { GetAdddressByIdUseCase } from '@/core/use-cases/addresses/get-address-by-id'
 import { getAddressByIdParamsSchema } from './schemas'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class GetAddressByIdController {
   private addressRepository: AddressesRepository
@@ -17,6 +18,7 @@ export class GetAddressByIdController {
   @Route('GET', '/addresses/:id', {
     middlewares: [verifyJWT]
   })
+  @Trace('addresses.get_address_by_id')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

@@ -3,6 +3,7 @@ import { Route } from '../../../decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { useInviteTokenBodySchema } from './schema'
 import { UseInviteTokenUseCase } from '@/core/use-cases/admin/use-invite-token'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class UseInviteTokenController {
   private adminRepository: AdminRepository
@@ -14,6 +15,7 @@ export class UseInviteTokenController {
   }
 
   @Route('POST', '/admin/invites/token')
+  @Trace('admin.use_invite_token')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

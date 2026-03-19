@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { getOrganizationByEmailParamsSchema } from './schema'
 import { GetOrganizationProfileBySlugUseCase } from '@/core/use-cases/organizations-profiles/get-organization-profile-by-slug'
 import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class GetOrganizationProfileByEmailController {
   private organizationProfileRepository: OrganizationsProfilesRepository
@@ -16,6 +17,7 @@ export class GetOrganizationProfileByEmailController {
   }
 
   @Route('GET', '/organizations-profiles/email/:email')
+  @Trace('organizations-profiles.get_organization_profile_by_email')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { email } = getOrganizationByEmailParamsSchema.parse(request.params)
 

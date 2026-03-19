@@ -6,6 +6,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { createAndSendInviteBodySchema } from './schema'
 import { ResendRepository } from '@/shared/infra/email/resend'
 import { SendInviteUseCase } from '@/core/use-cases/email/send-invite'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class CreateAndSendInviteController {
   private adminRepository: AdminRepository
@@ -30,6 +31,7 @@ export class CreateAndSendInviteController {
   @Route('POST', '/admin/invites', {
     middlewares: [verifyJWT]
   })
+  @Trace('admin.create_and_send_invite')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply
