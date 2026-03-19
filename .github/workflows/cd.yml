@@ -135,7 +135,7 @@ jobs:
               --cpus 0.15 \
               -p 127.0.0.1:4317:4317 \
               -p 127.0.0.1:4318:4318 \
-              -v /opt/otel/collector-config.prod.yaml:/etc/otelcol-contrib/config.yaml:ro \ 
+              -v /opt/otel/collector-config.prod.yaml:/etc/otelcol-contrib/config.yaml:ro \
               -e GRAFANA_CLOUD_OTLP_ENDPOINT="$GRAFANA_CLOUD_OTLP_ENDPOINT" \
               -e GRAFANA_CLOUD_AUTH="$GRAFANA_CLOUD_AUTH" \
               otel/opentelemetry-collector-contrib:0.96.0
