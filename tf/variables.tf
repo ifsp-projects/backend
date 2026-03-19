@@ -7,7 +7,7 @@ variable "region" {
 }
 
 variable "zone" {
-  default = "us-east1-c"
+  default = "us-east1-d"
 }
 
 variable "ssh_public_key" {
