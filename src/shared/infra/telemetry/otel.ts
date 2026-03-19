@@ -61,6 +61,15 @@ const sdk = new NodeSDK({
       '@opentelemetry/instrumentation-http': {
         ignoreIncomingRequestHook: req =>
           ['/health', '/favicon.ico'].some(p => req.url?.startsWith(p))
+      },
+      '@opentelemetry/instrumentation-grpc': {
+        enabled: false
+      },
+      '@opentelemetry/instrumentation-fs': {
+        enabled: false
+      },
+      '@opentelemetry/instrumentation-dns': {
+        enabled: false
       }
     }),
     fastifyOtelInstrumentation
