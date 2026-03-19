@@ -81,6 +81,16 @@ jobs:
           source: ".env"
           target: "/home/gcpuser/app"
 
+      - name: Copy OTel config to VM
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ env.VM_HOST }}
+          username: gcpuser
+          key: ${{ secrets.VM_SSH_KEY }}
+          source: "devops/otel/collector-config.prod.yaml"
+          target: "/opt/otel"
+          strip_components: 2
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@master
         env:
@@ -89,27 +99,43 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           CONTAINER_NAME: api-ifsp
           REGION: ${{ env.REGION }}
+          GRAFANA_CLOUD_OTLP_ENDPOINT: ${{ secrets.GRAFANA_CLOUD_OTLP_ENDPOINT }}
+          GRAFANA_CLOUD_AUTH: ${{ secrets.GRAFANA_CLOUD_AUTH }}
         with:
           host: ${{ env.VM_HOST }}
           username: gcpuser
           key: ${{ secrets.VM_SSH_KEY }}
-          envs: REGISTRY_URL,IMAGE_REPOSITORY,IMAGE_TAG,CONTAINER_NAME,REGION
+          envs: REGISTRY_URL,IMAGE_REPOSITORY,IMAGE_TAG,CONTAINER_NAME,REGION,GRAFANA_CLOUD_OTLP_ENDPOINT,GRAFANA_CLOUD_AUTH
           script: |
             until sudo docker info >/dev/null 2>&1; do sleep 3; done
 
             TOKEN=$(curl -sf "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" \
               -H "Metadata-Flavor: Google" | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
-
             echo $TOKEN | sudo docker login -u oauth2accesstoken --password-stdin https://$REGION-docker.pkg.dev
 
+            sudo docker network create observability 2>/dev/null || true
+
+            sudo docker rm -f otel-collector 2>/dev/null || true
+            sudo docker run -d \
+              --name otel-collector \
+              --restart always \
+              --network observability \
+              --memory 128m \
+              --cpus 0.15 \
+              -p 127.0.0.1:4317:4317 \
+              -p 127.0.0.1:4318:4318 \
+              -v /opt/otel/collector-config.prod.yaml:/etc/otelcol-contrib/config.yaml:ro \ 
+              -e GRAFANA_CLOUD_OTLP_ENDPOINT="$GRAFANA_CLOUD_OTLP_ENDPOINT" \
+              -e GRAFANA_CLOUD_AUTH="$GRAFANA_CLOUD_AUTH" \
+              otel/opentelemetry-collector-contrib:0.96.0
+
             sudo docker pull $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG
-
             sudo docker stop $CONTAINER_NAME 2>/dev/null || true
-            sudo docker rm $CONTAINER_NAME 2>/dev/null || true
-
+            sudo docker rm   $CONTAINER_NAME 2>/dev/null || true
             sudo docker run -d \
               --name $CONTAINER_NAME \
               --restart unless-stopped \
+              --network observability \
               --env-file /home/gcpuser/app/.env \
               -p 80:8000 \
               $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG

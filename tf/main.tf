@@ -98,6 +98,7 @@ resource "google_compute_instance" "vm" {
     apt-get install -y docker.io
     systemctl enable --now docker
     usermod -aG docker gcpuser
+    mkdir -p /opt/otel
   EOF
 }
 
