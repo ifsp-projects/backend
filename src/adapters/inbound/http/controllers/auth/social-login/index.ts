@@ -4,6 +4,7 @@ import { socialLoginBodySchema } from './schemas'
 import { BaseAuth } from '@/core/use-cases/auth/base'
 import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import { SocialLoginUseCase } from '@/core/use-cases/auth/social-login'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class SocialLoginController extends BaseAuth {
   private useCase: SocialLoginUseCase
@@ -17,6 +18,7 @@ export class SocialLoginController extends BaseAuth {
   }
 
   @Route('POST', '/auth/social')
+  @Trace('auth.social_login')
   async sociaLogin(
     request: FastifyRequest,
     reply: FastifyReply

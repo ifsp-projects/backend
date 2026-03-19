@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { getPageBySlugParamsSchema } from './schema'
 import { GetPageBySlugUseCase } from '@/core/use-cases/pages/get-page-by-slug'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class GetPageBySlugController {
   private pagesRepository: PagesRepository
@@ -14,6 +15,7 @@ export class GetPageBySlugController {
   }
 
   @Route('GET', '/pages/slug/:slug')
+  @Trace('pages.get_page_by_slug')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { slug } = getPageBySlugParamsSchema.parse(request.params)
 

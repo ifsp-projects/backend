@@ -7,6 +7,7 @@ import { env } from '@/config/env'
 import { changePasswordBodySchema } from './schema'
 import { ResetPasswordAndLoginUseCase } from '@/core/use-cases/auth/change-password'
 import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class ChangePasswordController {
   private authRepository: AuthRepository
@@ -31,6 +32,7 @@ export class ChangePasswordController {
   }
 
   @Route('POST', '/auth/sso/reset-password')
+  @Trace('auth.sso_change_password')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

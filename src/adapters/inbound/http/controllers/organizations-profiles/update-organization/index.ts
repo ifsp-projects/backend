@@ -8,6 +8,7 @@ import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 import { UpdateOrganizationProfileUseCase } from '@/core/use-cases/organizations-profiles/update-organization-profile'
 import { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class UpdateOrganizationProfileController {
   private organizationProfileRepository: OrganizationsProfilesRepository
@@ -26,6 +27,7 @@ export class UpdateOrganizationProfileController {
   @Route('PATCH', '/organizations-profiles/:id', {
     middlewares: [verifyJWT]
   })
+  @Trace('organizations-profiles.update_organization_profile')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { id } = updateOrganizationParamsSchema.parse(request.params)
 

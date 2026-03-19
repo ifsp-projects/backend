@@ -4,6 +4,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import { DeleteOrganizationUseCase } from '@/core/use-cases/organizations/delete-organization'
 import { deleteOrganizationParamsSchema } from './schema'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class DeleteOrganizationController {
   private organizationRepository: OrganizationsRepository
@@ -17,6 +18,7 @@ export class DeleteOrganizationController {
   @Route('DELETE', '/organizations/:id', {
     middlewares: [verifyJWT]
   })
+  @Trace('organizations.delete_organization')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { id } = deleteOrganizationParamsSchema.parse(request.params)
 

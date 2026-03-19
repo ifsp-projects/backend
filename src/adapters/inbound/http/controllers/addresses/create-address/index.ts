@@ -3,6 +3,7 @@ import { CreateAddressUseCase } from '@/core/use-cases/addresses/create-address'
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { createAddressBodySchema } from './schemas'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class CreateAddressController {
   private addressRepository: AddressesRepository
@@ -14,6 +15,7 @@ export class CreateAddressController {
   }
 
   @Route('POST', '/addresses')
+  @Trace('addresses.create_address')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

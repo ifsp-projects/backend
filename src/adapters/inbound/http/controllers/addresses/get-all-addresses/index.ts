@@ -3,6 +3,7 @@ import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { GetAllAddressesUseCase } from '@/core/use-cases/addresses/get-all-addresses'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class GetAllAddressesController {
   private addressRepository: AddressesRepository
@@ -16,6 +17,7 @@ export class GetAllAddressesController {
   @Route('GET', '/addresses', {
     middlewares: [verifyJWT]
   })
+  @Trace('addresses.get_all_addresses')
   protected async execute(
     request: FastifyRequest,
     reply: FastifyReply

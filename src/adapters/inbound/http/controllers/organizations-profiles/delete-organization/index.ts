@@ -4,6 +4,7 @@ import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import { deleteOrganizationProfileParamsSchema } from './schema'
 import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 import { DeleteOrganizationProfileUseCase } from '@/core/use-cases/organizations-profiles/delete-organization-profile'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class DeleteOrganizationprofileController {
   private organizationProfileRepository: OrganizationsProfilesRepository
@@ -19,6 +20,7 @@ export class DeleteOrganizationprofileController {
   @Route('DELETE', '/organizations-profiles/:id', {
     middlewares: [verifyJWT]
   })
+  @Trace('organizations-profiles.delete_organization_profile')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { id } = deleteOrganizationProfileParamsSchema.parse(request.params)
 

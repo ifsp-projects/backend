@@ -4,6 +4,7 @@ import { Route } from '../../../decorators/route-decorator'
 import { verifyJWT } from '../../../middlewares/verify-jwt'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { cancelPendingInviteParamsSchema } from './schema'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class CancelPendingInviteController {
   private adminRepository: AdminRepository
@@ -17,6 +18,7 @@ export class CancelPendingInviteController {
   @Route('DELETE', '/admin/invites/:id', {
     middlewares: [verifyJWT]
   })
+  @Trace('admin.cancel_pending_invite')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { id } = cancelPendingInviteParamsSchema.parse(request.params)
 

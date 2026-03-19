@@ -3,6 +3,7 @@ import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { GetOrganizationByIdUseCase } from '@/core/use-cases/organizations/get-organization-by-id'
 import { getOrganizationByIdParamsSchema } from './schema'
+import { Trace } from '../../../decorators/trace-decorator'
 
 export class GetOrganizationByIdController {
   private organizationRepository: OrganizationsRepository
@@ -14,6 +15,7 @@ export class GetOrganizationByIdController {
   }
 
   @Route('GET', '/organizations/:id')
+  @Trace('organizations.get_organization_by_id')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { id } = getOrganizationByIdParamsSchema.parse(request.params)
 

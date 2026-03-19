@@ -1,5 +1,9 @@
 import 'dotenv/config'
 
+import { resourceFromAttributes } from '@opentelemetry/resources'
+
+import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions'
+
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api'
 
 import { NodeSDK } from '@opentelemetry/sdk-node'
@@ -14,7 +18,19 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc'
 
 import { CompressionAlgorithm } from '@opentelemetry/otlp-exporter-base'
 
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ERROR)
+const isDev = process.env.NODE_ENV !== 'production'
+
+diag.setLogger(
+  new DiagConsoleLogger(),
+  isDev ? DiagLogLevel.WARN : DiagLogLevel.ERROR
+)
+
+if (!process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT) {
+  console.warn(
+    'OpenTelemetry: no endpoint configured, skipping SDK initialization'
+  )
+  process.exit(0)
+}
 
 const metricExporter = new OTLPMetricExporter({
   url: process.env.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT,
@@ -28,8 +44,9 @@ const traceExporter = new OTLPTraceExporter({
 
 const metricReader = new PeriodicExportingMetricReader({
   exporter: metricExporter,
-  exportIntervalMillis: Number(process.env.OTEL_METRIC_EXPORT_INTERVAL),
-  exportTimeoutMillis: Number(process.env.OTEL_METRIC_EXPORT_TIMEOUT)
+  exportIntervalMillis:
+    Number(process.env.OTEL_METRIC_EXPORT_INTERVAL) || 30000,
+  exportTimeoutMillis: Number(process.env.OTEL_METRIC_EXPORT_TIMEOUT) || 10000
 })
 
 const fastifyOtelInstrumentation = new FastifyOtelInstrumentation({
@@ -40,9 +57,18 @@ const sdk = new NodeSDK({
   metricReader,
   traceExporter,
   instrumentations: [
-    getNodeAutoInstrumentations({}),
+    getNodeAutoInstrumentations({
+      '@opentelemetry/instrumentation-http': {
+        ignoreIncomingRequestHook: req =>
+          ['/health'].some(p => req.url?.startsWith(p))
+      }
+    }),
     fastifyOtelInstrumentation
-  ]
+  ],
+  resource: resourceFromAttributes({
+    [ATTR_SERVICE_NAME]: 'capivara-solidaria-api',
+    'deployment.environment': process.env.NODE_ENV ?? 'development'
+  })
 })
 
 const shutdown = async () => {

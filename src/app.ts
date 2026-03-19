@@ -16,9 +16,27 @@ import { adminRoutes } from './adapters/inbound/http/controllers/admin/route'
 
 export const app = fastify({
   logger:
-  process.env.NODE_ENV === 'production'
-    ? { level: 'info' }
-    : { transport: { target: 'pino-pretty' } },
+    process.env.NODE_ENV === 'production'
+      ? {
+          level: 'info',
+          transport: {
+            target: 'pino-opentelemetry-transport'
+          }
+        }
+      : {
+          level: 'debug',
+          transport: {
+            targets: [{
+                target: 'pino-pretty',
+                options: {
+                  colorize: true,
+                  translateTime: 'HH:MM:ss',
+                  ignore: 'pid,hostname'
+                }
+              }
+            ]
+          }
+        },
   connectionTimeout: 600000, // 10 minutes
   keepAliveTimeout: 605000, // 10 minutes + 5 seconds buffer
   requestTimeout: 600000 // 10 minutes for the entire request
@@ -61,7 +79,7 @@ registerRoutes(app, pagesRoutes)
 registerRoutes(app, authRoutes)
 registerRoutes(app, adminRoutes)
 
-app.get('/', (_, reply) => {
+app.get('/health', (_, reply) => {
   return reply.send({
     name: 'ifsp-project-api',
     status: 'healthy'
