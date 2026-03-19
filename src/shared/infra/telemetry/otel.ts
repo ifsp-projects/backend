@@ -60,7 +60,16 @@ const sdk = new NodeSDK({
     getNodeAutoInstrumentations({
       '@opentelemetry/instrumentation-http': {
         ignoreIncomingRequestHook: req =>
-          ['/health'].some(p => req.url?.startsWith(p))
+          ['/health', '/favicon.ico'].some(p => req.url?.startsWith(p))
+      },
+      '@opentelemetry/instrumentation-grpc': {
+        enabled: false
+      },
+      '@opentelemetry/instrumentation-fs': {
+        enabled: false
+      },
+      '@opentelemetry/instrumentation-dns': {
+        enabled: false
       }
     }),
     fastifyOtelInstrumentation
