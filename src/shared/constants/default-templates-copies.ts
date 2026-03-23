@@ -4,7 +4,10 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
     title: 'Get paid early save automatically everything your pay',
     description:
       'Supports small businesses with simple invoicing powerfull integrations and cash fdlow management tools',
-    anchor: 'Quero saber mais',
+    anchor: {
+      label: 'Quero saber mais',
+      href: '#'
+    },
     heroImage: '/templates/undraw_different-love_58hd.svg'
   },
   ourMission: {
@@ -100,7 +103,10 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
     ]
   },
   faq: {
-    anchor: 'Entrar em contato',
+    anchor: {
+      label: 'Entrar em contato',
+      href: '#'
+    },
     questions: [
       {
         title: 'Como a ONG utiliza as doações?',
@@ -137,7 +143,10 @@ export const SECONDARY_TEMPLATE_DEFAULT_COPIES = {
     title: 'Juntos podemos construir um futuro mais justo e solidário',
     description:
       'Somos uma organização sem fins lucrativos dedicada a levar dignidade, educação e oportunidades para comunidades vulneráveis em todo o Brasil.',
-    anchor: 'Conheça nossa história',
+    anchor: {
+      label: 'Conheça nossa história',
+      href: '#'
+    },
     button: 'Quero contribuir'
   },
   aboutUs: {
@@ -175,7 +184,10 @@ export const SECONDARY_TEMPLATE_DEFAULT_COPIES = {
     description:
       'Nosso processo é simples e transparente: você doa, nós direcionamos os recursos para os projetos certos e você acompanha o impacto gerado em tempo real.',
     heroImage: '/templates/undraw_how-it-works.svg',
-    anchor: 'Ver projetos ativos'
+    anchor: {
+      label: 'Ver projetos ativos',
+      href: '#'
+    }
   },
   imagesGrid: {
     title: 'Nossa história contada em imagens',
@@ -208,7 +220,10 @@ export const SECONDARY_TEMPLATE_DEFAULT_COPIES = {
     ]
   },
   faq: {
-    anchor: 'Falar com a equipe',
+    anchor: {
+      label: 'Falar com a equipe',
+      href: '#'
+    },
     questions: [
       {
         title: 'Como as doações são utilizadas?',
@@ -251,7 +266,10 @@ export const TERTIARY_TEMPLATE_DEFAULT_COPIES = {
     decoratedText: 'solidariedade real',
     description:
       'Conectamos pessoas que querem ajudar com comunidades que precisam de apoio. Sem burocracia, sem intermediários — só impacto direto e transparente.',
-    anchor: 'Conheça nossa história',
+    anchor: {
+      label: 'Conheça nossa história',
+      href: '#'
+    },
     button: 'Quero contribuir',
     image: '/templates/undraw_different-love_58hd.svg'
   },
@@ -316,7 +334,10 @@ export const TERTIARY_TEMPLATE_DEFAULT_COPIES = {
           'Identificamos famílias e comunidades em situação de vulnerabilidade por meio de parcerias com lideranças locais.'
       }
     ],
-    anchor: 'Ver projetos ativos'
+    anchor: {
+      label: 'Ver projetos ativos',
+      href: '#'
+    }
   },
   initiatives: {
     label: 'Projetos ativos',
@@ -424,7 +445,10 @@ export const TERTIARY_TEMPLATE_DEFAULT_COPIES = {
     ]
   },
   faq: {
-    anchor: 'Falar com a equipe',
+    anchor: {
+      label: 'Falar com a equipe',
+      href: '#'
+    },
     questions: [
       {
         title: 'Como as doações são utilizadas?',
@@ -467,8 +491,12 @@ export const QUATERNARY_TEMPLATE_DEFAULT_COPIES = {
     decoratedTitle: 'nós chegamos.',
     description:
       'Somos uma rede de voluntários e profissionais que atua nas lacunas deixadas pela ausência de políticas públicas. Diretos, presentes e sem burocracia.',
-    anchor: 'Conheça nossa história',
+    anchor: {
+      label: 'Conheça nossa história',
+      href: '#'
+    },
     button: 'Quero ajudar',
+    heroImage: '/templates/undraw_different-love_58hd.svg',
     stats: [
       {
         title: '500+',
@@ -560,7 +588,10 @@ export const QUATERNARY_TEMPLATE_DEFAULT_COPIES = {
         span: '12 cidades'
       }
     ],
-    anchor: '#envolver',
+    anchor: {
+      label: 'Quero participar',
+      href: '#'
+    },
     anchorTitle: 'Fazer parte da história'
   },
   getInvolved: {
@@ -596,10 +627,16 @@ export const QUATERNARY_TEMPLATE_DEFAULT_COPIES = {
     ],
     anchorText:
       'Precisamos de 15 voluntários para o mutirão de saúde em abril.',
-    anchor: 'Garantir minha vaga'
+    anchor: {
+      label: 'Garantir minha vaga',
+      href: '#'
+    }
   },
   faq: {
-    anchor: 'Entrar em contato',
+    anchor: {
+      label: 'Entrar em contato',
+      href: '#'
+    },
     questions: [
       {
         title: 'Como as doações são utilizadas?',
