@@ -32,7 +32,7 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
   },
   details: {
     label: 'Future Payment',
-    title: 'Experiencia que cria valor para todos',
+    title: 'Experiência que cria valor para todos',
     tabs: [
       {
         icon: 'people-group',
