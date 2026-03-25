@@ -39,14 +39,15 @@ export abstract class BaseAuth {
   }
 
   protected async getOrCreateUser(email: string) {
-    let organization =
+    const organization =
       await this.organizationsRepository.getOrganizationByEmail(email)
 
     if (!organization) {
-      const organization =
-        await this.organizationsRepository.createOrganization({ email })
+      return await this.organizationsRepository.createOrganization({
+        email
+      })
     }
 
-    if (organization) return organization
+    return organization
   }
 }
