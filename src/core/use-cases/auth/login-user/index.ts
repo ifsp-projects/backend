@@ -11,7 +11,7 @@ export class LoginUseCase {
     private readonly authRepository: AuthRepository,
     private readonly organizationsRepository: OrganizationsRepository,
     private readonly jwtService: JwtService
-  ) {}
+  ) { }
 
   async execute({
     email,
@@ -28,6 +28,7 @@ export class LoginUseCase {
       this.jwtService.createToken(
         organization.id,
         organization.email,
+        organization.role,
         Duration.minutes(15)
       )
 
@@ -35,6 +36,7 @@ export class LoginUseCase {
       this.jwtService.createToken(
         organization.id,
         organization.email,
+        organization.role,
         Duration.days(7)
       )
 
@@ -53,7 +55,8 @@ export class LoginUseCase {
       refresh_token_expires_at: new Date(refresh_claims.exp * 1000),
       organization: {
         name: organization?.organization_profile?.name || '',
-        email: organization.email
+        email: organization.email,
+        role: organization?.role
       }
     }
   }

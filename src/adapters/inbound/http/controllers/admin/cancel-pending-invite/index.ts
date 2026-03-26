@@ -1,10 +1,10 @@
 import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
 import { CancelPendingInviteUseCase } from '@/core/use-cases/admin/cancel-pending-invite'
 import { Route } from '../../../decorators/route-decorator'
-import { verifyJWT } from '../../../middlewares/verify-jwt'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { cancelPendingInviteParamsSchema } from './schema'
 import { Trace } from '../../../decorators/trace-decorator'
+import { verifyAdmin } from '../../../middlewares/verify-admin'
 
 export class CancelPendingInviteController {
   private adminRepository: AdminRepository
@@ -16,7 +16,7 @@ export class CancelPendingInviteController {
   }
 
   @Route('DELETE', '/admin/invites/:id', {
-    middlewares: [verifyJWT]
+    middlewares: [verifyAdmin]
   })
   @Trace('admin.cancel_pending_invite')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {

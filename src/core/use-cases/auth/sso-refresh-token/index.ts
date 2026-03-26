@@ -10,7 +10,7 @@ export class RefreshTokenUseCase {
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly jwtService: JwtService
-  ) {}
+  ) { }
 
   async execute({
     refresh_token
@@ -35,6 +35,7 @@ export class RefreshTokenUseCase {
       this.jwtService.createToken(
         refresh_claims.id,
         refresh_claims.email,
+        refresh_claims.role,
         Duration.minutes(15)
       )
 

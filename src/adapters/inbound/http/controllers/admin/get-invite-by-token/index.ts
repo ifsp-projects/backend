@@ -1,10 +1,10 @@
 import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
-import { verifyJWT } from '../../../middlewares/verify-jwt'
 import { Route } from '../../../decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { getInviteByTokenParamsSchema } from './schema'
 import { GetInviteByTokenUseCase } from '@/core/use-cases/admin/get-invite-by-token'
 import { Trace } from '../../../decorators/trace-decorator'
+import { verifyAdmin } from '../../../middlewares/verify-admin'
 
 export class GetInviteByTokenController {
   private adminRepository: AdminRepository
@@ -15,7 +15,9 @@ export class GetInviteByTokenController {
     this.useCase = new GetInviteByTokenUseCase(this.adminRepository)
   }
 
-  @Route('GET', '/admin/invites/:token/token')
+  @Route('GET', '/admin/invites/:token/token', {
+    middlewares: [verifyAdmin]
+  })
   @Trace('admin.get_invite_by_token')
   protected async execute(
     request: FastifyRequest,

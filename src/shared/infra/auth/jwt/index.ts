@@ -10,6 +10,7 @@ export class JwtService {
   createToken(
     id: string,
     email: string,
+    role: string,
     durationMs: number
   ): CreateTokenResult {
     const jti = randomUUID()
@@ -21,6 +22,7 @@ export class JwtService {
       email,
       jti,
       sub: email,
+      role: role,
       iat: now,
       exp
     }

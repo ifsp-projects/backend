@@ -22,9 +22,8 @@ enum OngCategory {
 }
 
 enum UserRoleEnum {
-  super_admin
+  member
   admin
-  editor
 }
 
 enum AccountStatus {
@@ -33,13 +32,14 @@ enum AccountStatus {
 }
 
 model Organization {
-  id          String    @id @default(uuid())
-  email       String    @unique
-  password    String    @default("p@ssw0rd")
-  updated_at  DateTime  @updatedAt
-  created_at  DateTime  @default(now())
+  id          String       @id @default(uuid())
+  email       String       @unique
+  password    String       @default("p@ssw0rd")
+  updated_at  DateTime     @updatedAt
+  created_at  DateTime     @default(now())
   deleted_at  DateTime?
-  is_user_new Boolean   @default(true)
+  is_user_new Boolean      @default(true)
+  role        UserRoleEnum @default(member)
 
   account_status AccountStatus @default(inactive)
 
