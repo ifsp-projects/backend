@@ -1,9 +1,9 @@
 export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
   header: {
     span: 'Projeto sem fins lucrativos',
-    title: 'Get paid early save automatically everything your pay',
+    title: 'Pequenos gestos que geram grandes mudanças no mundo.',
     description:
-      'Supports small businesses with simple invoicing powerfull integrations and cash fdlow management tools',
+      'Fundada com o propósito de impactar positivamente a sociedade, nossa instituição desenvolve projetos focados na transparência e na eficácia.',
     anchor: {
       label: 'Quero saber mais',
       href: '#'
@@ -11,10 +11,10 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
     heroImage: '/templates/undraw_different-love_58hd.svg'
   },
   ourMission: {
-    subtitle: 'Our mission',
-    title: "We've helped innovative companies",
+    subtitle: 'Nossa missão',
+    title: "Nós ajudamos a comunidade local",
     description:
-      'Hundreds of all sizes and across all industries have made a big improvements with us',
+      'Centenas de pessoas foram ajudadas significativamente com nossa ajuda',
     tabs: [
       {
         title: '+500',
@@ -32,23 +32,23 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
   },
   details: {
     label: 'Future Payment',
-    title: 'Experience that grows with your scale',
+    title: 'Experiência que cria valor para todos',
     tabs: [
       {
         icon: 'people-group',
-        title: 'Free transfers',
+        title: 'Objetivos claros',
         description:
           "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy"
       },
       {
         icon: 'people-group',
-        title: 'Free transfers',
+        title: 'Transparência total',
         description:
           "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy"
       },
       {
         icon: 'people-group',
-        title: 'Free transfers',
+        title: 'Impacto real',
         description:
           "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy"
       }
@@ -60,9 +60,9 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
       'Confira algumas imagens do nosso das ações projeto com a sociedade'
   },
   moreInfoAbout: {
-    title: 'Crie o perfil da sua ONG',
+    title: 'Historias reais de quem ajuda e de quem é ajudado',
     description:
-      'Cadastre sua organização de forma simples e gratuita. Adicione informações sobre sua missão, história e projetos para que mais pessoas conheçam e confiem no seu trabalho social.',
+      'Cada história aqui é de uma pessoa real, com nome, cidade e uma história que nos move a continuar todos os dias. ',
     heroImage:
       'https://images.ctfassets.net/kftzwdyauwt9/IPgFYDUMeUtWcg2ze2IsP/118ea87d54734ef3f49b432ee2a35b56/DALL_E_2024-07-17_16.25.57_-_Close-up_of_soft_pink_flower_petals_with_a_gentle_motion_blur_on_a_light_lavender_background__c.png?w=3840&q=90&fm=webp'
   },
@@ -72,7 +72,17 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
     cards: [
       {
         content:
-          'Me ajudou muito em conseguir a minha AWP safari mesh que sempre sonhei',
+          'Obrigado por tudo que fizeram por mim e minha família.',
+        author: {
+          image:
+            'https://sb.kaleidousercontent.com/67418/1920x1545/c5f15ac173/samuel-raita-ridxdghg7pw-unsplash.jpg',
+          name: 'Getulio dos Santos',
+          city: 'Capivari, SP'
+        }
+      },
+      {
+        content:
+          'Obrigado por tudo que fizeram por mim e minha família.',
         author: {
           image:
             'https://sb.kaleidousercontent.com/67418/1920x1545/c5f15ac173/samuel-raita-ridxdghg7pw-unsplash.jpg',
@@ -82,17 +92,7 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
       },
       {
         content:
-          'Me ajudou muito em conseguir a minha AWP safari mesh que sempre sonhei',
-        author: {
-          image:
-            'https://sb.kaleidousercontent.com/67418/1920x1545/c5f15ac173/samuel-raita-ridxdghg7pw-unsplash.jpg',
-          name: 'Getulio Aparecido dos Santos',
-          city: 'Capivari, SP'
-        }
-      },
-      {
-        content:
-          'Me ajudou muito em conseguir a minha AWP safari mesh que sempre sonhei',
+          'Obrigado por tudo que fizeram por mim e minha família.',
         author: {
           image:
             'https://sb.kaleidousercontent.com/67418/1920x1545/c5f15ac173/samuel-raita-ridxdghg7pw-unsplash.jpg',
