@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "pnpm exec prisma generate --schema ./prisma/schema && tsup src --out-dir dist --sourcemap inline",
-    "dev": "ts-node-dev --respawn -r tsconfig-paths/register src/server.ts",
+    "dev": "ts-node-dev --respawn -r tsconfig-paths/register --compiler-options {\\\"module\\\":\\\"CommonJS\\\",\\\"moduleResolution\\\":\\\"node\\\"} src/server.ts",
     "start": "node -r tsconfig-paths/register dist/server.js",
     "prisma:migrate": "prisma migrate dev --schema ./prisma/schema",
     "prisma:push": "prisma db push --schema ./prisma/schema"

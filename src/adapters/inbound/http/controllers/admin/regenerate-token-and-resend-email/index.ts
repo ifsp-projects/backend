@@ -1,11 +1,11 @@
 import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
 
 import { Route } from '../../../decorators/route-decorator'
-import { verifyJWT } from '../../../middlewares/verify-jwt'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { regenerateTokenAndResendParamsSchema } from './schema'
 import { RegenerateInviteTokenUseCase } from '@/core/use-cases/admin/regenerate-token-and-resend-email'
 import { Trace } from '../../../decorators/trace-decorator'
+import { verifyAdmin } from '../../../middlewares/verify-admin'
 
 export class RegenerateAndResendInviteController {
   private adminRepository: AdminRepository
@@ -17,7 +17,7 @@ export class RegenerateAndResendInviteController {
   }
 
   @Route('POST', '/admin/invites/:id/resend', {
-    middlewares: [verifyJWT]
+    middlewares: [verifyAdmin]
   })
   @Trace('admin.regenerate_token_and_resend_email')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {

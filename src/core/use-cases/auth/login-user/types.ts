@@ -12,5 +12,6 @@ export interface LoginUserUseCaseReturn {
   organization: {
     name: string
     email: string
+    role: string
   }
 }

@@ -22,7 +22,7 @@ export class ResetPasswordAndLoginUseCase {
     private readonly organizationsRepository: OrganizationsRepository,
     private readonly adminRepository: AdminRepository,
     private readonly jwtService: JwtService
-  ) {}
+  ) { }
 
   async execute({ invite_token, new_password }: Input): Promise<null> {
     const invite = await this.adminRepository.getInviteByToken(invite_token)
@@ -49,6 +49,7 @@ export class ResetPasswordAndLoginUseCase {
       this.jwtService.createToken(
         organization.id,
         organization.email,
+        organization.role,
         Duration.minutes(15)
       )
 
@@ -56,6 +57,7 @@ export class ResetPasswordAndLoginUseCase {
       this.jwtService.createToken(
         organization.id,
         organization.email,
+        organization.role,
         Duration.days(7)
       )
 

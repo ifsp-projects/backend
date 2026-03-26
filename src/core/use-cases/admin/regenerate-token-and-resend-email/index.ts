@@ -23,6 +23,10 @@ export class RegenerateInviteTokenUseCase {
       id
     )
 
+    if (!refreshedToken) {
+      throw new InviteTokenDoesNotExistError()
+    }
+
     return {
       inviteToken: refreshedToken
     }

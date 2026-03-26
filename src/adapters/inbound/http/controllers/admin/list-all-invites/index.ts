@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
 import { ListAllInvitesUseCase } from '@/core/use-cases/admin/list-all-invites'
 import { Trace } from '../../../decorators/trace-decorator'
+import { verifyAdmin } from '../../../middlewares/verify-admin'
 
 export class ListAllInvitesController {
   private adminRepository: AdminRepository
@@ -13,7 +14,9 @@ export class ListAllInvitesController {
     this.useCase = new ListAllInvitesUseCase(this.adminRepository)
   }
 
-  @Route('GET', '/admin/invites')
+  @Route('GET', '/admin/invites', {
+    middlewares: [verifyAdmin]
+  })
   @Trace('admin.list_all_invites')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const response = await this.useCase.execute()
