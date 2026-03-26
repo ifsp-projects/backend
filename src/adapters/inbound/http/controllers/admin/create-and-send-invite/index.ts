@@ -41,8 +41,7 @@ export class CreateAndSendInviteController {
     const response = await this.createInviteTokenUseCase.execute(payload)
 
     await this.sendEmailUseCase.execute({
-      email: payload.email,
-      organization_id: response.inviteToken.organization_id
+      invite_token: response.inviteToken.token
     })
 
     return reply.status(201).send(response)

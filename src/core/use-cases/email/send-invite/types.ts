@@ -1,6 +1,5 @@
 export interface SendInviteUseCasePayload {
-  email: string
-  organization_id: string
+  invite_token: string
 }
 
 export interface SendInviteUseCaseReturn {
