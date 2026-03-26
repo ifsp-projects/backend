@@ -12,8 +12,6 @@ export class SendInviteUseCase {
   async execute({
     invite_token,
   }: SendInviteUseCasePayload): Promise<SendInviteUseCaseReturn> {
-    const expires_at = new Date(Date.now() + 1000 * 60 * 60 * 72)
-
     const invite = await this.adminRepository.getInviteByToken(invite_token)
 
     if (!invite) {
@@ -24,7 +22,7 @@ export class SendInviteUseCase {
       to: invite.email,
       token: invite.token,
       organization_id: invite.organization_id,
-      expires_at
+      expires_at: invite.expires_at
     })
 
     return {
