@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import './shared/infra/telemetry/otel'
+// import './shared/infra/telemetry/otel'
 
 import { app } from './app'
 import { env } from './config/env'

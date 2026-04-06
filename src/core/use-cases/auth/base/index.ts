@@ -1,38 +1,35 @@
 import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
+import { Duration, JwtService } from '@/shared/infra/auth/jwt'
 
 import { FastifyReply } from 'fastify'
 
 export type SignJwtTokensPayload = {
   id: string
+  email: string
+  role: string
 }
 
 export abstract class BaseAuth {
   constructor(
-    protected readonly organizationsRepository: OrganizationsRepository
+    protected readonly organizationsRepository: OrganizationsRepository,
+    private readonly jwtService: JwtService
   ) {}
 
   protected async signJwtTokens(
     reply: FastifyReply,
-    { id }: SignJwtTokensPayload
+    { id, email, role }: SignJwtTokensPayload
   ) {
-    const token = await reply.jwtSign(
-      {},
-      {
-        sign: {
-          sub: id,
-          expiresIn: '40m'
-        }
-      }
+    const { token: token } = this.jwtService.createToken(
+      id,
+      email,
+      role,
+      Duration.minutes(40)
     )
-
-    const refreshToken = await reply.jwtSign(
-      {},
-      {
-        sign: {
-          sub: id,
-          expiresIn: '7d'
-        }
-      }
+    const { token: refreshToken } = this.jwtService.createToken(
+      id,
+      email,
+      role,
+      Duration.days(7)
     )
 
     return { token, refreshToken }

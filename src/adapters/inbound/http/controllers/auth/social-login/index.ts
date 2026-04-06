@@ -5,6 +5,8 @@ import { BaseAuth } from '@/core/use-cases/auth/base'
 import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import { SocialLoginUseCase } from '@/core/use-cases/auth/social-login'
 import { Trace } from '../../../decorators/trace-decorator'
+import { JwtService } from '@/shared/infra/auth/jwt'
+import { env } from '@/config/env'
 
 export class SocialLoginController extends BaseAuth {
   private useCase: SocialLoginUseCase
@@ -12,7 +14,9 @@ export class SocialLoginController extends BaseAuth {
 
   constructor() {
     const organizationsRepository = new OrganizationsRepository()
-    super(organizationsRepository)
+    const jwtService = new JwtService(env.JWT_SECRET)
+    super(organizationsRepository, jwtService)
+    
     this.organizationsRepository = organizationsRepository
     this.useCase = new SocialLoginUseCase(organizationsRepository)
   }
@@ -28,10 +32,12 @@ export class SocialLoginController extends BaseAuth {
     const response = await this.useCase.executeSociaLogin(payload)
 
     const {
-      organization: { id }
+      organization: { id, role, email }
     } = response
 
-    const { token, refreshToken } = await this.signJwtTokens(reply, { id })
+    const { token, refreshToken } = await this.signJwtTokens(reply, { id, email, role })
+
+    console.log(`token gerado: ${token}`)
 
     return reply.status(200).send({
       ...response,
