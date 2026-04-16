@@ -63,6 +63,9 @@ model OrganizationProfile {
   phone           String
   ong_description String?
   design_template String   @default("primary")
+  instagram_url   String?
+  twitter_url     String?
+  facebook_url    String?
 
   ong_type  OngCategory?
   addresses Address[]

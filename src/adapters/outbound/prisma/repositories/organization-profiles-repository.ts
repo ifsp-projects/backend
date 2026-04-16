@@ -42,11 +42,12 @@ export class OrganizationsProfilesRepository
     pageId?: string
   ) => {
     if (payload.design_template) {
-      const template = typeof payload.design_template === 'string'
-        ? payload.design_template
-        : payload.design_template.set
-    
-      if (template) {
+      const template =
+        typeof payload.design_template === 'string'
+          ? payload.design_template
+          : payload.design_template.set
+
+      if (template && pageId) {
         await prisma.page.update({
           where: {
             id: pageId
@@ -57,6 +58,8 @@ export class OrganizationsProfilesRepository
         })
       }
     }
+
+    console.log(JSON.stringify(payload))
 
     return await prisma.organizationProfile.update({
       where: {

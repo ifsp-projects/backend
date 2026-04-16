@@ -37,5 +37,8 @@ export const updateOrganizationBodySchema = z.object({
   complement: z.string().optional(),
   city: z.string().optional(),
   state: z.string().optional(),
-  postal_code: z.string().optional()
+  postal_code: z.string().optional(),
+  instagram_url: z.string().optional(),
+  facebook_url: z.string().optional(),
+  twitter_url: z.string().optional()
 })
