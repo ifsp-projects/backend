@@ -5,6 +5,7 @@ import { randomUUID } from 'crypto'
 import { prisma } from '@/adapters/outbound/prisma/prisma'
 import { PAGE_TEMPLATES } from '@/shared/constants/default-templates-copies'
 import { openai } from '@/shared/infra/openai'
+import { PAGE_TEMPLATES_ORDER } from '@/shared/constants/default-templates-order'
 
 export class OrganizationsProfilesRepository
   implements OrganizationsProfilesRepository
@@ -51,13 +52,23 @@ export class OrganizationsProfilesRepository
       response_format: { type: 'json_object' }
     })
 
-    const personalized_page_template =
+    let personalized_page_template =
       response?.choices[0]?.message?.content || base_template
+
+    try {
+      const raw = response?.choices[0]?.message?.content
+      if (raw) {
+        personalized_page_template = JSON.parse(raw)
+      }
+    } catch (err) {
+      console.error('JSON parse failed:', err)
+    }
 
     await prisma.page.create({
       data: {
         organization_id: payload.ong_id,
-        sections: personalized_page_template
+        sections: personalized_page_template,
+        order: PAGE_TEMPLATES_ORDER[payload.design_template]
       }
     })
 
@@ -86,13 +97,12 @@ export class OrganizationsProfilesRepository
             id: pageId
           },
           data: {
-            sections: PAGE_TEMPLATES[template as keyof typeof PAGE_TEMPLATES]
+            sections: PAGE_TEMPLATES[template as keyof typeof PAGE_TEMPLATES],
+            order: PAGE_TEMPLATES_ORDER[template as keyof typeof PAGE_TEMPLATES]
           }
         })
       }
     }
-
-    console.log(JSON.stringify(payload))
 
     return await prisma.organizationProfile.update({
       where: {

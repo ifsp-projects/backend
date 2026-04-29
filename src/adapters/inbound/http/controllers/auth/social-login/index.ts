@@ -37,8 +37,6 @@ export class SocialLoginController extends BaseAuth {
 
     const { token, refreshToken } = await this.signJwtTokens(reply, { id, email, role })
 
-    console.log(`token gerado: ${token}`)
-
     return reply.status(200).send({
       ...response,
       token,

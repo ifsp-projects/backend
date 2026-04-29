@@ -35,10 +35,6 @@ export class JwtService {
   verifyToken(token: string): UserClaims {
     const decoded = jwt.verify(token, this.secretKey) as UserClaims
 
-    console.log(token)
-
-    console.log('DECODED TOKEN:', decoded)
-
     if (!decoded.id || !decoded.email) {
       throw new Error('Invalid token claims')
     }

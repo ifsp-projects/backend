@@ -4,6 +4,7 @@ model Page {
   updated_at      DateTime @updatedAt
 
   sections Json
+  order    String[]
 
   organization Organization @relation(fields: [organization_id], references: [id])
 
