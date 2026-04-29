@@ -12,7 +12,10 @@ const schema = z.object({
   WEBPAGE_BASE_URL: z.string(),
   RESEND_API_KEY: z.string(),
   APP_URL: z.string(),
-  EMAIL_FROM: z.string()
+  EMAIL_FROM: z.string(),
+  OPENAI_API_KEY: z.string(),
+  OPENAI_ORGANIZATION_ID: z.string(),
+  OPENAI_PROJECT_ID: z.string()
 })
 
 const parsed = schema.safeParse(process.env)
@@ -27,4 +30,3 @@ export const env = {
   ...parsed.data,
   IS_DEVELOP_MODE: parsed.data.ENV === 'dev'
 }
-

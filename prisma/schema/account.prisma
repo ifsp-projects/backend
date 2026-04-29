@@ -61,7 +61,7 @@ model OrganizationProfile {
   updated_at      DateTime @updatedAt
   created_at      DateTime @default(now())
   phone           String
-  ong_description String?
+  ong_description String   @default("ONG sem descrição")
   design_template String   @default("primary")
   instagram_url   String?
   twitter_url     String?

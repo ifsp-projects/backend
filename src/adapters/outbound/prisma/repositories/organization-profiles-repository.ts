@@ -1,7 +1,10 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import { Prisma } from '@prisma-generated'
 import { randomUUID } from 'crypto'
 import { prisma } from '@/adapters/outbound/prisma/prisma'
 import { PAGE_TEMPLATES } from '@/shared/constants/default-templates-copies'
+import { openai } from '@/shared/infra/openai'
 
 export class OrganizationsProfilesRepository
   implements OrganizationsProfilesRepository
@@ -21,10 +24,40 @@ export class OrganizationsProfilesRepository
       }
     })
 
+    const file_path = path.join(
+      process.cwd(),
+      'src/shared/constants/prompts/copy-generator.md'
+    )
+    const prompt_template = fs.readFileSync(file_path, 'utf8')
+
+    const system_prompt = prompt_template
+      .replace('{{ORG_NAME}}', payload.name as string)
+      .replace('{{ORG_DESCRIPTION}}', payload.ong_description as string)
+
+    const base_template =
+      PAGE_TEMPLATES[payload.design_template as keyof typeof PAGE_TEMPLATES]
+
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: system_prompt },
+        {
+          role: 'user',
+          content: `Template structure to follow: ${JSON.stringify(
+            base_template
+          )}`
+        }
+      ],
+      response_format: { type: 'json_object' }
+    })
+
+    const personalized_page_template =
+      response?.choices[0]?.message?.content || base_template
+
     await prisma.page.create({
       data: {
         organization_id: payload.ong_id,
-        sections: PAGE_TEMPLATES[payload.design_template]
+        sections: personalized_page_template
       }
     })
 

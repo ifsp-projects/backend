@@ -7,7 +7,7 @@ export const createOrganizationProfileBodySchema = z.object({
   slug: z.string().nonempty(),
   logo: z.string().nonempty(),
   phone: z.string().nonempty(),
-  ong_description: z.string().optional(),
+  ong_description: z.string().nonempty(),
   ong_type: z
     .string()
     .optional()
