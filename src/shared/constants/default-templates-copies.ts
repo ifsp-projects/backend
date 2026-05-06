@@ -491,7 +491,11 @@ export const QUATERNARY_TEMPLATE_DEFAULT_COPIES = {
     decoratedTitle: 'nós chegamos.',
     description:
       'Somos uma rede de voluntários e profissionais que atua nas lacunas deixadas pela ausência de políticas públicas. Diretos, presentes e sem burocracia.',
-    anchor: {
+    primaryAnchor: {
+      label: 'Conheça nossa história',
+      href: '#'
+    },
+    secondaryAnchor: {
       label: 'Conheça nossa história',
       href: '#'
     },
