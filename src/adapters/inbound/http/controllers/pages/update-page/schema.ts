@@ -5,6 +5,7 @@ export const updatePageParamsSchema = z.object({
 })
 
 export const updatePageBodySchema = z.object({
-  sections: z.any(),
-  order: z.string().array()
+  sections: z.any().optional(),
+  order: z.string().array().optional(),
+  main_color: z.string().optional()
 })

@@ -3,8 +3,10 @@ model Page {
   organization_id String   @unique
   updated_at      DateTime @updatedAt
 
-  sections Json
-  order    String[]
+  sections      Json
+  main_color    String   @default("")
+  color_pallete Json     @default("{\"ultra_light\":\"\",\"tint\":\"\",\"original\":\"\",\"shade\":\"\",\"deep\":\"\"}")
+  order         String[]
 
   organization Organization @relation(fields: [organization_id], references: [id])
 
