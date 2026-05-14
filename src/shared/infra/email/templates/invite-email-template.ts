@@ -57,7 +57,7 @@ export function renderInviteEmail({
                 href="${inviteUrl}"
                 style="display:inline-block;padding:12px 24px;background:#171717;color:#ffffff;text-decoration:none;border-radius:4px;font-size:14px;font-weight:600;"
               >
-                Ativar minha conta →
+                Ativar minha conta
               </a>
 
               <hr style="border:none;border-top:1px solid #f5f5f4;margin:32px 0;" />

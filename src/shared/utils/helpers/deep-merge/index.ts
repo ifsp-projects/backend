@@ -11,7 +11,6 @@ export function deepMerge(target: any, source: any): any {
     return target
   }
 
-
   if (target === null || target === undefined) {
     return source
   }
