@@ -1,4 +1,4 @@
-enum OngCategory {
+enum OngCategoryEnum {
   animais                    @map("Animais")
   meioAmbiente               @map("Meio Ambiente")
   educacao                   @map("Educação")
@@ -26,7 +26,7 @@ enum UserRoleEnum {
   admin
 }
 
-enum AccountStatus {
+enum AccountStatusEnum {
   active
   inactive
 }
@@ -41,11 +41,12 @@ model Organization {
   is_user_new Boolean      @default(true)
   role        UserRoleEnum @default(member)
 
-  account_status AccountStatus @default(inactive)
+  account_status AccountStatusEnum @default(inactive)
 
   page_content         Page?
   organization_profile OrganizationProfile?
   invite_tokens        InviteToken[]
+  campaigns            Campaign[]
 
   @@index([account_status])
   @@index([deleted_at])
@@ -67,7 +68,7 @@ model OrganizationProfile {
   twitter_url     String?
   facebook_url    String?
 
-  ong_type  OngCategory?
+  ong_type  OngCategoryEnum?
   addresses Address[]
 
   organization Organization @relation(fields: [ong_id], references: [id])

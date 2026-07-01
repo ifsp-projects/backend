@@ -8,7 +8,7 @@
     "build": "pnpm exec prisma generate --schema ./prisma/schema && tsup src --out-dir dist --sourcemap inline",
     "dev": "ts-node-dev --respawn -r tsconfig-paths/register --compiler-options {\\\"module\\\":\\\"CommonJS\\\",\\\"moduleResolution\\\":\\\"node\\\"} src/server.ts",
     "start": "node -r tsconfig-paths/register dist/server.js",
-    "prisma:migrate": "prisma migrate dev --schema ./prisma/schema",
+    "prisma:migrate": "prisma migrate dev --schema ./prisma/schema --create-only",
     "prisma:push": "prisma db push --schema ./prisma/schema"
   },
   "keywords": [],
