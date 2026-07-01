@@ -1,3 +1,29 @@
+enum CampaignTypeEnum {
+  donation     @map("Doação")
+  volunteering @map("Voluntariado")
+  event        @map("Evento")
+  awareness    @map("Conscientização")
+  project      @map("Projeto")
+  other        @map("Outro")
+}
+
+enum CampaignStatusEnum {
+  draft     @map("Rascunho")
+  published @map("Publicado")
+  active    @map("Ativa")
+  paused    @map("Pausada")
+  finished  @map("Finalizada")
+  cancelled @map("Cancelado")
+}
+
+enum CampaignGoalTypeEnum {
+  money      @map("Financeiro")
+  items      @map("Itens")
+  volunteers @map("Voluntários")
+  signatures @map("Abaixo-assinado")
+  other      @map("Outro")
+}
+
 model Page {
   id              String   @id @default(cuid())
   organization_id String   @unique
@@ -11,4 +37,37 @@ model Page {
   organization Organization @relation(fields: [organization_id], references: [id])
 
   @@map("pages")
+}
+
+model Campaign {
+  id String @id @default(cuid())
+
+  ong_id String
+
+  title             String
+  description       String
+  short_description String
+  cover_image       String?
+  banner_image      String?
+
+  type CampaignTypeEnum @default(other)
+
+  status CampaignStatusEnum @default(draft)
+
+  goal_type     CampaignGoalTypeEnum @default(other)
+  goal_value    Decimal              @db.Decimal(15, 2)
+  current_value Decimal              @db.Decimal(15, 2)
+
+  start_date DateTime
+  end_date   DateTime
+
+  location String
+
+  updated_at DateTime  @updatedAt
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
+
+  organization Organization @relation(fields: [ong_id], references: [id])
+
+  @@map("campaigns")
 }
