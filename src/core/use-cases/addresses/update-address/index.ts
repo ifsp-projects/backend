@@ -1,6 +1,10 @@
-import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
-import { UpdateAdddressPayload, UpdateAdddressUseCaseReturn } from './types'
+import type { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
 import { AddressDoesNotExistError } from '@/core/domain/exceptions/addresses'
+
+import type {
+  UpdateAdddressPayload,
+  UpdateAdddressUseCaseReturn
+} from './types'
 
 export class UpdateAddressUseCase {
   constructor(protected readonly addressesRepository: AddressesRepository) {}

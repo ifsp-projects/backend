@@ -1,7 +1,7 @@
 interface InviteEmailProps {
-  inviteUrl: string
   email: string
   expiresAt: Date
+  inviteUrl: string
 }
 
 export function renderInviteEmail({

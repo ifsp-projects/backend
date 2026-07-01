@@ -1,7 +1,9 @@
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { GetAllOrganizationsProfilesUseCase } from '@/core/use-cases/organizations-profiles/get-all-organizations-profiles'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
+import { GetAllOrganizationsProfilesUseCase } from '@/core/use-cases/organizations-profiles/get-all-organizations-profiles'
+
 import { Trace } from '../../../decorators/trace-decorator'
 
 export class GetAllOrganizationsProfilesController {

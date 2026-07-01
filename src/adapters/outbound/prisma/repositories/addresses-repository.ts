@@ -1,7 +1,9 @@
-import { Prisma } from '@prisma-generated'
-import { AddressInterface } from '../../../../core/domain/ports/repositories/addresses-repository'
 import { randomUUID } from 'crypto'
+
 import { prisma } from '@/adapters/outbound/prisma/prisma'
+import type { Prisma } from '@prisma-generated'
+
+import type { AddressInterface } from '../../../../core/domain/ports/repositories/addresses-repository'
 
 export class AddressesRepository implements AddressInterface {
   createAddress = async ({

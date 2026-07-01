@@ -1,4 +1,4 @@
-import { OrganizationProfile } from '@prisma-generated'
+import type { OrganizationProfile } from '@prisma-generated'
 
 export interface CreateOrganizationProfileUseCaseReturn {
   organizationProfile: OrganizationProfile

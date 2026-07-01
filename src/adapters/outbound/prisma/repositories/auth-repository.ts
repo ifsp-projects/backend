@@ -1,6 +1,7 @@
-import { AuthInterface } from '@/core/domain/ports/repositories/auth-repository'
+import type { AuthInterface } from '@/core/domain/ports/repositories/auth-repository'
+import type { Prisma } from '@prisma-generated'
+
 import { prisma } from '../prisma'
-import { Prisma } from '@prisma-generated'
 
 export class AuthRepository implements AuthInterface {
   createSession = async (payload: Prisma.SessionUncheckedCreateInput) => {

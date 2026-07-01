@@ -1,12 +1,14 @@
-import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
+import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
+import { env } from '@/config/env'
 import { LoginUseCase } from '@/core/use-cases/auth/login-user'
 import { JwtService } from '@/shared/infra/auth/jwt'
-import { env } from '@/config/env'
-import { loginSchema } from './schema'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { loginSchema } from './schema'
 
 export class LoginUserController {
   private authRepository: AuthRepository

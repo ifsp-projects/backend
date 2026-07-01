@@ -1,9 +1,11 @@
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { createOrganizationProfileBodySchema } from './schemas'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 import { CreateOrganizationProfileUseCase } from '@/core/use-cases/organizations-profiles/create-organization-profile'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { createOrganizationProfileBodySchema } from './schemas'
 
 export class CreateOrganizationProfileController {
   private organizationProfileRepository: OrganizationsProfilesRepository

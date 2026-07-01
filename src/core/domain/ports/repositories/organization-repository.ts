@@ -1,4 +1,4 @@
-import { OngCategory, Organization, Prisma } from '@prisma-generated'
+import type { OngCategory, Organization, Prisma } from '@prisma-generated'
 
 export type OrganizationWithProfileInclude = Prisma.OrganizationGetPayload<{
   include: {
@@ -10,12 +10,16 @@ export interface OrganizationInterface {
   createOrganization: (
     payload: Prisma.OrganizationUncheckedCreateInput
   ) => Promise<Organization>
-  getAllOrganizations: (filters?: { name?: string; ong_type?: OngCategory }) => Promise<Organization[]>
-  getOrganizationById: (
-    id: string
-  ) => Promise<OrganizationWithProfileInclude | null>
+  deleteOrganization: (id: string) => Promise<Organization | null>
+  getAllOrganizations: (filters?: {
+    name?: string
+    ong_type?: OngCategory
+  }) => Promise<Organization[]>
   getOrganizationByEmail: (
     email: string
+  ) => Promise<OrganizationWithProfileInclude | null>
+  getOrganizationById: (
+    id: string
   ) => Promise<OrganizationWithProfileInclude | null>
   getOrganizationBySlug: (
     slug: string
@@ -24,5 +28,4 @@ export interface OrganizationInterface {
     id: string,
     payload: Prisma.OrganizationUncheckedUpdateInput
   ) => Promise<OrganizationWithProfileInclude | null>
-  deleteOrganization: (id: string) => Promise<Organization | null>
 }

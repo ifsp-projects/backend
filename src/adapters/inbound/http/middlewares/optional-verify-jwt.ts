@@ -1,4 +1,4 @@
-import { FastifyReply, FastifyRequest } from 'fastify'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function optionalVerifyJWT(
   request: FastifyRequest,
@@ -9,6 +9,6 @@ export async function optionalVerifyJWT(
 
     request.user = { sub: data.sub }
   } catch (err) {
-    // nothing :D
+    console.error(err)
   }
 }

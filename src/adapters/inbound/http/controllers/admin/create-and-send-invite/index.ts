@@ -1,12 +1,14 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
+
 import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
 import { CreateInviteTokenUseCase } from '@/core/use-cases/admin/create-and-send-invite'
-import { Route } from '../../../decorators/route-decorator'
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { createAndSendInviteBodySchema } from './schema'
-import { ResendRepository } from '@/shared/infra/email/resend'
 import { SendInviteUseCase } from '@/core/use-cases/email/send-invite'
+import { ResendRepository } from '@/shared/infra/email/resend'
+
+import { Route } from '../../../decorators/route-decorator'
 import { Trace } from '../../../decorators/trace-decorator'
 import { verifyAdmin } from '../../../middlewares/verify-admin'
+import { createAndSendInviteBodySchema } from './schema'
 
 export class CreateAndSendInviteController {
   private adminRepository: AdminRepository

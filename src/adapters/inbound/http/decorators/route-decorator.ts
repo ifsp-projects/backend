@@ -1,4 +1,4 @@
-import { FastifyInstance, onRequestHookHandler } from 'fastify'
+import type { FastifyInstance, onRequestHookHandler } from 'fastify'
 
 type RouteOptions = {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'

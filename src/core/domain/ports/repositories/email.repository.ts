@@ -1,8 +1,8 @@
 export interface SendInviteEmailPayload {
+  expires_at: Date
+  organization_id: string
   to: string
   token: string
-  organization_id: string
-  expires_at: Date
 }
 
 export interface SendInviteEmailResult {

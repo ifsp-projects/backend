@@ -1,6 +1,7 @@
-import jwt from 'jsonwebtoken'
 import { randomUUID } from 'crypto'
-import { CreateTokenResult, UserClaims } from './types'
+import jwt from 'jsonwebtoken'
+
+import type { CreateTokenResult, UserClaims } from './types'
 
 export class JwtService {
   constructor(private readonly secretKey: string) {

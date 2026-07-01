@@ -1,7 +1,7 @@
-import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
-
+import type { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
 import { AddressDoesNotExistError } from '@/core/domain/exceptions/addresses'
-import { DeleteAddressUseCaseReturn } from './types'
+
+import type { DeleteAddressUseCaseReturn } from './types'
 
 export class DeleteAddressUseCase {
   constructor(protected readonly addressesRepository: AddressesRepository) {}

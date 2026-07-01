@@ -1,5 +1,5 @@
-import { SUPPORTED_SOCIAL_AUTH_TYPES } from '@/shared/constants/supported-social-auth-types'
-import { Organization } from '@prisma-generated'
+import type { SUPPORTED_SOCIAL_AUTH_TYPES } from '@/shared/constants/supported-social-auth-types'
+import type { Organization } from '@prisma-generated'
 
 export interface SocialLoginUseCasePayload {
   email: string

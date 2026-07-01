@@ -1,11 +1,12 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
+
 import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import { RegenerateInviteTokenUseCase } from '@/core/use-cases/admin/regenerate-token-and-resend-email'
 
 import { Route } from '../../../decorators/route-decorator'
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { regenerateTokenAndResendParamsSchema } from './schema'
-import { RegenerateInviteTokenUseCase } from '@/core/use-cases/admin/regenerate-token-and-resend-email'
 import { Trace } from '../../../decorators/trace-decorator'
 import { verifyAdmin } from '../../../middlewares/verify-admin'
+import { regenerateTokenAndResendParamsSchema } from './schema'
 
 export class RegenerateAndResendInviteController {
   private adminRepository: AdminRepository

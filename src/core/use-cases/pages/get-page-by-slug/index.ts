@@ -1,7 +1,7 @@
-import { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
-
-import { GetPageBySlugUseCaseReturn } from './types'
+import type { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
 import { PageDoesNotExistError } from '@/core/domain/exceptions/pages'
+
+import type { GetPageBySlugUseCaseReturn } from './types'
 
 export class GetPageBySlugUseCase {
   constructor(protected readonly pagesRepository: PagesRepository) {}

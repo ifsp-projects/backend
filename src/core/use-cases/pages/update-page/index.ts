@@ -1,11 +1,10 @@
-import { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
-
-import { UpdatePageUseCasePayload, UpdatePageUseCaseReturn } from './types'
+import type { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
 import { PageDoesNotExistError } from '@/core/domain/exceptions/pages'
-
-import { deepMerge } from '@/shared/utils/helpers/deep-merge'
 import { generateColorVariants } from '@/shared/utils/generate-collor-pallete'
-import { Prisma } from '@prisma-generated'
+import { deepMerge } from '@/shared/utils/helpers/deep-merge'
+import type { Prisma } from '@prisma-generated'
+
+import type { UpdatePageUseCasePayload, UpdatePageUseCaseReturn } from './types'
 
 export class UpdatePageUseCase {
   constructor(protected readonly pagesRepository: PagesRepository) {}
@@ -24,9 +23,11 @@ export class UpdatePageUseCase {
     const shouldUpdatePalette =
       main_color && main_color !== currentPage.main_color
 
-      const color_palette = (shouldUpdatePalette
+    const color_palette = (
+      shouldUpdatePalette
         ? generateColorVariants(main_color.toString())
-        : currentPage.color_pallete) as Prisma.InputJsonValue
+        : currentPage.color_pallete
+    ) as Prisma.InputJsonValue
     const mergedSections = deepMerge(currentPage.sections, sections)
 
     const updatedPage = await this.pagesRepository.updatePage(id, {

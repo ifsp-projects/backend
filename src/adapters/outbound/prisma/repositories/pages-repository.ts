@@ -1,11 +1,13 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { Prisma } from '@prisma-generated'
-import { PagesInterface } from '../../../../core/domain/ports/repositories/pages-repository'
+
 import { prisma } from '@/adapters/outbound/prisma/prisma'
 import { PAGE_TEMPLATES } from '@/shared/constants/default-templates-copies'
-import { openai } from '@/shared/infra/openai'
 import { PAGE_TEMPLATES_ORDER } from '@/shared/constants/default-templates-order'
+import { openai } from '@/shared/infra/openai'
+import type { Prisma } from '@prisma-generated'
+
+import type { PagesInterface } from '../../../../core/domain/ports/repositories/pages-repository'
 
 export class PagesRepository implements PagesInterface {
   getPageBySlug = async (slug: string) => {

@@ -1,10 +1,12 @@
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
-import { logoutSchema } from './schema'
 import { LogoutUseCase } from '@/core/use-cases/auth/logout-user'
-import { verifyJWT } from '../../../middlewares/verify-jwt'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { verifyJWT } from '../../../middlewares/verify-jwt'
+import { logoutSchema } from './schema'
 
 export class LogoutUserController {
   private authRepository: AuthRepository

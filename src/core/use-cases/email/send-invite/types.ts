@@ -3,7 +3,7 @@ export interface SendInviteUseCasePayload {
 }
 
 export interface SendInviteUseCaseReturn {
-  invite_id: string
   email: string
   expires_at: Date
+  invite_id: string
 }

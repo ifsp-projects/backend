@@ -1,9 +1,11 @@
-import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
-import { Route } from '../../../decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { validateInviteTokenParamsSchema } from './schema'
+
+import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
 import { ValidateInviteTokenUseCase } from '@/core/use-cases/admin/validate-invite-token'
+
+import { Route } from '../../../decorators/route-decorator'
 import { Trace } from '../../../decorators/trace-decorator'
+import { validateInviteTokenParamsSchema } from './schema'
 
 export class ValidateInviteTokenController {
   private adminRepository: AdminRepository

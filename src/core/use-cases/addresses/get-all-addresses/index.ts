@@ -1,6 +1,7 @@
-import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
-import { GetAllAddressesUseCaseReturn } from './types'
+import type { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
 import { AddressDoesNotExistError } from '@/core/domain/exceptions/addresses'
+
+import type { GetAllAddressesUseCaseReturn } from './types'
 
 export class GetAllAddressesUseCase {
   constructor(protected readonly addressesRepository: AddressesRepository) {}

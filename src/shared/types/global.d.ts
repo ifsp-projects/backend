@@ -1,5 +1,5 @@
 import '@fastify/jwt'
-import { UserRoleEnum } from '@prisma-generated'
+import type { UserRoleEnum } from '@prisma-generated'
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {

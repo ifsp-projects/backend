@@ -1,14 +1,14 @@
 export interface UserClaims {
-  id: string
   email: string
-  jti: string
-  sub: string
-  iat: number
-  role: string
   exp: number
+  iat: number
+  id: string
+  jti: string
+  role: string
+  sub: string
 }
 
 export interface CreateTokenResult {
-  token: string
   claims: UserClaims
+  token: string
 }

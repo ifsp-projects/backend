@@ -1,18 +1,17 @@
 import fastify from 'fastify'
+
 import fastifyCookie from '@fastify/cookie'
 import fastifyCors from '@fastify/cors'
-
-import { env } from './config/env'
-
 import fastifyJwt from '@fastify/jwt'
-import { registerRoutes } from './adapters/inbound/http/decorators/route-decorator'
 
-import { organizationsRoutes } from './adapters/inbound/http/controllers/organizations/routes'
-import { organizationsProfilesRoutes } from './adapters/inbound/http/controllers/organizations-profiles/routes'
-import { authRoutes } from './adapters/inbound/http/controllers/auth/routes'
 import { addressesRoutes } from './adapters/inbound/http/controllers/addresses/route'
-import { pagesRoutes } from './adapters/inbound/http/controllers/pages/routes'
 import { adminRoutes } from './adapters/inbound/http/controllers/admin/route'
+import { authRoutes } from './adapters/inbound/http/controllers/auth/routes'
+import { organizationsProfilesRoutes } from './adapters/inbound/http/controllers/organizations-profiles/routes'
+import { organizationsRoutes } from './adapters/inbound/http/controllers/organizations/routes'
+import { pagesRoutes } from './adapters/inbound/http/controllers/pages/routes'
+import { registerRoutes } from './adapters/inbound/http/decorators/route-decorator'
+import { env } from './config/env'
 
 export const app = fastify({
   logger:
@@ -26,7 +25,8 @@ export const app = fastify({
       : {
           level: 'debug',
           transport: {
-            targets: [{
+            targets: [
+              {
                 target: 'pino-pretty',
                 options: {
                   colorize: true,

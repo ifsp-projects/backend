@@ -1,6 +1,7 @@
-import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
-import { GetInviteByTokenUseCaseReturn } from './types'
+import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
 import { InviteTokenDoesNotExistError } from '@/core/domain/exceptions/admin'
+
+import type { GetInviteByTokenUseCaseReturn } from './types'
 
 export class GetInviteByTokenUseCase {
   constructor(protected readonly adminRepository: AdminRepository) {}

@@ -1,6 +1,7 @@
-import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
-import { Prisma } from '@prisma-generated'
-import { CreateAddressUseCaseReturn } from './types'
+import type { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
+import type { Prisma } from '@prisma-generated'
+
+import type { CreateAddressUseCaseReturn } from './types'
 
 export class CreateAddressUseCase {
   constructor(protected readonly addressesRepository: AddressesRepository) {}

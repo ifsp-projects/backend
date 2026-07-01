@@ -2,7 +2,7 @@ import { ZodError } from 'zod'
 
 import { ZodErrorFormatter } from '@/shared/utils/formatters/zod-error-formatter'
 
-import { ControllerErrorPayload, ControllerErrorReturn } from './types'
+import type { ControllerErrorPayload, ControllerErrorReturn } from './types'
 
 export const controllerError = (
   err: ControllerErrorPayload

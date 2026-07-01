@@ -1,9 +1,11 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
 import { CreateAddressUseCase } from '@/core/use-cases/addresses/create-address'
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { createAddressBodySchema } from './schemas'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { createAddressBodySchema } from './schemas'
 
 export class CreateAddressController {
   private addressRepository: AddressesRepository

@@ -1,10 +1,9 @@
-import { OngCategory, Prisma } from '@prisma-generated'
 import { randomUUID } from 'crypto'
-import {
-  OrganizationInterface,
-  OrganizationWithProfileInclude
-} from '../../../../core/domain/ports/repositories/organization-repository'
+
 import { prisma } from '@/adapters/outbound/prisma/prisma'
+import type { OngCategory, Prisma } from '@prisma-generated'
+
+import type { OrganizationInterface } from '../../../../core/domain/ports/repositories/organization-repository'
 
 export class OrganizationsRepository implements OrganizationInterface {
   createOrganization = async ({
@@ -65,11 +64,16 @@ export class OrganizationsRepository implements OrganizationInterface {
     })
   }
 
-  getAllOrganizations = async (filters?: { name?: string; ong_type?: OngCategory }) => {
+  getAllOrganizations = async (filters?: {
+    name?: string
+    ong_type?: OngCategory
+  }) => {
     return await prisma.organization.findMany({
       where: {
         organization_profile: {
-          ...(filters?.name && { name: { contains: filters.name, mode: 'insensitive' } }),
+          ...(filters?.name && {
+            name: { contains: filters.name, mode: 'insensitive' }
+          }),
           ...(filters?.ong_type && { ong_type: filters.ong_type })
         }
       },

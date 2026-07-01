@@ -1,7 +1,9 @@
-import { Address, Prisma } from '@prisma-generated'
+import type { Address, Prisma } from '@prisma-generated'
 
-export interface UpdateAdddressPayload
-  extends Omit<Prisma.AddressUncheckedUpdateInput, 'id'> {
+export interface UpdateAdddressPayload extends Omit<
+  Prisma.AddressUncheckedUpdateInput,
+  'id'
+> {
   id: string
 }
 

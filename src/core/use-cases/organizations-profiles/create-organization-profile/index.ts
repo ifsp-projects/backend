@@ -1,7 +1,8 @@
-import type { Prisma } from '@prisma-generated'
-import { CreateOrganizationProfileUseCaseReturn } from './types'
-import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
+import type { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 import { OrganizationProfileAlreadyExistsError } from '@/core/domain/exceptions/organizations-profiles'
+import type { Prisma } from '@prisma-generated'
+
+import type { CreateOrganizationProfileUseCaseReturn } from './types'
 
 export class CreateOrganizationProfileUseCase {
   constructor(

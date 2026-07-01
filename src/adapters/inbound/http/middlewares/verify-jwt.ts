@@ -1,6 +1,7 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
+
 import { env } from '@/config/env'
 import { JwtService } from '@/shared/infra/auth/jwt'
-import { FastifyReply, FastifyRequest } from 'fastify'
 
 const jwtService = new JwtService(env.JWT_SECRET)
 

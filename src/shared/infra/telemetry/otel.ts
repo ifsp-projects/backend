@@ -1,22 +1,15 @@
 import 'dotenv/config'
 
-import { resourceFromAttributes } from '@opentelemetry/resources'
-
-import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions'
-
-import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api'
-
-import { NodeSDK } from '@opentelemetry/sdk-node'
-
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
 import { FastifyOtelInstrumentation } from '@fastify/otel'
-
-import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics'
-
+import { DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api'
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc'
-
 import { CompressionAlgorithm } from '@opentelemetry/otlp-exporter-base'
+import { resourceFromAttributes } from '@opentelemetry/resources'
+import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics'
+import { NodeSDK } from '@opentelemetry/sdk-node'
+import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions'
 
 const isDev = process.env.NODE_ENV !== 'production'
 

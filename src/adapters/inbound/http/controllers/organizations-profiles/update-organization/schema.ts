@@ -1,9 +1,10 @@
+import { z } from 'zod'
+
 import {
   isHubspotOngValue,
   toPrismaOngCategory
 } from '@/shared/utils/formatters/format-ong-type'
 import { OngCategory } from '@prisma-generated'
-import { z } from 'zod'
 
 export const updateOrganizationParamsSchema = z.object({
   id: z.string()

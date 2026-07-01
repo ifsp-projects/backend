@@ -1,6 +1,7 @@
-import { GetAllOrganizationsUseCaseReturn } from './types'
-import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
+import type { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 import { OrganizationProfileDoesNotExistError } from '@/core/domain/exceptions/organizations-profiles'
+
+import type { GetAllOrganizationsUseCaseReturn } from './types'
 
 export class GetAllOrganizationsProfilesUseCase {
   constructor(

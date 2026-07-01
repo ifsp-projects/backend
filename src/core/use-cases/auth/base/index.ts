@@ -1,7 +1,8 @@
-import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
-import { Duration, JwtService } from '@/shared/infra/auth/jwt'
+import type { FastifyReply } from 'fastify'
 
-import { FastifyReply } from 'fastify'
+import type { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
+import type { JwtService } from '@/shared/infra/auth/jwt'
+import { Duration } from '@/shared/infra/auth/jwt'
 
 export type SignJwtTokensPayload = {
   id: string

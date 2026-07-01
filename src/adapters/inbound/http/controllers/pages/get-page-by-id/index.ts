@@ -1,9 +1,11 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
 import { GetPageByIdUseCase } from '@/core/use-cases/pages/get-page-by-id'
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
-import { getPageByIdParamsSchema } from './schema'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { getPageByIdParamsSchema } from './schema'
 
 export class GetPageByIdController {
   private pagesRepository: PagesRepository

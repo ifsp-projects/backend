@@ -1,7 +1,7 @@
-import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
 import {
-  InviteTokenAlreadyUsedError,
   InviteTokenAlreadyCancelledError,
+  InviteTokenAlreadyUsedError,
   InviteTokenDoesNotExistError
 } from '@/core/domain/exceptions/admin'
 

@@ -1,9 +1,11 @@
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { getOrganizationByIdParamsSchema } from './schema'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 import { GetOrganizationProfileByIdUseCase } from '@/core/use-cases/organizations-profiles/get-organization-profile-by-id'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { getOrganizationByIdParamsSchema } from './schema'
 
 export class GetOrganizationProfileByIdController {
   private organizationProfileRepository: OrganizationsProfilesRepository

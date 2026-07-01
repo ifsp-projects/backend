@@ -11,18 +11,18 @@ export function Trace(spanName?: string) {
     const resolvedName = spanName ?? `${target.constructor.name}.${propertyKey}`
 
     descriptor.value = async function (this: any, request: any, reply: any) {
-      return withSpan(resolvedName, async (span) => {
+      return withSpan(resolvedName, async span => {
         span.setAttributes({
           'http.method': request.method,
           'http.route': request.routeOptions?.url ?? request.url,
           'http.client_ip': request.ip,
-          'user.agent': request.headers?.['user-agent'] ?? '',
+          'user.agent': request.headers?.['user-agent'] ?? ''
         })
 
         if (request.user?.id) {
           span.setAttributes({
             'user.id': request.user.id,
-            'user.role': request.user.role ?? 'unknown',
+            'user.role': request.user.role ?? 'unknown'
           })
         }
 
@@ -48,7 +48,7 @@ export function Trace(spanName?: string) {
               ...getTraceContext(),
               err: { message: err.message, stack: err.stack, name: err.name },
               method: request.method,
-              url: request.url,
+              url: request.url
             },
             `[${resolvedName}] failed`
           )

@@ -1,13 +1,15 @@
-import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
-import { JwtService } from '@/shared/infra/auth/jwt'
-import { env } from '@/config/env'
-import { changePasswordBodySchema } from './schema'
-import { ResetPasswordAndLoginUseCase } from '@/core/use-cases/auth/change-password'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
+import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
+import { env } from '@/config/env'
+import { ResetPasswordAndLoginUseCase } from '@/core/use-cases/auth/change-password'
+import { JwtService } from '@/shared/infra/auth/jwt'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { changePasswordBodySchema } from './schema'
 
 export class ChangePasswordController {
   private authRepository: AuthRepository

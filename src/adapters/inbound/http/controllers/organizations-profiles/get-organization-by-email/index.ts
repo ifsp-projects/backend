@@ -1,9 +1,11 @@
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { getOrganizationByEmailParamsSchema } from './schema'
-import { GetOrganizationProfileBySlugUseCase } from '@/core/use-cases/organizations-profiles/get-organization-profile-by-slug'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
+import { GetOrganizationProfileBySlugUseCase } from '@/core/use-cases/organizations-profiles/get-organization-profile-by-slug'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { getOrganizationByEmailParamsSchema } from './schema'
 
 export class GetOrganizationProfileByEmailController {
   private organizationProfileRepository: OrganizationsProfilesRepository

@@ -1,5 +1,6 @@
-import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
-import { ListAllInvitesUseCaseReturn } from './types'
+import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+
+import type { ListAllInvitesUseCaseReturn } from './types'
 
 export class ListAllInvitesUseCase {
   constructor(protected readonly adminRepository: AdminRepository) {}

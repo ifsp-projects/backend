@@ -1,10 +1,12 @@
-import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
+import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import { DeleteOrganizationUseCase } from '@/core/use-cases/organizations/delete-organization'
-import { deleteOrganizationParamsSchema } from './schema'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { deleteOrganizationParamsSchema } from './schema'
 
 export class DeleteOrganizationController {
   private organizationRepository: OrganizationsRepository

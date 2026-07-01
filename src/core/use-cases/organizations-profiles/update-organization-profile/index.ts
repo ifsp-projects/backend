@@ -1,10 +1,11 @@
+import type { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
+import type { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
+import { OrganizationDoesNotExistError } from '@/core/domain/exceptions/organizations'
+
 import type {
   UpdateOrganizationPayload,
   UpdateOrganizationUseCaseReturn
 } from './types'
-import { OrganizationDoesNotExistError } from '@/core/domain/exceptions/organizations'
-import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
-import { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
 
 export class UpdateOrganizationProfileUseCase {
   constructor(
@@ -28,20 +29,24 @@ export class UpdateOrganizationProfileUseCase {
     let updatedOrganization
 
     if (payload.design_template) {
-      const page = await this.pagesRepository.getPageBySlug(payload.slug as string)
-
-      updatedOrganization = await this.organizationsProfilesRepository.updateOrganizationProfile(
-        id,
-        payload,
-        page?.id
+      const page = await this.pagesRepository.getPageBySlug(
+        payload.slug as string
       )
+
+      updatedOrganization =
+        await this.organizationsProfilesRepository.updateOrganizationProfile(
+          id,
+          payload,
+          page?.id
+        )
 
       return {
         organization: updatedOrganization
       }
     }
 
-    updatedOrganization = await this.organizationsProfilesRepository.updateOrganizationProfile(
+    updatedOrganization =
+      await this.organizationsProfilesRepository.updateOrganizationProfile(
         id,
         payload
       )

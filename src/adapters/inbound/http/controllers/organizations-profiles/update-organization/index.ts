@@ -1,14 +1,16 @@
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
+import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
+import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
+import { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
+import { UpdateOrganizationProfileUseCase } from '@/core/use-cases/organizations-profiles/update-organization-profile'
+
+import { Trace } from '../../../decorators/trace-decorator'
 import {
   updateOrganizationBodySchema,
   updateOrganizationParamsSchema
 } from './schema'
-import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
-import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
-import { UpdateOrganizationProfileUseCase } from '@/core/use-cases/organizations-profiles/update-organization-profile'
-import { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
-import { Trace } from '../../../decorators/trace-decorator'
 
 export class UpdateOrganizationProfileController {
   private organizationProfileRepository: OrganizationsProfilesRepository

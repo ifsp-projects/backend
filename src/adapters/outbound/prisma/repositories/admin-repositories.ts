@@ -1,10 +1,11 @@
 import { randomUUID } from 'crypto'
+
 import { prisma } from '@/adapters/outbound/prisma/prisma'
-import {
+import type {
   AdminInterface,
   TokenValidationResponse
 } from '@/core/domain/ports/repositories/admin-repository'
-import { CreateInviteTokenUseCasePayload } from '@/core/use-cases/admin/create-and-send-invite/types'
+import type { CreateInviteTokenUseCasePayload } from '@/core/use-cases/admin/create-and-send-invite/types'
 
 export class AdminRepository implements AdminInterface {
   listAllInvites = async () => {

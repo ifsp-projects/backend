@@ -1,9 +1,10 @@
-import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
-import { RegenerateInviteTokenUseCaseReturn } from './types'
+import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
 import {
   InviteTokenAlreadyUsedError,
   InviteTokenDoesNotExistError
 } from '@/core/domain/exceptions/admin'
+
+import type { RegenerateInviteTokenUseCaseReturn } from './types'
 
 export class RegenerateInviteTokenUseCase {
   constructor(protected readonly adminRepository: AdminRepository) {}
@@ -19,9 +20,8 @@ export class RegenerateInviteTokenUseCase {
       throw new InviteTokenAlreadyUsedError()
     }
 
-    const refreshedToken = await this.adminRepository.regenerateAndResendToken(
-      id
-    )
+    const refreshedToken =
+      await this.adminRepository.regenerateAndResendToken(id)
 
     if (!refreshedToken) {
       throw new InviteTokenDoesNotExistError()

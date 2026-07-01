@@ -1,4 +1,4 @@
-import { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
+import type { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
 import { SessionNotFoundError } from '@/core/domain/exceptions/auth'
 
 export class LogoutUseCase {

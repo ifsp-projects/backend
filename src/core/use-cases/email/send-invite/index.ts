@@ -1,16 +1,17 @@
-import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
-import { SendInviteUseCasePayload, SendInviteUseCaseReturn } from './types'
-import { ResendRepository } from '@/shared/infra/email/resend'
+import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
 import { InviteNotFound } from '@/core/domain/exceptions/invites'
+import type { ResendRepository } from '@/shared/infra/email/resend'
+
+import type { SendInviteUseCasePayload, SendInviteUseCaseReturn } from './types'
 
 export class SendInviteUseCase {
   constructor(
     private readonly adminRepository: AdminRepository,
     private readonly resendRepository: ResendRepository
-  ) { }
+  ) {}
 
   async execute({
-    invite_token,
+    invite_token
   }: SendInviteUseCasePayload): Promise<SendInviteUseCaseReturn> {
     const invite = await this.adminRepository.getInviteByToken(invite_token)
 

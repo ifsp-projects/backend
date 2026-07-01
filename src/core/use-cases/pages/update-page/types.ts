@@ -1,7 +1,9 @@
-import { Page, Prisma } from '@prisma-generated'
+import type { Page, Prisma } from '@prisma-generated'
 
-export interface UpdatePageUseCasePayload
-  extends Omit<Prisma.PageUncheckedUpdateInput, 'id'> {
+export interface UpdatePageUseCasePayload extends Omit<
+  Prisma.PageUncheckedUpdateInput,
+  'id'
+> {
   id: string
 }
 

@@ -1,10 +1,16 @@
-import { OrganizationDoesNotExistError } from '@/core/domain/exceptions/organizations'
-import { BaseAuth } from '../base'
-import { SocialLoginUseCasePayload, SocialLoginUseCaseReturn } from './types'
-import { InvalidSocialAccountError } from '@/core/domain/exceptions/auth'
-import { env } from '@/config/env'
 import { OAuth2Client } from 'google-auth-library'
-import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
+
+import type { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
+import { env } from '@/config/env'
+import { InvalidSocialAccountError } from '@/core/domain/exceptions/auth'
+import { OrganizationDoesNotExistError } from '@/core/domain/exceptions/organizations'
+import { JwtService } from '@/shared/infra/auth/jwt'
+
+import { BaseAuth } from '../base'
+import type {
+  SocialLoginUseCasePayload,
+  SocialLoginUseCaseReturn
+} from './types'
 
 export class SocialLoginUseCase extends BaseAuth {
   private googleClient: OAuth2Client
@@ -12,7 +18,9 @@ export class SocialLoginUseCase extends BaseAuth {
   constructor(
     protected readonly organizationRepository: OrganizationsRepository
   ) {
-    super(organizationRepository)
+    const jwtService = new JwtService(env.JWT_SECRET)
+
+    super(organizationRepository, jwtService)
     this.googleClient = new OAuth2Client(env.GOOGLE_CLIENT_ID)
   }
 

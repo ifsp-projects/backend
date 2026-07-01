@@ -1,6 +1,7 @@
+import type { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
 import { OrganizationDoesNotExistError } from '@/core/domain/exceptions/organizations'
-import { DeleteOrganizationProfileUseCaseReturn } from './types'
-import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
+
+import type { DeleteOrganizationProfileUseCaseReturn } from './types'
 
 export class DeleteOrganizationProfileUseCase {
   constructor(

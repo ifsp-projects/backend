@@ -1,4 +1,4 @@
-import { FastifyReply, FastifyRequest } from 'fastify'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { ZodError } from 'zod'
 
 export class ControllerError extends Error {
@@ -17,8 +17,6 @@ export interface ControllerErrorReply {
 
 export class GeneralErrorHandler {
   static handle(err: unknown, request: FastifyRequest, reply: FastifyReply) {
-    this.registerLog(err, request)
-
     if (err instanceof ControllerError) {
       const status = err.status || 500
 
@@ -45,24 +43,6 @@ export class GeneralErrorHandler {
     }
 
     reply.status(500).send('Internal Server Error')
-  }
-
-  private static registerLog(err: unknown, request: FastifyRequest) {
-    let metadata = {}
-
-    if (request.body) {
-      metadata = {
-        ...metadata,
-        body: request.body
-      }
-    }
-
-    if (request.query) {
-      metadata = {
-        ...metadata,
-        query: request.query
-      }
-    }
   }
 
   private static formatZodError(err: ZodError) {

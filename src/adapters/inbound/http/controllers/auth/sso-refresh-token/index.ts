@@ -1,12 +1,14 @@
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
-import { refreshSchema } from './schema'
-import { verifyJWT } from '../../../middlewares/verify-jwt'
+import { env } from '@/config/env'
 import { RefreshTokenUseCase } from '@/core/use-cases/auth/sso-refresh-token'
 import { JwtService } from '@/shared/infra/auth/jwt'
-import { env } from '@/config/env'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { verifyJWT } from '../../../middlewares/verify-jwt'
+import { refreshSchema } from './schema'
 
 export class SSORefreshTokenController {
   private authRepository: AuthRepository

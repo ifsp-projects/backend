@@ -1,4 +1,4 @@
-import { ZodError } from 'zod'
+import type { ZodError } from 'zod'
 
 export const ZodErrorFormatter = (err: ZodError) => {
   // @ts-expect-error

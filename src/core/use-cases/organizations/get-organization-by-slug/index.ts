@@ -1,6 +1,7 @@
+import type { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import { OrganizationDoesNotExistError } from '@/core/domain/exceptions/organizations'
-import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
-import { GetOrganizationBySlugUseCaseReturn } from './types'
+
+import type { GetOrganizationBySlugUseCaseReturn } from './types'
 
 export class GetOrganizationBySlugUseCase {
   constructor(

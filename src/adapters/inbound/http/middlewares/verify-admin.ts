@@ -1,10 +1,14 @@
-import { FastifyReply, FastifyRequest } from 'fastify'
-import { JwtService } from '@/shared/infra/auth/jwt'
+import type { FastifyReply, FastifyRequest } from 'fastify'
+
 import { env } from '@/config/env'
+import { JwtService } from '@/shared/infra/auth/jwt'
 
 const jwtService = new JwtService(env.JWT_SECRET)
 
-export async function verifyAdmin(request: FastifyRequest, reply: FastifyReply) {
+export async function verifyAdmin(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
   try {
     const authHeader = request.headers.authorization
 
@@ -17,7 +21,7 @@ export async function verifyAdmin(request: FastifyRequest, reply: FastifyReply) 
 
     if (data.role !== 'admin') {
       return reply.status(403).send({
-        message: 'Forbidden',
+        message: 'Forbidden'
       })
     }
 
@@ -28,7 +32,7 @@ export async function verifyAdmin(request: FastifyRequest, reply: FastifyReply) 
   } catch (err) {
     console.log('Error verifying admin token:', err)
     return reply.status(403).send({
-      message: 'Forbidden',
+      message: 'Forbidden'
     })
   }
 }

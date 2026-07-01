@@ -1,16 +1,23 @@
-import { InvalidSessionError, InvalidTokenError, SessionNotFoundError, SessionRevokedError } from '@/core/domain/exceptions/auth'
+import type { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
 import {
+  InvalidSessionError,
+  InvalidTokenError,
+  SessionNotFoundError,
+  SessionRevokedError
+} from '@/core/domain/exceptions/auth'
+import type { JwtService } from '@/shared/infra/auth/jwt'
+import { Duration } from '@/shared/infra/auth/jwt'
+
+import type {
   SSORefreshTokenUseCasePayload,
   SSORefreshTokenUseCaseReturn
 } from './types'
-import { Duration, JwtService } from '@/shared/infra/auth/jwt'
-import { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
 
 export class RefreshTokenUseCase {
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly jwtService: JwtService
-  ) { }
+  ) {}
 
   async execute({
     refresh_token
@@ -23,13 +30,14 @@ export class RefreshTokenUseCase {
       throw new InvalidTokenError()
     }
 
-    const session = await this.authRepository.findSessionById(refresh_claims.jti)
+    const session = await this.authRepository.findSessionById(
+      refresh_claims.jti
+    )
     if (!session) throw new SessionNotFoundError()
 
     if (session.is_revoked) throw new SessionRevokedError()
 
-    if (session.email !== refresh_claims.email)
-      throw new InvalidSessionError()
+    if (session.email !== refresh_claims.email) throw new InvalidSessionError()
 
     const { token: access_token, claims: access_claims } =
       this.jwtService.createToken(

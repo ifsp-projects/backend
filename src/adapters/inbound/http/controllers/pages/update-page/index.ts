@@ -1,10 +1,12 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
+import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
 import { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
 import { UpdatePageUseCase } from '@/core/use-cases/pages/update-page'
-import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { updatePageBodySchema, updatePageParamsSchema } from './schema'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { updatePageBodySchema, updatePageParamsSchema } from './schema'
 
 export class UpdatePageController {
   private pagesRepository: PagesRepository

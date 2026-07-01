@@ -1,8 +1,10 @@
-import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
+import type { FastifyReply, FastifyRequest } from 'fastify'
+
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
 import { GetAllAddressesUseCase } from '@/core/use-cases/addresses/get-all-addresses'
+
 import { Trace } from '../../../decorators/trace-decorator'
 
 export class GetAllAddressesController {

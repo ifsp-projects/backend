@@ -1,17 +1,19 @@
+import type { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
+import type { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import { WrongPasswordError } from '@/core/domain/exceptions/auth'
-import { LoginUserUseCasePayload, LoginUserUseCaseReturn } from './types'
-import { Duration, JwtService } from '@/shared/infra/auth/jwt'
-import { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
-import { checkPassword } from '@/shared/infra/auth/password'
-import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import { OrganizationDoesNotExistError } from '@/core/domain/exceptions/organizations'
+import { Duration } from '@/shared/infra/auth/jwt'
+import type { JwtService } from '@/shared/infra/auth/jwt'
+import { checkPassword } from '@/shared/infra/auth/password'
+
+import type { LoginUserUseCasePayload, LoginUserUseCaseReturn } from './types'
 
 export class LoginUseCase {
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly organizationsRepository: OrganizationsRepository,
     private readonly jwtService: JwtService
-  ) { }
+  ) {}
 
   async execute({
     email,

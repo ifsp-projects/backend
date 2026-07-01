@@ -6,7 +6,7 @@ import { socialLoginController } from './social-login'
 import { ssoRefreshTokenController } from './sso-refresh-token'
 
 export const authRoutes = [
-  refreshTokenController, 
+  refreshTokenController,
   socialLoginController,
   loginUserController,
   logoutUserController,

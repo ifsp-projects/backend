@@ -1,10 +1,12 @@
-import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
+import type { FastifyReply, FastifyRequest } from 'fastify'
+
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
 import { UpdateAddressUseCase } from '@/core/use-cases/addresses/update-address'
-import { updateAddressBodySchema, updateAddressParamsSchema } from './schemas'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { updateAddressBodySchema, updateAddressParamsSchema } from './schemas'
 
 export class UpdateAddressController {
   private addressRepository: AddressesRepository

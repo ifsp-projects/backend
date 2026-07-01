@@ -12,7 +12,7 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
   },
   ourMission: {
     subtitle: 'Nossa missão',
-    title: "Nós ajudamos a comunidade local",
+    title: 'Nós ajudamos a comunidade local',
     description:
       'Centenas de pessoas foram ajudadas significativamente com nossa ajuda',
     tabs: [
@@ -71,8 +71,7 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
     description: 'Veja o que as pessoas que ajudamos dizem sobre a gente:',
     cards: [
       {
-        content:
-          'Obrigado por tudo que fizeram por mim e minha família.',
+        content: 'Obrigado por tudo que fizeram por mim e minha família.',
         author: {
           image:
             'https://sb.kaleidousercontent.com/67418/1920x1545/c5f15ac173/samuel-raita-ridxdghg7pw-unsplash.jpg',
@@ -81,8 +80,7 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
         }
       },
       {
-        content:
-          'Obrigado por tudo que fizeram por mim e minha família.',
+        content: 'Obrigado por tudo que fizeram por mim e minha família.',
         author: {
           image:
             'https://sb.kaleidousercontent.com/67418/1920x1545/c5f15ac173/samuel-raita-ridxdghg7pw-unsplash.jpg',
@@ -91,8 +89,7 @@ export const PRIMARY_TEMPLATE_DEFAULT_COPIES = {
         }
       },
       {
-        content:
-          'Obrigado por tudo que fizeram por mim e minha família.',
+        content: 'Obrigado por tudo que fizeram por mim e minha família.',
         author: {
           image:
             'https://sb.kaleidousercontent.com/67418/1920x1545/c5f15ac173/samuel-raita-ridxdghg7pw-unsplash.jpg',

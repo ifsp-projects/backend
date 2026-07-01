@@ -1,9 +1,11 @@
-import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
-import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { getOrganizationBySlugParamsSchema } from './schema'
+
+import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
+import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import { GetOrganizationBySlugUseCase } from '@/core/use-cases/organizations/get-organization-by-slug'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { getOrganizationBySlugParamsSchema } from './schema'
 
 export class GetOrganizationBySlugController {
   private organizationRepository: OrganizationsRepository

@@ -1,6 +1,6 @@
-import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
-import { Prisma } from '@prisma-generated'
-import {
+import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+
+import type {
   CreateInviteTokenUseCasePayload,
   CreateInviteTokenUseCaseReturn
 } from './types'

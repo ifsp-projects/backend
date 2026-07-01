@@ -1,14 +1,14 @@
-import { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
-import { Duration, JwtService } from '@/shared/infra/auth/jwt'
-import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import type { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
+import type { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import {
   InviteTokenAlreadyCancelledError,
   InviteTokenAlreadyExpiredError,
   InviteTokenAlreadyUsedError,
   InviteTokenDoesNotExistError
 } from '@/core/domain/exceptions/admin'
-import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import { OrganizationDoesNotExistError } from '@/core/domain/exceptions/organizations'
+import type { JwtService } from '@/shared/infra/auth/jwt'
 import { hashPassword } from '@/shared/infra/auth/password'
 
 interface Input {
@@ -22,7 +22,7 @@ export class ResetPasswordAndLoginUseCase {
     private readonly organizationsRepository: OrganizationsRepository,
     private readonly adminRepository: AdminRepository,
     private readonly jwtService: JwtService
-  ) { }
+  ) {}
 
   async execute({ invite_token, new_password }: Input): Promise<null> {
     const invite = await this.adminRepository.getInviteByToken(invite_token)
@@ -44,29 +44,6 @@ export class ResetPasswordAndLoginUseCase {
     const newHash = await hashPassword(new_password)
 
     await this.authRepository.updatePassword(organization.id, newHash)
-
-    const { token: access_token, claims: access_claims } =
-      this.jwtService.createToken(
-        organization.id,
-        organization.email,
-        organization.role,
-        Duration.minutes(15)
-      )
-
-    const { token: refresh_token, claims: refresh_claims } =
-      this.jwtService.createToken(
-        organization.id,
-        organization.email,
-        organization.role,
-        Duration.days(7)
-      )
-
-    const session = await this.authRepository.createSession({
-      id: refresh_claims.jti,
-      email: organization.email,
-      refresh_token,
-      expires_at: new Date(refresh_claims.exp * 1000)
-    })
 
     return null
   }

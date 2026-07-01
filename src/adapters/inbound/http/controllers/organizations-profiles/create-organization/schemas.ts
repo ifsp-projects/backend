@@ -1,5 +1,9 @@
-import { isHubspotOngValue, toPrismaOngCategory } from '@/shared/utils/formatters/format-ong-type'
 import { z } from 'zod'
+
+import {
+  isHubspotOngValue,
+  toPrismaOngCategory
+} from '@/shared/utils/formatters/format-ong-type'
 
 export const createOrganizationProfileBodySchema = z.object({
   ong_id: z.string().nonempty(),

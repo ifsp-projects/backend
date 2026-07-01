@@ -1,11 +1,13 @@
-import {
+import { Resend } from 'resend'
+
+import { env } from '@/config/env'
+import type {
   EmailInterface,
   SendInviteEmailPayload,
   SendInviteEmailResult
 } from '@/core/domain/ports/repositories/email.repository'
-import { Resend } from 'resend'
+
 import { renderInviteEmail } from '../templates/invite-email-template'
-import { env } from '@/config/env'
 
 export class ResendRepository implements EmailInterface {
   private readonly client: Resend

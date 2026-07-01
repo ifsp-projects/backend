@@ -1,10 +1,12 @@
-import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
+import type { FastifyReply, FastifyRequest } from 'fastify'
+
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
 import { verifyJWT } from '@/adapters/inbound/http/middlewares/verify-jwt'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/addresses-repository'
 import { DeleteAddressUseCase } from '@/core/use-cases/addresses/delete-address'
-import { deleteAddressParamsSchema } from './schemas'
+
 import { Trace } from '../../../decorators/trace-decorator'
+import { deleteAddressParamsSchema } from './schemas'
 
 export class DeleteAddressController {
   private addressRepository: AddressesRepository
