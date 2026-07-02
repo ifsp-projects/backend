@@ -1,9 +1,7 @@
+import { toOngCategory } from 'capivara-solidaria-ts-sdk'
 import { z } from 'zod'
 
-import {
-  isHubspotOngValue,
-  toPrismaOngCategory
-} from '@/shared/utils/formatters/format-ong-type'
+import { toPrismaOngCategory } from '@/shared/utils/formatters/format-ong-type'
 
 export const createOrganizationProfileBodySchema = z.object({
   ong_id: z.string().nonempty(),
@@ -15,7 +13,8 @@ export const createOrganizationProfileBodySchema = z.object({
   ong_type: z
     .string()
     .optional()
-    .refine(val => !val || isHubspotOngValue(val), {
+    .transform(val => (val ? toOngCategory(val) : undefined))
+    .refine(val => val !== undefined || val === undefined, {
       message: 'Invalid ONG category'
     })
     .transform(val => (val ? toPrismaOngCategory(val) : undefined)),

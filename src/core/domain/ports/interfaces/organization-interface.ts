@@ -1,4 +1,4 @@
-import type { OngCategory, Organization, Prisma } from '@prisma-generated'
+import type { OngCategoryEnum, Organization, Prisma } from '@prisma-generated'
 
 export type OrganizationWithProfileInclude = Prisma.OrganizationGetPayload<{
   include: {
@@ -13,7 +13,7 @@ export interface OrganizationInterface {
   deleteOrganization: (id: string) => Promise<Organization | null>
   getAllOrganizations: (filters?: {
     name?: string
-    ong_type?: OngCategory
+    ong_type?: OngCategoryEnum
   }) => Promise<Organization[]>
   getOrganizationByEmail: (
     email: string

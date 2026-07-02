@@ -1,4 +1,4 @@
-import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repository'
 import { InviteNotFound } from '@/core/domain/exceptions/invites'
 import type { ResendRepository } from '@/shared/infra/email/resend'
 

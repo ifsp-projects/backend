@@ -1,10 +1,12 @@
+import {
+  DEFAULT_TEMPLATES_ORDER,
+  PAGE_TEMPLATES
+} from 'capivara-solidaria-ts-sdk'
 import { randomUUID } from 'crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 
 import { prisma } from '@/adapters/outbound/prisma/prisma'
-import { PAGE_TEMPLATES } from '@/shared/constants/default-templates-copies'
-import { PAGE_TEMPLATES_ORDER } from '@/shared/constants/default-templates-order'
 import { openai } from '@/shared/infra/openai'
 import type { Prisma } from '@prisma-generated'
 
@@ -67,7 +69,11 @@ export class OrganizationsProfilesRepository implements OrganizationsProfilesRep
       data: {
         organization_id: payload.ong_id,
         sections: personalized_page_template,
-        order: PAGE_TEMPLATES_ORDER[payload.design_template]
+        order: [
+          ...DEFAULT_TEMPLATES_ORDER[
+            payload.design_template as keyof typeof DEFAULT_TEMPLATES_ORDER
+          ]
+        ]
       }
     })
 
@@ -97,7 +103,11 @@ export class OrganizationsProfilesRepository implements OrganizationsProfilesRep
           },
           data: {
             sections: PAGE_TEMPLATES[template as keyof typeof PAGE_TEMPLATES],
-            order: PAGE_TEMPLATES_ORDER[template as keyof typeof PAGE_TEMPLATES]
+            order: [
+              ...DEFAULT_TEMPLATES_ORDER[
+                template as keyof typeof DEFAULT_TEMPLATES_ORDER
+              ]
+            ]
           }
         })
       }

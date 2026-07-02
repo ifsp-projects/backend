@@ -12,6 +12,7 @@ import { organizationsRoutes } from './adapters/inbound/http/controllers/organiz
 import { pagesRoutes } from './adapters/inbound/http/controllers/pages/routes'
 import { registerRoutes } from './adapters/inbound/http/decorators/route-decorator'
 import { env } from './config/env'
+import { campaignRoutes } from './adapters/inbound/http/controllers/campaigns/routes'
 
 export const app = fastify({
   logger:
@@ -78,6 +79,7 @@ registerRoutes(app, addressesRoutes)
 registerRoutes(app, pagesRoutes)
 registerRoutes(app, authRoutes)
 registerRoutes(app, adminRoutes)
+registerRoutes(app, campaignRoutes)
 
 app.get('/health', (_, reply) => {
   return reply.send({

@@ -1,6 +1,5 @@
+import { ZodErrorFormatter } from 'capivara-solidaria-ts-sdk'
 import { ZodError } from 'zod'
-
-import { ZodErrorFormatter } from '@/shared/utils/formatters/zod-error-formatter'
 
 import type { ControllerErrorPayload, ControllerErrorReturn } from './types'
 

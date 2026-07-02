@@ -1,4 +1,4 @@
-import type { AuthInterface } from '@/core/domain/ports/repositories/auth-repository'
+import type { AuthInterface } from '@/core/domain/ports/interfaces/auth-interface'
 import type { Prisma } from '@prisma-generated'
 
 import { prisma } from '../prisma'

@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
-import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repository'
 import { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
 import { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import { env } from '@/config/env'

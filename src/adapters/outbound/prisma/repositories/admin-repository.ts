@@ -4,7 +4,7 @@ import { prisma } from '@/adapters/outbound/prisma/prisma'
 import type {
   AdminInterface,
   TokenValidationResponse
-} from '@/core/domain/ports/repositories/admin-repository'
+} from '@/core/domain/ports/interfaces/admin-interface'
 import type { CreateInviteTokenUseCasePayload } from '@/core/use-cases/admin/create-and-send-invite/types'
 
 export class AdminRepository implements AdminInterface {

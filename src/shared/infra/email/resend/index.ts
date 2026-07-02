@@ -5,7 +5,7 @@ import type {
   EmailInterface,
   SendInviteEmailPayload,
   SendInviteEmailResult
-} from '@/core/domain/ports/repositories/email.repository'
+} from '@/core/domain/ports/interfaces/email.interface'
 
 import { renderInviteEmail } from '../templates/invite-email-template'
 

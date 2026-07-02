@@ -1,4 +1,4 @@
-import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repository'
 import type { AuthRepository } from '@/adapters/outbound/prisma/repositories/auth-repository'
 import type { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import {

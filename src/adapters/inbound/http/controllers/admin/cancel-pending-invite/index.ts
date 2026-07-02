@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
-import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repository'
 import { CancelPendingInviteUseCase } from '@/core/use-cases/admin/cancel-pending-invite'
 
 import { Route } from '../../../decorators/route-decorator'

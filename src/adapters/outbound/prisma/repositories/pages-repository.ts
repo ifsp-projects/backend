@@ -1,13 +1,14 @@
+import {
+  DEFAULT_TEMPLATES_ORDER,
+  PAGE_TEMPLATES
+} from 'capivara-solidaria-ts-sdk'
 import fs from 'node:fs'
 import path from 'node:path'
 
 import { prisma } from '@/adapters/outbound/prisma/prisma'
-import { PAGE_TEMPLATES } from '@/shared/constants/default-templates-copies'
-import { PAGE_TEMPLATES_ORDER } from '@/shared/constants/default-templates-order'
+import type { PagesInterface } from '@/core/domain/ports/interfaces/pages-interface'
 import { openai } from '@/shared/infra/openai'
 import type { Prisma } from '@prisma-generated'
-
-import type { PagesInterface } from '../../../../core/domain/ports/repositories/pages-repository'
 
 export class PagesRepository implements PagesInterface {
   getPageBySlug = async (slug: string) => {
@@ -73,7 +74,11 @@ export class PagesRepository implements PagesInterface {
       data: {
         organization_id: organization?.ong_id,
         sections: personalized_page_template,
-        order: PAGE_TEMPLATES_ORDER['primary']
+        order: [
+          ...DEFAULT_TEMPLATES_ORDER[
+            'primary' as keyof typeof DEFAULT_TEMPLATES_ORDER
+          ]
+        ]
       }
     })
   }

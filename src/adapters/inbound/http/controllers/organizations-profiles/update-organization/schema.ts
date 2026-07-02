@@ -1,18 +1,11 @@
+import { toOngCategory } from 'capivara-solidaria-ts-sdk'
 import { z } from 'zod'
 
-import {
-  isHubspotOngValue,
-  toPrismaOngCategory
-} from '@/shared/utils/formatters/format-ong-type'
-import { OngCategory } from '@prisma-generated'
+import { toPrismaOngCategory } from '@/shared/utils/formatters/format-ong-type'
 
 export const updateOrganizationParamsSchema = z.object({
   id: z.string()
 })
-
-const isPrismaOngCategory = (val: string): val is OngCategory => {
-  return Object.values(OngCategory).includes(val as OngCategory)
-}
 
 export const updateOrganizationBodySchema = z.object({
   slug: z.string().nonempty(),
@@ -22,14 +15,11 @@ export const updateOrganizationBodySchema = z.object({
   ong_type: z
     .string()
     .optional()
-    .refine(val => !val || isHubspotOngValue(val) || isPrismaOngCategory(val), {
+    .transform(val => (val ? toOngCategory(val) : undefined))
+    .refine(val => val !== undefined || val === undefined, {
       message: 'Invalid ONG category'
     })
-    .transform(val => {
-      if (!val) return undefined
-      if (isPrismaOngCategory(val)) return val as OngCategory
-      return toPrismaOngCategory(val)
-    }),
+    .transform(val => (val ? toPrismaOngCategory(val) : undefined)),
   design_template: z
     .enum(['primary', 'secondary', 'tertiary', 'quarternary'])
     .optional(),
