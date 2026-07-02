@@ -1,10 +1,10 @@
-import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repository'
 import {
   InviteTokenAlreadyCancelledError,
   InviteTokenAlreadyUsedError,
   InviteTokenDoesNotExistError
 } from '@/core/domain/exceptions/admin'
-import type { TokenValidationResponse } from '@/core/domain/ports/repositories/admin-repository'
+import type { TokenValidationResponse } from '@/core/domain/ports/interfaces/admin-interface'
 
 export class ValidateInviteTokenUseCase {
   constructor(protected readonly adminRepository: AdminRepository) {}

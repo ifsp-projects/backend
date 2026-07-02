@@ -1,6 +1,6 @@
 import type { OrganizationsRepository } from '@/adapters/outbound/prisma/repositories/organization-repository'
 import { OrganizationDoesNotExistError } from '@/core/domain/exceptions/organizations'
-import type { OngCategory } from '@prisma-generated'
+import type { OngCategoryEnum } from '@prisma-generated'
 
 import type { GetAllOrganizationsUseCaseReturn } from './types'
 
@@ -11,7 +11,7 @@ export class GetAllOrganizationsUseCase {
 
   execute = async (filters?: {
     name?: string
-    ong_type?: OngCategory
+    ong_type?: OngCategoryEnum
   }): Promise<GetAllOrganizationsUseCaseReturn> => {
     const data = await this.organizationsRepository.getAllOrganizations(filters)
 

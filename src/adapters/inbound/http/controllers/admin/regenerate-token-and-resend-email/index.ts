@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
-import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repository'
 import { RegenerateInviteTokenUseCase } from '@/core/use-cases/admin/regenerate-token-and-resend-email'
 
 import { Route } from '../../../decorators/route-decorator'

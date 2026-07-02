@@ -1,0 +1,75 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: 'en-US'
+early_access: true
+reviews:
+  profile: 'chill'
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    base_branches:
+      - main
+      - master
+
+  path_filters:
+    - '!**/.xml'
+    - '!**/__generated__/**'
+    - '!**/generated/**'
+    - '!**/*.json'
+    - '!**/*.svg'
+    - '!**/*.png'
+    - '!**/*.jpg'
+    - '!**/*.gif'
+    - '!**/*.mp4'
+    - '!**/*.webp'
+    - '!**/*.lock'
+
+  path_instructions:
+    - path: '*'
+      instructions: |
+        Do not aim for code style, this is already handled by the linter. Unless the code style suggestion is objectively better, do not suggest changes.
+        Ensure Self-Documenting Code: Aim to make your code self-explanatory through clear naming and structure.
+        The less time a developer has to spend understanding the code, the better but without being overly verbose on the namings.
+        Follow the YAGNI Principle: 'You aren't gonna need it' is a principle that prevents developers from
+        adding functionality until it is necessary. This can help keep your codebase lean and simple.
+        Externalizing User-visible Strings: Ensuring all user-facing texts (such as error messages, API responses, and
+        notification content) are sourced from external resource files or constants where reasonable. This makes it
+        easier to update or translate them without having to modify business logic.
+        Avoiding Concatenation of Translated Strings: Concatenation might change the meaning of a sentence
+        when it is translated to another language due to differences in grammar or sentence structure. Instead,
+        use templates or positional parameters.
+
+    - path: '**/src/**'
+      instructions: |
+        Review the following code written using Fastify and TypeScript for a backend API, ensuring:
+        - The code adheres to best practices associated with Fastify (plugins, decorators, hooks, schema validation) and idiomatic Node.js.
+        - Input validation and serialization use schemas (e.g. Zod or JSON Schema) rather than manual checks scattered through handlers.
+        - The code is well-structured and easy to read. The reader must be able to understand the code without having to refer to other parts of the codebase.
+        - The code is modular and reusable. Services, repositories, and utilities should be designed to be reusable across routes.
+        - The dev-facing API (exported functions, plugin options, service methods) is flexible while offering a good developer experience.
+        - Exported functions, types, and plugin contracts should be documented with JSDoc comments where non-obvious.
+        - Existing JSDocs should be descriptive, direct but clear, and concise.
+        - The internal API should be consistent, predictable, easy to use and resilient to changes.
+        - The code must be performant on Node.js: avoid blocking the event loop (e.g. synchronous I/O, heavy CPU work in the request path), and avoid unnecessary await chaining or sequential awaits that could run concurrently.
+        - The code should be memory efficient and avoid memory leaks, especially in long-running processes (unclosed connections, growing caches, dangling event listeners, unbounded queues).
+        - Async errors are handled explicitly: async route handlers, Prisma calls, and external API calls should have proper try/catch or be wrapped so failures produce a controlled error response instead of an unhandled rejection.
+        - Sensitive data (passwords, tokens, secrets, PII) is never logged or returned in API responses.
+        - Database access (Prisma) is not duplicated ad hoc in multiple places; prefer a shared data-access layer.
+        - Prefer composition over inheritance. Composition provides better flexibility over inheritance. Avoid deep inheritance trees.
+        - Create reusable type definitions: If the same type structure is used in multiple places, create a type definition for it.
+        - If you observe overly repeated code (more than 2~3 times), create a new function. If a function becomes too complex, decompose it into smaller ones.
+        - Don't be too critical about the code architecture itself, like whether the indentation is right or wrong, or the order of things. That doesn't really make sense to flag.
+        - Don't judge integration code with external tools/SDKs (e.g. Supabase, OpenTelemetry, Resend, OpenAI) against their internal implementation - assume their documented usage patterns are correct.
+
+    - path: '**/prisma/**'
+      instructions: |
+        Review Prisma schema and migration-related code ensuring:
+        - Schema changes are backward compatible where possible, or clearly flagged as breaking (e.g. dropping/renaming columns with existing data).
+        - New required fields either have a default value or the migration accounts for existing rows.
+        - Indexes are added for columns used in frequent lookups or foreign keys.
+        - Do not flag migration SQL files themselves for style; they are generated and should not be hand-edited except for documented hotfixes.
+chat:
+  auto_reply: true

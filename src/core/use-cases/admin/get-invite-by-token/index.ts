@@ -1,4 +1,4 @@
-import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repository'
 import { InviteTokenDoesNotExistError } from '@/core/domain/exceptions/admin'
 
 import type { GetInviteByTokenUseCaseReturn } from './types'

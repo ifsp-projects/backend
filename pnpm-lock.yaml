@@ -71,6 +71,9 @@ importers:
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
+      capivara-solidaria-ts-sdk:
+        specifier: 1.0.7
+        version: 1.0.7
       dotenv:
         specifier: ^17.2.3
         version: 17.4.2
@@ -1840,6 +1843,9 @@ packages:
   callsites@3.1.0:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
     engines: {node: '>=6'}
+
+  capivara-solidaria-ts-sdk@1.0.7:
+    resolution: {integrity: sha512-KhpJcKyPtpIKkI42nml0Nqh3tMA0MUrajnuf8zRiRTzVx4imqOwcWvDPiWxklY4170i221e99T+OdM5cW1nVjg==}
 
   chalk@4.1.2:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
@@ -5693,6 +5699,10 @@ snapshots:
       get-intrinsic: 1.3.0
 
   callsites@3.1.0: {}
+
+  capivara-solidaria-ts-sdk@1.0.7:
+    dependencies:
+      zod: 4.4.3
 
   chalk@4.1.2:
     dependencies:

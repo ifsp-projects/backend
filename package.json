@@ -10,7 +10,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",
     "dev": "ts-node-dev --respawn -r tsconfig-paths/register --compiler-options {\\\"module\\\":\\\"CommonJS\\\",\\\"moduleResolution\\\":\\\"node\\\"} src/server.ts",
     "start": "node -r tsconfig-paths/register dist/server.js",
-    "prisma:migrate": "prisma migrate dev --schema ./prisma/schema --create-only",
+    "prisma:migrate": "prisma migrate dev --schema ./prisma/schema",
     "prisma:push": "prisma db push --schema ./prisma/schema"
   },
   "keywords": [],
@@ -39,6 +39,7 @@
     "@supabase/supabase-js": "^2.75.1",
     "@swc/core": "^1.15.2",
     "bcrypt": "^6.0.0",
+    "capivara-solidaria-ts-sdk": "1.0.7",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "fastify": "^5.6.1",

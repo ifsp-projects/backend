@@ -56,12 +56,12 @@ model Campaign {
 
   goal_type     CampaignGoalTypeEnum @default(other)
   goal_value    Decimal              @db.Decimal(15, 2)
-  current_value Decimal              @db.Decimal(15, 2)
+  current_value Decimal              @db.Decimal(15, 2) @default(0)
 
   start_date DateTime
   end_date   DateTime
 
-  location String
+  location String?
 
   updated_at DateTime  @updatedAt
   created_at DateTime  @default(now())

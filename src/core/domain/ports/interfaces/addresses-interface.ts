@@ -9,6 +9,6 @@ export interface AddressInterface {
   getAllAddresses: () => Promise<Address[]>
   updateAddress: (
     id: string,
-    payload: Prisma.OrganizationUncheckedUpdateInput
+    payload: Prisma.AddressUncheckedUpdateInput
   ) => Promise<Address | null>
 }

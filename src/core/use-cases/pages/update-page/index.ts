@@ -1,6 +1,7 @@
+import { generateColorVariants } from 'capivara-solidaria-ts-sdk'
+
 import type { PagesRepository } from '@/adapters/outbound/prisma/repositories/pages-repository'
 import { PageDoesNotExistError } from '@/core/domain/exceptions/pages'
-import { generateColorVariants } from '@/shared/utils/generate-collor-pallete'
 import { deepMerge } from '@/shared/utils/helpers/deep-merge'
 import type { Prisma } from '@prisma-generated'
 

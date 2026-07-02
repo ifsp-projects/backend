@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
-import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repositories'
+import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repository'
 import { ListAllInvitesUseCase } from '@/core/use-cases/admin/list-all-invites'
 
 import { Trace } from '../../../decorators/trace-decorator'

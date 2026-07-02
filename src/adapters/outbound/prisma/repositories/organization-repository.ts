@@ -1,9 +1,9 @@
 import { randomUUID } from 'crypto'
 
 import { prisma } from '@/adapters/outbound/prisma/prisma'
-import type { OngCategory, Prisma } from '@prisma-generated'
+import type { OngCategoryEnum, Prisma } from '@prisma-generated'
 
-import type { OrganizationInterface } from '../../../../core/domain/ports/repositories/organization-repository'
+import type { OrganizationInterface } from '../../../../core/domain/ports/interfaces/organization-interface'
 
 export class OrganizationsRepository implements OrganizationInterface {
   createOrganization = async ({
@@ -66,7 +66,7 @@ export class OrganizationsRepository implements OrganizationInterface {
 
   getAllOrganizations = async (filters?: {
     name?: string
-    ong_type?: OngCategory
+    ong_type?: OngCategoryEnum
   }) => {
     return await prisma.organization.findMany({
       where: {
