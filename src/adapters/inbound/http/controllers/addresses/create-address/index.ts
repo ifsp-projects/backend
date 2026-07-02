@@ -5,7 +5,7 @@ import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/add
 import { CreateAddressUseCase } from '@/core/use-cases/addresses/create-address'
 
 import { Trace } from '../../../decorators/trace-decorator'
-import { createAddressBodySchema } from './schemas'
+import { createAddressBodySchema } from './schema'
 
 export class CreateAddressController {
   private addressRepository: AddressesRepository

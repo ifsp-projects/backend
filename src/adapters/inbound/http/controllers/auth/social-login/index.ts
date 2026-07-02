@@ -8,7 +8,7 @@ import { SocialLoginUseCase } from '@/core/use-cases/auth/social-login'
 import { JwtService } from '@/shared/infra/auth/jwt'
 
 import { Trace } from '../../../decorators/trace-decorator'
-import { socialLoginBodySchema } from './schemas'
+import { socialLoginBodySchema } from './schema'
 
 export class SocialLoginController extends BaseAuth {
   private useCase: SocialLoginUseCase

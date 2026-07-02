@@ -6,7 +6,7 @@ import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/add
 import { DeleteAddressUseCase } from '@/core/use-cases/addresses/delete-address'
 
 import { Trace } from '../../../decorators/trace-decorator'
-import { deleteAddressParamsSchema } from './schemas'
+import { deleteAddressParamsSchema } from './schema'
 
 export class DeleteAddressController {
   private addressRepository: AddressesRepository

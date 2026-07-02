@@ -6,7 +6,7 @@ import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/add
 import { UpdateAddressUseCase } from '@/core/use-cases/addresses/update-address'
 
 import { Trace } from '../../../decorators/trace-decorator'
-import { updateAddressBodySchema, updateAddressParamsSchema } from './schemas'
+import { updateAddressBodySchema, updateAddressParamsSchema } from './schema'
 
 export class UpdateAddressController {
   private addressRepository: AddressesRepository

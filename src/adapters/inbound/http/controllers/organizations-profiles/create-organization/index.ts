@@ -5,7 +5,7 @@ import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repo
 import { CreateOrganizationProfileUseCase } from '@/core/use-cases/organizations-profiles/create-organization-profile'
 
 import { Trace } from '../../../decorators/trace-decorator'
-import { createOrganizationProfileBodySchema } from './schemas'
+import { createOrganizationProfileBodySchema } from './schema'
 
 export class CreateOrganizationProfileController {
   private organizationProfileRepository: OrganizationsProfilesRepository

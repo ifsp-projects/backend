@@ -6,7 +6,7 @@ import { AddressesRepository } from '@/adapters/outbound/prisma/repositories/add
 import { GetAdddressByIdUseCase } from '@/core/use-cases/addresses/get-address-by-id'
 
 import { Trace } from '../../../decorators/trace-decorator'
-import { getAddressByIdParamsSchema } from './schemas'
+import { getAddressByIdParamsSchema } from './schema'
 
 export class GetAddressByIdController {
   private addressRepository: AddressesRepository
