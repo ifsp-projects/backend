@@ -111,12 +111,12 @@ jobs:
           CONTAINER_NAME: api-ifsp
           REGION: ${{ env.REGION }}
           GRAFANA_CLOUD_OTLP_ENDPOINT: ${{ secrets.GRAFANA_CLOUD_OTLP_ENDPOINT }}
-          GRAFANA_CLOUD_AUTH: ${{ secrets.GRAFANA_CLOUD_AUTH }}
+          GRAFANA_CLOUD_AUTH_HEADER: ${{ secrets.GRAFANA_CLOUD_AUTH_HEADER }}
         with:
           host: ${{ env.VM_HOST }}
           username: gcpuser
           key: ${{ secrets.VM_SSH_KEY }}
-          envs: REGISTRY_URL,IMAGE_REPOSITORY,IMAGE_TAG,CONTAINER_NAME,REGION,GRAFANA_CLOUD_OTLP_ENDPOINT,GRAFANA_CLOUD_AUTH
+          envs: REGISTRY_URL,IMAGE_REPOSITORY,IMAGE_TAG,CONTAINER_NAME,REGION,GRAFANA_CLOUD_OTLP_ENDPOINT,GRAFANA_CLOUD_AUTH_HEADER
           script: |
             until sudo docker info >/dev/null 2>&1; do sleep 3; done
 
@@ -137,7 +137,8 @@ jobs:
               -p 127.0.0.1:4318:4318 \
               -v /opt/otel/collector-config.prod.yaml:/etc/otelcol-contrib/config.yaml:ro \
               -e GRAFANA_CLOUD_OTLP_ENDPOINT="$GRAFANA_CLOUD_OTLP_ENDPOINT" \
-              -e GRAFANA_CLOUD_AUTH="$GRAFANA_CLOUD_AUTH" \
+              -e GRAFANA_CLOUD_AUTH_HEADER="$GRAFANA_CLOUD_AUTH_HEADER" \
+              -e DEPLOY_ENV="prod" \
               otel/opentelemetry-collector-contrib:0.96.0
 
             sudo docker pull $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG

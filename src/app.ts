@@ -7,12 +7,12 @@ import fastifyJwt from '@fastify/jwt'
 import { addressesRoutes } from './adapters/inbound/http/controllers/addresses/routes'
 import { adminRoutes } from './adapters/inbound/http/controllers/admin/routes'
 import { authRoutes } from './adapters/inbound/http/controllers/auth/routes'
+import { campaignRoutes } from './adapters/inbound/http/controllers/campaigns/routes'
 import { organizationsProfilesRoutes } from './adapters/inbound/http/controllers/organizations-profiles/routes'
 import { organizationsRoutes } from './adapters/inbound/http/controllers/organizations/routes'
 import { pagesRoutes } from './adapters/inbound/http/controllers/pages/routes'
 import { registerRoutes } from './adapters/inbound/http/decorators/route-decorator'
 import { env } from './config/env'
-import { campaignRoutes } from './adapters/inbound/http/controllers/campaigns/routes'
 
 export const app = fastify({
   logger:
