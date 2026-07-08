@@ -93,12 +93,21 @@ resource "google_compute_instance" "vm" {
   metadata_startup_script = <<-EOF
     #!/bin/bash
     set -e
+
     apt-get update -y
     apt-get install -y docker.io
+
     systemctl enable --now docker
+    
     usermod -aG docker gcpuser
+
+    mkdir -p /home/gcpuser/app
+    chown -R gcpuser:gcpuser /home/gcpuser/app
+    chmod 755 /home/gcpuser/app
+
     mkdir -p /opt/otel
     chown -R gcpuser:gcpuser /opt/otel
+    chmod 755 /opt/otel
   EOF
 }
 
