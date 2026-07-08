@@ -95,7 +95,7 @@ resource "google_compute_instance" "vm" {
     set -e
 
     apt-get update -y
-    apt-get install -y docker.io
+    apt-get install -y docker.io docker-compose-plugin
 
     systemctl enable --now docker
     
