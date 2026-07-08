@@ -90,7 +90,6 @@ resource "google_compute_instance" "vm" {
     ssh-keys = "gcpuser:${var.ssh_public_key}"
   }
 
-  # Startup script mínimo — só Docker, sem gcloud (~2 min)
   metadata_startup_script = <<-EOF
     #!/bin/bash
     set -e

@@ -98,7 +98,7 @@ jobs:
           host: ${{ env.VM_HOST }}
           username: gcpuser
           key: ${{ secrets.VM_SSH_KEY }}
-          source: "devops/otel/collector-config.prod.yaml"
+          source: "devops/otel/collector-config.yaml"
           target: "/opt/otel"
           strip_components: 2
 
@@ -111,12 +111,12 @@ jobs:
           CONTAINER_NAME: api-ifsp
           REGION: ${{ env.REGION }}
           GRAFANA_CLOUD_OTLP_ENDPOINT: ${{ secrets.GRAFANA_CLOUD_OTLP_ENDPOINT }}
-          GRAFANA_CLOUD_AUTH: ${{ secrets.GRAFANA_CLOUD_AUTH }}
+          GRAFANA_CLOUD_AUTH_HEADER: ${{ secrets.GRAFANA_CLOUD_AUTH_HEADER }}
         with:
           host: ${{ env.VM_HOST }}
           username: gcpuser
           key: ${{ secrets.VM_SSH_KEY }}
-          envs: REGISTRY_URL,IMAGE_REPOSITORY,IMAGE_TAG,CONTAINER_NAME,REGION,GRAFANA_CLOUD_OTLP_ENDPOINT,GRAFANA_CLOUD_AUTH
+          envs: REGISTRY_URL,IMAGE_REPOSITORY,IMAGE_TAG,CONTAINER_NAME,REGION,GRAFANA_CLOUD_OTLP_ENDPOINT,GRAFANA_CLOUD_AUTH_HEADER
           script: |
             until sudo docker info >/dev/null 2>&1; do sleep 3; done
 
@@ -126,19 +126,14 @@ jobs:
 
             sudo docker network create observability 2>/dev/null || true
 
-            sudo docker rm -f otel-collector 2>/dev/null || true
-            sudo docker run -d \
-              --name otel-collector \
-              --restart always \
-              --network observability \
-              --memory 128m \
-              --cpus 0.15 \
-              -p 127.0.0.1:4317:4317 \
-              -p 127.0.0.1:4318:4318 \
-              -v /opt/otel/collector-config.prod.yaml:/etc/otelcol-contrib/config.yaml:ro \
-              -e GRAFANA_CLOUD_OTLP_ENDPOINT="$GRAFANA_CLOUD_OTLP_ENDPOINT" \
-              -e GRAFANA_CLOUD_AUTH="$GRAFANA_CLOUD_AUTH" \
-              otel/opentelemetry-collector-contrib:0.96.0
+            cat > /opt/otel/.env <<EOF
+            GRAFANA_CLOUD_OTLP_ENDPOINT=$GRAFANA_CLOUD_OTLP_ENDPOINT
+            GRAFANA_CLOUD_AUTH_HEADER=$GRAFANA_CLOUD_AUTH_HEADER
+            EOF
+
+            cd /opt/otel
+            sudo docker compose --env-file .env -f docker-compose.yaml up -d
+            cd -
 
             sudo docker pull $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG
             sudo docker stop $CONTAINER_NAME 2>/dev/null || true

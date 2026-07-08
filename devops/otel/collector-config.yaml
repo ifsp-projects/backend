@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/srikanthccv/otelcol-jsonschema/main/schema.json
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 80
+    spike_limit_mib: 25
+
+  batch:
+    timeout: 5s
+    send_batch_size: 1024
+
+  resource:
+    attributes:
+      - key: deployment.environment
+        value: "${env:DEPLOY_ENV}"
+        action: insert
+
+exporters:
+  otlphttp/grafana_cloud:
+    endpoint: "${env:GRAFANA_CLOUD_OTLP_ENDPOINT}"
+    headers:
+      Authorization: "Basic ${env:GRAFANA_CLOUD_AUTH_HEADER}"
+    compression: gzip
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 300s
+    sending_queue:
+      enabled: true
+      num_consumers: 2
+      queue_size: 256
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [otlphttp/grafana_cloud]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [otlphttp/grafana_cloud]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [otlphttp/grafana_cloud]
