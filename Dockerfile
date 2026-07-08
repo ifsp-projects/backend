@@ -22,15 +22,14 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-ENV NODE_OPTIONS="--require @opentelemetry/auto-instrumentations-node/register"
-
 ENV OTEL_EXPORTER_OTLP_PROTOCOL="grpc"
 ENV OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-collector:4317"
 
-ENV OTEL_EXPORTER_OTLP_LOGS_PROTOCOL="http/protobuf"
-ENV OTEL_EXPORTER_OTLP_LOGS_ENDPOINT="http://otel-collector:4318/v1/logs"
+# ENV OTEL_EXPORTER_OTLP_LOGS_PROTOCOL="http/protobuf"
+# ENV OTEL_EXPORTER_OTLP_LOGS_ENDPOINT="http://otel-collector:4318/v1/logs"
 
-ENV OTEL_RESOURCE_ATTRIBUTES="service.name=api-ifsp,deployment.environment=prod"
+ENV OTEL_SERVICE_NAME="capivara-solidaria-api"
+ENV OTEL_RESOURCE_ATTRIBUTES="service.namespace=capivara-solidaria,deployment.environment=production"
 
 RUN addgroup --system --gid 1001 nodejs \
 	&& adduser --system --uid 1001 fastify --ingroup nodejs

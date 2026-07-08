@@ -1,7 +1,7 @@
 import type { Attributes } from '@opentelemetry/api'
 import { SpanStatusCode, trace } from '@opentelemetry/api'
 
-const tracer = trace.getTracer('capivara-solidaria-api')
+const tracer = trace.getTracer('capivara-solidaria-backend-api-otel')
 
 export async function withSpan<T>(
   name: string,
