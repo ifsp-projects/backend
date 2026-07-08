@@ -132,7 +132,7 @@ jobs:
             EOF
 
             cd /opt/otel
-            sudo docker compose --env-file .env -f docker-compose.yaml up -d
+            sudo docker compose --env-file .env -f otel-compose.yaml up -d
             cd -
 
             sudo docker pull $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG
