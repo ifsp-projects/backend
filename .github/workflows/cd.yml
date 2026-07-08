@@ -98,9 +98,7 @@ jobs:
           host: ${{ env.VM_HOST }}
           username: gcpuser
           key: ${{ secrets.VM_SSH_KEY }}
-          source: |
-            devops/otel/otel-compose.yaml
-            devops/otel/collector-config.yaml
+          source: "devops/otel/otel-compose.yaml,devops/otel/collector-config.yaml"
           target: "/opt/otel"
           strip_components: 2
 
