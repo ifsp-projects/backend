@@ -117,27 +117,60 @@ jobs:
           username: gcpuser
           key: ${{ secrets.VM_SSH_KEY }}
           envs: REGISTRY_URL,IMAGE_REPOSITORY,IMAGE_TAG,CONTAINER_NAME,REGION,GRAFANA_CLOUD_OTLP_ENDPOINT,GRAFANA_CLOUD_AUTH_HEADER
+          command_timeout: 15m
+          debug: true
           script: |
-            until sudo docker info >/dev/null 2>&1; do sleep 3; done
+            set -xe
 
-            TOKEN=$(curl -sf "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" \
-              -H "Metadata-Flavor: Google" | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
-            echo $TOKEN | sudo docker login -u oauth2accesstoken --password-stdin https://$REGION-docker.pkg.dev
+            echo "=== Docker version ==="
+            sudo docker --version
 
-            sudo docker network create observability 2>/dev/null || true
+            echo "=== Compose version ==="
+            sudo docker compose version || true
+            sudo docker-compose version || true
 
-            cat > /opt/otel/.env <<EOF
+            echo "=== Login ==="
+
+            TOKEN=$(curl -sf \
+            "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" \
+            -H "Metadata-Flavor: Google" \
+            | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
+
+            echo $TOKEN | sudo docker login \
+              -u oauth2accesstoken \
+              --password-stdin \
+              https://$REGION-docker.pkg.dev
+
+            echo "=== Files ==="
+            ls -lah /opt/otel
+
+            echo "=== Env ==="
+            cat >/opt/otel/.env <<EOF
             GRAFANA_CLOUD_OTLP_ENDPOINT=$GRAFANA_CLOUD_OTLP_ENDPOINT
             GRAFANA_CLOUD_AUTH_HEADER=$GRAFANA_CLOUD_AUTH_HEADER
             EOF
 
-            cd /opt/otel
-            sudo docker compose --env-file .env -f otel-compose.yaml up -d
-            cd -
+            cat /opt/otel/.env
 
+            echo "=== Compose up ==="
+            cd /opt/otel
+
+            sudo docker compose \
+              --env-file .env \
+              -f otel-compose.yaml \
+              up -d
+
+            echo "=== Containers ==="
+            sudo docker ps -a
+
+            echo "=== Pull API ==="
             sudo docker pull $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG
-            sudo docker stop $CONTAINER_NAME 2>/dev/null || true
-            sudo docker rm   $CONTAINER_NAME 2>/dev/null || true
+
+            echo "=== Run API ==="
+
+            sudo docker stop $CONTAINER_NAME || true
+            sudo docker rm $CONTAINER_NAME || true
+
             sudo docker run -d \
               --name $CONTAINER_NAME \
               --restart unless-stopped \
@@ -146,4 +179,4 @@ jobs:
               -p 80:8000 \
               $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG
 
-            sudo docker system prune -f
+            sudo docker ps -a
