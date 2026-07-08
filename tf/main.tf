@@ -94,6 +94,7 @@ resource "google_compute_instance" "vm" {
     #!/bin/bash
     set -e
 
+    apt-cache policy docker-compose-plugin
     apt-get update -y
     apt-get install -y docker.io docker-compose-plugin
 
