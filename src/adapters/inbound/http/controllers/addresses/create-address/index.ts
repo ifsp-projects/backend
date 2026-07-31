@@ -30,4 +30,4 @@ export class CreateAddressController {
   }
 }
 
-export const createdAddressController = new CreateAddressController()
+export const createAddressController = new CreateAddressController()

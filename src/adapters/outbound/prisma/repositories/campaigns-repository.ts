@@ -19,15 +19,22 @@ export class CampaignsRepository implements CampaignInterface {
   }
 
   deleteCampaign = async (id: string): Promise<Campaign | null> => {
-    return await prisma.campaign.delete({
+    return await prisma.campaign.update({
       where: {
         id
+      },
+      data: {
+        deleted_at: new Date()
       }
     })
   }
 
   getAllCampaigns = async (): Promise<Campaign[] | null> => {
-    return await prisma.campaign.findMany()
+    return await prisma.campaign.findMany({
+      where: {
+        deleted_at: null
+      }
+    })
   }
 
   getCampaignById = async (id: string): Promise<Campaign | null> => {

@@ -7,7 +7,7 @@ import type {
   SendInviteEmailResult
 } from '@/core/domain/ports/interfaces/email.interface'
 
-import { renderInviteEmail } from '../templates/invite-email-template'
+import { renderInviteEmail } from './templates/invite-email-template'
 
 export class ResendRepository implements EmailInterface {
   private readonly client: Resend

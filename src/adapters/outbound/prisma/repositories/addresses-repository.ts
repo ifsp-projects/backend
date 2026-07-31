@@ -21,13 +21,10 @@ export class AddressesRepository implements AddressInterface {
   getAddressById = async (id: string) => {
     return await prisma.address.findFirst({
       where: {
-        id
+        id,
+        deleted_at: null
       }
     })
-  }
-
-  getAllAddresses = async () => {
-    return await prisma.address.findMany()
   }
 
   updateAddress = async (
@@ -45,9 +42,12 @@ export class AddressesRepository implements AddressInterface {
   }
 
   deleteAddress = async (id: string) => {
-    return await prisma.address.delete({
+    return await prisma.address.update({
       where: {
         id
+      },
+      data: {
+        deleted_at: new Date()
       }
     })
   }

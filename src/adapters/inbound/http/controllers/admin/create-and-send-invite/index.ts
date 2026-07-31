@@ -1,9 +1,9 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
+import { ResendRepository } from '@/adapters/outbound/emails/resend'
 import { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repository'
 import { CreateInviteTokenUseCase } from '@/core/use-cases/admin/create-and-send-invite'
 import { SendInviteUseCase } from '@/core/use-cases/email/send-invite'
-import { ResendRepository } from '@/shared/infra/email/resend'
 
 import { Route } from '../../../decorators/route-decorator'
 import { Trace } from '../../../decorators/trace-decorator'

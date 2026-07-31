@@ -75,7 +75,8 @@ export class OrganizationsRepository implements OrganizationInterface {
             name: { contains: filters.name, mode: 'insensitive' }
           }),
           ...(filters?.ong_type && { ong_type: filters.ong_type })
-        }
+        },
+        deleted_at: null
       },
       include: {
         organization_profile: true
@@ -84,9 +85,12 @@ export class OrganizationsRepository implements OrganizationInterface {
   }
 
   deleteOrganization = async (id: string) => {
-    return await prisma.organization.delete({
+    return await prisma.organization.update({
       where: {
         id
+      },
+      data: {
+        deleted_at: new Date()
       }
     })
   }

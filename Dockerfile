@@ -1,4 +1,4 @@
-FROM node:22.16-alpine AS base
+FROM node:24.12.0-alpine AS base
 
 RUN apk add --no-cache libc6-compat openssl \
 	&& corepack enable && corepack prepare pnpm@10.17.1 --activate

@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import './shared/infra/open-telemetry/instrumentation.ts'
+import './shared/infra/open-telemetry/instrumentation'
 
 import { app } from './app'
 import { env } from './config/env'

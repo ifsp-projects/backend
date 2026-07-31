@@ -1,6 +1,6 @@
+import type { ResendRepository } from '@/adapters/outbound/emails/resend'
 import type { AdminRepository } from '@/adapters/outbound/prisma/repositories/admin-repository'
 import { InviteNotFound } from '@/core/domain/exceptions/invites'
-import type { ResendRepository } from '@/shared/infra/email/resend'
 
 import type { SendInviteUseCasePayload, SendInviteUseCaseReturn } from './types'
 

@@ -9,14 +9,12 @@ export type TokenValidationResponse = {
 }
 
 export interface AdminInterface {
-  cancelPendingInvite: (id: string) => Promise<null>
   createAndSendInvite: (
     payload: CreateInviteTokenUseCasePayload
   ) => Promise<InviteToken | null>
   getInviteByToken: (token: string) => Promise<InviteToken | null>
   getInviteTokenById: (id: string) => Promise<InviteToken | null>
   listAllInvites: () => Promise<InviteToken[]>
-  regenerateAndResendToken: (id: string) => Promise<InviteToken | null>
   useInviteToken: (token: string) => Promise<null>
   validateToken: (token: string) => Promise<TokenValidationResponse>
 }

@@ -12,49 +12,6 @@ export class AdminRepository implements AdminInterface {
     return await prisma.inviteToken.findMany()
   }
 
-  cancelPendingInvite = async (id: string) => {
-    await prisma.inviteToken.update({
-      where: { id },
-      data: {
-        cancelled_at: new Date()
-      }
-    })
-
-    return null
-  }
-
-  regenerateAndResendToken = async (id: string) => {
-    const existingInvite = await prisma.inviteToken.findUnique({
-      where: {
-        id
-      }
-    })
-
-    if (!existingInvite) {
-      return null
-    }
-
-    if (existingInvite.used_at) {
-      return null
-    }
-
-    // Invalidated old token
-    await prisma.inviteToken.update({
-      where: { id },
-      data: { cancelled_at: new Date() }
-    })
-
-    const refreshedInvite = await prisma.inviteToken.create({
-      data: {
-        email: existingInvite.email,
-        organization_id: existingInvite.organization_id,
-        expires_at: new Date(Date.now() + 1000 * 60 * 60 * 72) // 72h from now
-      }
-    })
-
-    return refreshedInvite
-  }
-
   createAndSendInvite = async (payload: CreateInviteTokenUseCasePayload) => {
     return await prisma.inviteToken.create({
       data: {
