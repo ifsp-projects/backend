@@ -41,22 +41,24 @@ export class GetVisitorsUseCase {
         selectedDate: window.selectedDate
       },
       async () => {
-        const current = await this.dependencies.queryEvents({
-          slug: request.slug,
-          startUtc: window.startUtc,
-          endUtc: window.endUtc,
-          config
-        })
-        const previous = await this.dependencies.queryEvents({
-          slug: request.slug,
-          startUtc: window.selectedDate
-            ? window.previousDayStartUtc!
-            : window.previousStartUtc,
-          endUtc: window.selectedDate
-            ? window.selectedStartUtc!
-            : window.startUtc,
-          config
-        })
+        const [current, previous] = await Promise.all([
+          this.dependencies.queryEvents({
+            slug: request.slug,
+            startUtc: window.startUtc,
+            endUtc: window.endUtc,
+            config
+          }),
+          this.dependencies.queryEvents({
+            slug: request.slug,
+            startUtc: window.selectedDate
+              ? window.previousDayStartUtc!
+              : window.previousStartUtc,
+            endUtc: window.selectedDate
+              ? window.selectedStartUtc!
+              : window.startUtc,
+            config
+          })
+        ])
         const period = summarizePeriod(
           current,
           window.selectedDate ? [] : previous,
@@ -75,7 +77,7 @@ export class GetVisitorsUseCase {
           timezone: VISITORS_TIMEZONE,
           period_start: window.periodStart,
           period_end: window.periodEnd,
-          updated_at: now.toISOString(),
+          updated_at: (this.dependencies.now?.() ?? new Date()).toISOString(),
           daily: period.daily,
           period_highlights: period.period_highlights,
           sources: classifySources(selected, config.publicHost),

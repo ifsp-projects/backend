@@ -149,4 +149,36 @@ describe('GetVisitorsUseCase', () => {
       ).response.pageviews
     ).toBe(3)
   })
+
+  it('starts both external queries together and stamps completion time', async () => {
+    let now = new Date('2026-09-24T12:00:00.000Z')
+    const resolvers: Array<(value: VisitorsEvent[]) => void> = []
+    const queryEvents = vi.fn(
+      () =>
+        new Promise<VisitorsEvent[]>(resolve => {
+          resolvers.push(resolve)
+        })
+    )
+    const useCase = new GetVisitorsUseCase({
+      findOwnership: async () => ({ ong_id: 'org-one' }),
+      getConfig: () => ({
+        apiHost: 'https://us.posthog.com',
+        projectId: 'project',
+        apiKey: 'secret',
+        publicHost: 'capivara-solidaria.com.br'
+      }),
+      queryEvents,
+      now: () => now
+    })
+    const pending = useCase.execute({
+      organizationId: 'org-one',
+      request: { slug: 'one', range: '7d' }
+    })
+    await vi.waitFor(() => expect(queryEvents).toHaveBeenCalledTimes(2))
+    now = new Date('2026-09-24T12:00:07.000Z')
+    resolvers.forEach(resolve => resolve([]))
+    const result = await pending
+    expect(result.response.updated_at).toBe('2026-09-24T12:00:07.000Z')
+    expect(result.response.pageviews).toBe(0)
+  })
 })
