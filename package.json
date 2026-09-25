@@ -4,9 +4,9 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
     "build": "pnpm exec prisma generate --schema ./prisma/schema && tsup src --out-dir dist --sourcemap inline",
-    "lint": "eslint",
+    "lint": "eslint src vitest.config.ts",
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",
     "dev": "ts-node-dev --respawn -r tsconfig-paths/register --compiler-options {\\\"module\\\":\\\"CommonJS\\\",\\\"moduleResolution\\\":\\\"node\\\"} src/server.ts",
     "start": "node -r tsconfig-paths/register dist/server.js",
@@ -76,6 +76,7 @@
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
     "tsup": "^8.5.0",
-    "typescript-eslint": "^8.62.0"
+    "typescript-eslint": "^8.62.0",
+    "vitest": "^5.0.2"
   }
 }
