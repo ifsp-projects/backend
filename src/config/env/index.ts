@@ -30,3 +30,52 @@ export const env = {
   ...parsed.data,
   IS_DEVELOP_MODE: parsed.data.ENV === 'dev'
 }
+
+const analyticsIntegrationSchema = z.object({
+  POSTHOG_API_HOST: z.url(),
+  POSTHOG_PROJECT_ID: z.string().trim().min(1),
+  POSTHOG_READABLE_API_KEY: z.string().trim().min(1),
+  WEBPAGE_BASE_URL: z.url()
+})
+
+export class AnalyticsIntegrationUnavailableError extends Error {
+  constructor() {
+    super('Analytics integration unavailable')
+    this.name = 'AnalyticsIntegrationUnavailableError'
+  }
+}
+
+export const getAnalyticsIntegrationConfig = (
+  values: NodeJS.ProcessEnv = process.env
+) => {
+  const result = analyticsIntegrationSchema.safeParse(values)
+
+  if (!result.success) {
+    throw new AnalyticsIntegrationUnavailableError()
+  }
+
+  const apiHost = new URL(result.data.POSTHOG_API_HOST)
+  const publicUrl = new URL(result.data.WEBPAGE_BASE_URL)
+
+  if (
+    apiHost.protocol !== 'https:' ||
+    !['us.posthog.com', 'eu.posthog.com'].includes(apiHost.hostname) ||
+    apiHost.pathname !== '/' ||
+    apiHost.search ||
+    apiHost.hash ||
+    publicUrl.protocol !== 'https:' ||
+    publicUrl.hostname === 'localhost' ||
+    publicUrl.pathname !== '/' ||
+    publicUrl.search ||
+    publicUrl.hash
+  ) {
+    throw new AnalyticsIntegrationUnavailableError()
+  }
+
+  return {
+    apiHost: apiHost.origin,
+    projectId: result.data.POSTHOG_PROJECT_ID,
+    apiKey: result.data.POSTHOG_READABLE_API_KEY,
+    publicHost: publicUrl.hostname
+  }
+}
