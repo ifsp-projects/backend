@@ -145,6 +145,18 @@ export class OrganizationsProfilesRepository implements OrganizationsProfilesRep
     })
   }
 
+  getOrganizationOwnershipBySlug = async (slug: string) => {
+    return await prisma.organizationProfile.findUnique({
+      where: {
+        slug
+      },
+      select: {
+        slug: true,
+        ong_id: true
+      }
+    })
+  }
+
   getAllOrganizationsProfiles = async () => {
     return await prisma.organizationProfile.findMany({
       include: {
