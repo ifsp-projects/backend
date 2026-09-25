@@ -18,12 +18,25 @@ const token = (id = 'org-one') =>
   jwt.createToken(id, 'admin@example.org', 'admin', 60_000).token
 const url = '/api/analytics/visitors?slug=one&range=7d'
 
-const setup = () => {
+const setup = (logs?: Record<string, unknown>[]) => {
   const execute = vi.fn().mockResolvedValue({
     response: { range: '7d', updated_at: '2026-09-24T12:00:00.000Z' },
     cacheHit: false
   })
-  const app = fastify({ logger: false })
+  const app = fastify({
+    logger: logs
+      ? {
+          level: 'info',
+          stream: {
+            write: (line: string) => {
+              logs.push(JSON.parse(line))
+            }
+          }
+        }
+      : false,
+    disableRequestLogging: request =>
+      request.url.split('?')[0] === '/api/analytics/visitors'
+  })
   registerRoutes(app, [
     new GetVisitorsController({
       useCase: { execute },
@@ -117,6 +130,45 @@ describe('GET /api/analytics/visitors', () => {
     expect(response.json()).toEqual({ error: 'Too many requests' })
     expect(response.headers['retry-after']).toBe('60')
     expect(execute).toHaveBeenCalledTimes(30)
+    await app.close()
+  })
+
+  it('logs duration, status and cache state without secrets or raw query', async () => {
+    const logs: Record<string, unknown>[] = []
+    const { app, execute } = setup(logs)
+    execute.mockResolvedValueOnce({ response: { range: '7d' }, cacheHit: true })
+    const bearer = token()
+    const response = await app.inject({
+      url,
+      headers: { authorization: `Bearer ${bearer}` }
+    })
+    expect(response.statusCode).toBe(200)
+    expect(
+      logs.find(log => log.msg === 'analytics visitors request')
+    ).toMatchObject({
+      duration_ms: expect.any(Number),
+      status: 200,
+      cache: 'hit'
+    })
+    execute.mockRejectedValueOnce(new Error('secret raw error'))
+    const failed = await app.inject({
+      url,
+      headers: { authorization: `Bearer ${bearer}` }
+    })
+    expect(failed.statusCode).toBe(500)
+    expect(
+      logs.filter(log => log.msg === 'analytics visitors request')[1]
+    ).toMatchObject({
+      duration_ms: expect.any(Number),
+      status: 500,
+      cache: 'none',
+      failure: 'Internal server error'
+    })
+    const serialized = JSON.stringify(logs)
+    expect(serialized).not.toContain(bearer)
+    expect(serialized).not.toContain('secret raw error')
+    expect(serialized).not.toContain('slug=one')
+    expect(serialized).not.toContain('distinct_id')
     await app.close()
   })
 })

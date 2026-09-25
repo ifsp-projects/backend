@@ -53,3 +53,13 @@ it('registers the exact authenticated visitors path beside existing routes', asy
     false
   )
 })
+
+it('disables automatic request logs for analytics only', async () => {
+  const { disableVisitorsRequestLogging } = await import('./app')
+  expect(
+    disableVisitorsRequestLogging({
+      url: '/api/analytics/visitors?distinct_id=sensitive'
+    })
+  ).toBe(true)
+  expect(disableVisitorsRequestLogging({ url: '/health' })).toBe(false)
+})

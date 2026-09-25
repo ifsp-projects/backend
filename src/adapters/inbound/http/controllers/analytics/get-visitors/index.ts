@@ -27,6 +27,25 @@ import { parseGetVisitorsQuery } from './schema'
 
 type VisitorsExecutor = Pick<GetVisitorsUseCase, 'execute'>
 
+const sendFailure = (
+  request: FastifyRequest,
+  reply: FastifyReply,
+  started: number,
+  status: number,
+  message: string
+): FastifyReply => {
+  request.log.warn(
+    {
+      duration_ms: Math.round(performance.now() - started),
+      status,
+      cache: 'none',
+      failure: message
+    },
+    'analytics visitors request'
+  )
+  return reply.status(status).send({ error: message })
+}
+
 export class GetVisitorsController {
   private readonly useCase: VisitorsExecutor
   private readonly jwt: JwtService
@@ -51,15 +70,16 @@ export class GetVisitorsController {
 
   @Route('GET', '/api/analytics/visitors')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    const started = performance.now()
     const authorization = request.headers.authorization
     if (!authorization?.startsWith('Bearer ') || !authorization.slice(7)) {
-      return reply.status(401).send({ error: 'Unauthorized' })
+      return sendFailure(request, reply, started, 401, 'Unauthorized')
     }
     let organizationId: string
     try {
       organizationId = this.jwt.verifyToken(authorization.slice(7)).id
     } catch {
-      return reply.status(401).send({ error: 'Unauthorized' })
+      return sendFailure(request, reply, started, 401, 'Unauthorized')
     }
 
     try {
@@ -69,28 +89,59 @@ export class GetVisitorsController {
         organizationId,
         request: visitorsRequest
       })
+      request.log.info(
+        {
+          duration_ms: Math.round(performance.now() - started),
+          status: 200,
+          cache: result.cacheHit ? 'hit' : 'miss'
+        },
+        'analytics visitors request'
+      )
       return reply.status(200).send(result.response)
     } catch (error) {
       if (error instanceof InvalidVisitorsFilterError)
-        return reply.status(400).send({ error: 'Invalid visitors filter' })
+        return sendFailure(
+          request,
+          reply,
+          started,
+          400,
+          'Invalid visitors filter'
+        )
       if (error instanceof VisitorsForbiddenError)
-        return reply.status(403).send({ error: 'Forbidden' })
+        return sendFailure(request, reply, started, 403, 'Forbidden')
       if (error instanceof VisitorsSlugNotFoundError)
-        return reply.status(404).send({ error: 'Organization not found' })
+        return sendFailure(
+          request,
+          reply,
+          started,
+          404,
+          'Organization not found'
+        )
       if (error instanceof VisitorsRateLimitError)
-        return reply
-          .header('Retry-After', String(error.retryAfter))
-          .status(429)
-          .send({ error: 'Too many requests' })
+        return sendFailure(
+          request,
+          reply.header('Retry-After', String(error.retryAfter)),
+          started,
+          429,
+          'Too many requests'
+        )
       if (error instanceof VisitorsQueryError)
-        return reply
-          .status(502)
-          .send({ error: 'Visitors data is temporarily unavailable' })
+        return sendFailure(
+          request,
+          reply,
+          started,
+          502,
+          'Visitors data is temporarily unavailable'
+        )
       if (error instanceof AnalyticsIntegrationUnavailableError)
-        return reply
-          .status(503)
-          .send({ error: 'Analytics integration unavailable' })
-      return reply.status(500).send({ error: 'Internal server error' })
+        return sendFailure(
+          request,
+          reply,
+          started,
+          503,
+          'Analytics integration unavailable'
+        )
+      return sendFailure(request, reply, started, 500, 'Internal server error')
     }
   }
 }

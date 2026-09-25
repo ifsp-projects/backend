@@ -15,7 +15,11 @@ import { pagesRoutes } from './adapters/inbound/http/controllers/pages/routes'
 import { registerRoutes } from './adapters/inbound/http/decorators/route-decorator'
 import { env } from './config/env'
 
+export const disableVisitorsRequestLogging = (request: { url: string }) =>
+  request.url.split('?')[0] === '/api/analytics/visitors'
+
 export const app = fastify({
+  disableRequestLogging: disableVisitorsRequestLogging,
   logger:
     process.env.NODE_ENV === 'production'
       ? {
