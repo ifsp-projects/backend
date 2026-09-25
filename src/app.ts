@@ -6,6 +6,7 @@ import fastifyJwt from '@fastify/jwt'
 
 import { addressesRoutes } from './adapters/inbound/http/controllers/addresses/routes'
 import { adminRoutes } from './adapters/inbound/http/controllers/admin/routes'
+import { analyticsRoutes } from './adapters/inbound/http/controllers/analytics/routes'
 import { authRoutes } from './adapters/inbound/http/controllers/auth/routes'
 import { campaignRoutes } from './adapters/inbound/http/controllers/campaigns/routes'
 import { organizationsProfilesRoutes } from './adapters/inbound/http/controllers/organizations-profiles/routes'
@@ -79,6 +80,7 @@ registerRoutes(app, addressesRoutes)
 registerRoutes(app, pagesRoutes)
 registerRoutes(app, authRoutes)
 registerRoutes(app, adminRoutes)
+registerRoutes(app, analyticsRoutes)
 registerRoutes(app, campaignRoutes)
 
 app.get('/health', (_, reply) => {

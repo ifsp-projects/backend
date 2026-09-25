@@ -37,3 +37,19 @@ it('responds to the health route without external services', async () => {
     status: 'healthy'
   })
 })
+
+it('registers the exact authenticated visitors path beside existing routes', async () => {
+  const response = await app.inject({
+    method: 'GET',
+    url: '/api/analytics/visitors?slug=one&range=7d'
+  })
+  expect(response.statusCode).toBe(401)
+  expect(response.json()).toEqual({ error: 'Unauthorized' })
+  expect(
+    app.hasRoute({ method: 'GET', url: '/organizations/slug/:slug' })
+  ).toBe(true)
+  expect(app.hasRoute({ method: 'GET', url: '/health' })).toBe(true)
+  expect(app.hasRoute({ method: 'GET', url: '/api/analytics/visitors/' })).toBe(
+    false
+  )
+})
