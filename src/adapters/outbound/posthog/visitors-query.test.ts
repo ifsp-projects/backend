@@ -34,12 +34,19 @@ describe('PostHog visitors query', () => {
       response([
         row(),
         row('https://capivara.org.br/ongs/my-ong/?source=test'),
+        row('HTTPS://CAPIVARA.ORG.BR/ongs/my-ong'),
         row('https://capivara.org.br/ongs/my-ong-extra'),
         row('bad URL')
       ])
     ) as unknown as typeof fetch
     const events = await queryVisitorsEvents({ ...input, fetcher })
     expect(events).toEqual([
+      {
+        timestamp: '2026-09-18T12:00:00.000Z',
+        distinctId: 'visitor-1',
+        referrer: null,
+        deviceType: 'Mobile'
+      },
       {
         timestamp: '2026-09-18T12:00:00.000Z',
         distinctId: 'visitor-1',
@@ -62,6 +69,9 @@ describe('PostHog visitors query', () => {
     const body = JSON.parse(String(options?.body))
     expect(body.query.kind).toBe('HogQLQuery')
     expect(body.query.query).toContain("event = '$pageview'")
+    expect(body.query.query).toContain(
+      'lower(toString(properties.$current_url))'
+    )
     expect(body.query.query).not.toContain('my-ong')
     expect(body.query.values).toEqual({
       startSeconds: 1790132400 - 6 * 86400,
@@ -102,9 +112,7 @@ describe('PostHog visitors query', () => {
   })
 
   it('continues with the timestamp and UUID cursor when more rows exist', async () => {
-    const second = [...row(), 'unused']
-    second.splice(6)
-    second[0] = '2026-09-19T12:00:00.000Z'
+    const second = row()
     second[1] = 'uuid-2'
     const fetcher = vi
       .fn()
@@ -115,7 +123,23 @@ describe('PostHog visitors query', () => {
     const body = JSON.parse(String(vi.mocked(fetcher).mock.calls[1]![1]?.body))
     expect(body.query.values.cursorTimestamp).toBe('2026-09-18T12:00:00.000Z')
     expect(body.query.values.cursorUuid).toBe('uuid-1')
+    expect(body.query.query).toContain('ORDER BY timestamp, toString(uuid)')
     expect(body.query.query).not.toContain('OFFSET')
+  })
+
+  it('fails the total deadline when a later page ignores abort', async () => {
+    const fetcher = vi
+      .fn()
+      .mockResolvedValueOnce(response([row()], true, true))
+      .mockImplementationOnce(
+        () =>
+          new Promise<Response>(resolve => {
+            setTimeout(() => resolve(response([row()])), 15)
+          })
+      ) as unknown as typeof fetch
+    await expect(
+      queryVisitorsEvents({ ...input, fetcher, timeoutMs: 5 })
+    ).rejects.toEqual(new VisitorsQueryError())
   })
 
   it('uses one total deadline for a hanging request', async () => {

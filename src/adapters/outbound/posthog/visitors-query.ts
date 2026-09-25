@@ -29,10 +29,10 @@ FROM events
 WHERE event = '$pageview'
   AND timestamp >= toDateTime({startSeconds}, 'UTC')
   AND timestamp < toDateTime({endSeconds}, 'UTC')
-  AND startsWith(toString(properties.$current_url), {urlPrefix})
+  AND startsWith(lower(toString(properties.$current_url)), {urlPrefix})
   AND (timestamp > toDateTime64({cursorTimestamp}, 6, 'UTC')
     OR (timestamp = toDateTime64({cursorTimestamp}, 6, 'UTC') AND toString(uuid) > {cursorUuid}))
-ORDER BY timestamp, uuid
+ORDER BY timestamp, toString(uuid)
 LIMIT 10000`
 
 type QueryInput = {
@@ -120,7 +120,10 @@ export const queryVisitorsEvents = async ({
               values: {
                 startSeconds,
                 endSeconds,
-                urlPrefix: publicPagePrefix(config.publicHost, slug),
+                urlPrefix: publicPagePrefix(
+                  config.publicHost,
+                  slug
+                ).toLowerCase(),
                 cursorTimestamp,
                 cursorUuid
               }
@@ -129,8 +132,10 @@ export const queryVisitorsEvents = async ({
           signal: controller.signal
         }
       )
+      if (controller.signal.aborted) throw new VisitorsQueryError()
       if (!response.ok) throw new VisitorsQueryError()
       const payload: unknown = await response.json()
+      if (controller.signal.aborted) throw new VisitorsQueryError()
       if (
         !payload ||
         typeof payload !== 'object' ||
