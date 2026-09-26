@@ -6,10 +6,16 @@ RUN apk add --no-cache libc6-compat openssl \
 WORKDIR /app
 
 FROM base AS deps
+
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY .npmrc ./
+
+RUN --mount=type=secret,id=codeartifact_token \
+	CODEARTIFACT_AUTH_TOKEN="$(cat /run/secrets/codeartifact_token)" \
+	pnpm install --frozen-lockfile
 
 FROM base AS builder
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
@@ -18,6 +24,7 @@ RUN pnpm build
 RUN pnpm prune --prod
 
 FROM base AS runner
+
 WORKDIR /app
 
 ENV NODE_ENV=production
