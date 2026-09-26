@@ -58,7 +58,7 @@ export class GetVisitorsController {
     this.rateLimit = dependencies?.rateLimit ?? new VisitorsRateLimit()
   }
 
-  @Route('GET', '/api/analytics/visitors')
+  @Route('GET', '/analytics/visitors')
   @Trace('analytics.get_visitors')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const started = performance.now()
