@@ -77,9 +77,35 @@ describe('PostHog visitors query', () => {
       startSeconds: 1790132400 - 6 * 86400,
       endSeconds: 1790218800,
       urlPrefix: 'https://capivara.org.br/ongs/my-ong',
-      cursorTimestamp: '2026-09-17T03:00:00.000Z',
+      cursorTimestamp: '2026-09-17T02:59:59.999Z',
       cursorUuid: ''
     })
+  })
+
+  it('includes an event exactly at the inclusive start boundary', async () => {
+    const boundary = [
+      input.startUtc,
+      'boundary-uuid',
+      'boundary-visitor',
+      'https://capivara.org.br/ongs/my-ong',
+      null,
+      null
+    ]
+    const fetcher = vi.fn(async (_url: unknown, options: RequestInit) => {
+      const body = JSON.parse(String(options.body))
+      const cursor = Date.parse(body.query.values.cursorTimestamp)
+      return response(cursor < Date.parse(input.startUtc) ? [boundary] : [])
+    }) as unknown as typeof fetch
+
+    const events = await queryVisitorsEvents({ ...input, fetcher })
+    expect(events).toEqual([
+      {
+        timestamp: input.startUtc,
+        distinctId: 'boundary-visitor',
+        referrer: null,
+        deviceType: null
+      }
+    ])
   })
 
   it.each([

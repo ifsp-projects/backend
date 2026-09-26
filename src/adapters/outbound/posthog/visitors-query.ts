@@ -98,7 +98,7 @@ export const queryVisitorsEvents = async ({
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), timeoutMs)
   const events: VisitorsEvent[] = []
-  let cursorTimestamp = startUtc
+  let cursorTimestamp = new Date(Date.parse(startUtc) - 1).toISOString()
   let cursorUuid = ''
   try {
     for (;;) {
