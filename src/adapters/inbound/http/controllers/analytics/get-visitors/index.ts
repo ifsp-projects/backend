@@ -1,31 +1,21 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
 import { Route } from '@/adapters/inbound/http/decorators/route-decorator'
-import {
-  VisitorsQueryError,
-  queryVisitorsEvents
-} from '@/adapters/outbound/posthog/visitors-query'
+import { queryVisitorsEvents } from '@/adapters/outbound/posthog/visitors-query'
 import { OrganizationsProfilesRepository } from '@/adapters/outbound/prisma/repositories/organization-profiles-repository'
-import {
-  AnalyticsIntegrationUnavailableError,
-  env,
-  getAnalyticsIntegrationConfig
-} from '@/config/env'
-import {
-  GetVisitorsUseCase,
-  VisitorsForbiddenError,
-  VisitorsSlugNotFoundError
-} from '@/core/use-cases/analytics/get-visitors'
-import { InvalidVisitorsFilterError } from '@/core/use-cases/analytics/get-visitors/period'
-import {
-  VisitorsRateLimit,
-  VisitorsRateLimitError
-} from '@/core/use-cases/analytics/get-visitors/rate-limit'
+import { env, getAnalyticsIntegrationConfig } from '@/config/env'
+import { GetVisitorsUseCase } from '@/core/use-cases/analytics/get-visitors'
+import { VisitorsRateLimit } from '@/core/use-cases/analytics/get-visitors/rate-limit'
 import { JwtService } from '@/shared/infra/auth/jwt'
+import { resolveControllerError } from '@/shared/utils/controllers/controller-error'
+import { extractBearerToken } from '@/shared/utils/controllers/extract-bearer-token'
+import { sendJsonError } from '@/shared/utils/controllers/send-json-error'
 
+import { Trace } from '../../../decorators/trace-decorator'
+import { visitorsErrorMappings } from './error-mappings'
+import { logVisitorsOutcome } from './log-outcome'
 import { parseGetVisitorsQuery } from './schema'
-
-type VisitorsExecutor = Pick<GetVisitorsUseCase, 'execute'>
+import type { VisitorsExecutor } from './types'
 
 const sendFailure = (
   request: FastifyRequest,
@@ -34,16 +24,23 @@ const sendFailure = (
   status: number,
   message: string
 ): FastifyReply => {
-  request.log.warn(
-    {
-      duration_ms: Math.round(performance.now() - started),
-      status,
-      cache: 'none',
-      failure: message
-    },
-    'analytics visitors request'
-  )
-  return reply.status(status).send({ error: message })
+  logVisitorsOutcome({
+    request,
+    started,
+    status,
+    cache: 'none',
+    failure: message
+  })
+  return sendJsonError(reply, status, message)
+}
+
+const buildDefaultUseCase = (): VisitorsExecutor => {
+  const profiles = new OrganizationsProfilesRepository()
+  return new GetVisitorsUseCase({
+    findOwnership: slug => profiles.getOrganizationOwnershipBySlug(slug),
+    getConfig: getAnalyticsIntegrationConfig,
+    queryEvents: queryVisitorsEvents
+  })
 }
 
 export class GetVisitorsController {
@@ -56,28 +53,22 @@ export class GetVisitorsController {
     jwt?: JwtService
     rateLimit?: VisitorsRateLimit
   }) {
-    const profiles = new OrganizationsProfilesRepository()
-    this.useCase =
-      dependencies?.useCase ??
-      new GetVisitorsUseCase({
-        findOwnership: slug => profiles.getOrganizationOwnershipBySlug(slug),
-        getConfig: getAnalyticsIntegrationConfig,
-        queryEvents: queryVisitorsEvents
-      })
+    this.useCase = dependencies?.useCase ?? buildDefaultUseCase()
     this.jwt = dependencies?.jwt ?? new JwtService(env.JWT_SECRET)
     this.rateLimit = dependencies?.rateLimit ?? new VisitorsRateLimit()
   }
 
   @Route('GET', '/api/analytics/visitors')
+  @Trace('analytics.get_visitors')
   async execute(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const started = performance.now()
-    const authorization = request.headers.authorization
-    if (!authorization?.startsWith('Bearer ') || !authorization.slice(7)) {
-      return sendFailure(request, reply, started, 401, 'Unauthorized')
-    }
+
+    const token = extractBearerToken(request.headers.authorization)
+    if (!token) return sendFailure(request, reply, started, 401, 'Unauthorized')
+
     let organizationId: string
     try {
-      organizationId = this.jwt.verifyToken(authorization.slice(7)).id
+      organizationId = this.jwt.verifyToken(token).id
     } catch {
       return sendFailure(request, reply, started, 401, 'Unauthorized')
     }
@@ -89,59 +80,26 @@ export class GetVisitorsController {
         organizationId,
         request: visitorsRequest
       })
-      request.log.info(
-        {
-          duration_ms: Math.round(performance.now() - started),
-          status: 200,
-          cache: result.cacheHit ? 'hit' : 'miss'
-        },
-        'analytics visitors request'
-      )
+      logVisitorsOutcome({
+        request,
+        started,
+        status: 200,
+        cache: result.cacheHit ? 'hit' : 'miss'
+      })
       return reply.status(200).send(result.response)
     } catch (error) {
-      if (error instanceof InvalidVisitorsFilterError)
-        return sendFailure(
-          request,
-          reply,
-          started,
-          400,
-          'Invalid visitors filter'
-        )
-      if (error instanceof VisitorsForbiddenError)
-        return sendFailure(request, reply, started, 403, 'Forbidden')
-      if (error instanceof VisitorsSlugNotFoundError)
-        return sendFailure(
-          request,
-          reply,
-          started,
-          404,
-          'Organization not found'
-        )
-      if (error instanceof VisitorsRateLimitError)
-        return sendFailure(
-          request,
-          reply.header('Retry-After', String(error.retryAfter)),
-          started,
-          429,
-          'Too many requests'
-        )
-      if (error instanceof VisitorsQueryError)
-        return sendFailure(
-          request,
-          reply,
-          started,
-          502,
-          'Visitors data is temporarily unavailable'
-        )
-      if (error instanceof AnalyticsIntegrationUnavailableError)
-        return sendFailure(
-          request,
-          reply,
-          started,
-          503,
-          'Analytics integration unavailable'
-        )
-      return sendFailure(request, reply, started, 500, 'Internal server error')
+      const resolved = resolveControllerError(
+        error,
+        reply,
+        visitorsErrorMappings
+      )
+      return sendFailure(
+        request,
+        resolved.reply,
+        started,
+        resolved.status,
+        resolved.message
+      )
     }
   }
 }

@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { VisitorsQueryError, queryVisitorsEvents } from './visitors-query'
+import { VisitorsQueryError } from '@/core/domain/exceptions/analytics'
+
+import { queryVisitorsEvents } from './visitors-query'
 
 const config = {
   apiHost: 'https://us.posthog.com',
