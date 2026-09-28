@@ -29,8 +29,8 @@ export async function verifyAdmin(
       ...request.profile,
       role: data.role
     }
-  } catch (err) {
-    console.log('Error verifying admin token:', err)
+  } catch {
+    request.log.warn({ auth_method: 'admin_jwt' }, 'authentication failed')
     return reply.status(403).send({
       message: 'Forbidden'
     })

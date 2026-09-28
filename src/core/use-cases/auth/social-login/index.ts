@@ -38,11 +38,7 @@ export class SocialLoginUseCase extends BaseAuth {
       }
 
       return payload
-    } catch (error) {
-      console.error({
-        validateGoogleAccount: error
-      })
-
+    } catch {
       throw new InvalidSocialAccountError()
     }
   }

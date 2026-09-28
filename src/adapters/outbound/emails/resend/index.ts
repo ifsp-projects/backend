@@ -6,6 +6,7 @@ import type {
   SendInviteEmailPayload,
   SendInviteEmailResult
 } from '@/core/domain/ports/interfaces/email.interface'
+import { observeDependency } from '@/shared/infra/open-telemetry/dependency-metrics'
 
 import { renderInviteEmail } from './templates/invite-email-template'
 
@@ -35,22 +36,25 @@ export class ResendRepository implements EmailInterface {
   ): Promise<SendInviteEmailResult> {
     const inviteUrl = `${this.appUrl}/onboarding/reset-password?token=${payload.token}`
 
-    const { data, error } = await this.client.emails.send({
-      from: `Capivara Solidária <${this.fromAddress}>`,
-      to: payload.to,
-      subject: 'You have been invited to join the platform',
-      html: renderInviteEmail({
-        inviteUrl,
-        email: payload.to,
-        expiresAt: payload.expires_at
-      })
-    })
-
-    if (error || !data) {
-      throw new Error(
-        `Failed to send invite email: ${error?.message ?? 'unknown error'}`
-      )
-    }
+    const data = await observeDependency('resend', 'send_invite', () =>
+      this.client.emails
+        .send({
+          from: `Capivara Solidária <${this.fromAddress}>`,
+          to: payload.to,
+          subject: 'You have been invited to join the platform',
+          html: renderInviteEmail({
+            inviteUrl,
+            email: payload.to,
+            expiresAt: payload.expires_at
+          })
+        })
+        .then(result => {
+          if (result.error || !result.data) {
+            throw new Error('Failed to send invite email')
+          }
+          return result.data
+        })
+    )
 
     return { message_id: data.id }
   }

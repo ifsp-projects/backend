@@ -8,7 +8,10 @@ export async function optionalVerifyJWT(
     const data = await request.jwtVerify<{ sub: string }>()
 
     request.user = { sub: data.sub }
-  } catch (err) {
-    console.error(err)
+  } catch {
+    request.log.debug(
+      { auth_method: 'optional_jwt' },
+      'optional authentication failed'
+    )
   }
 }

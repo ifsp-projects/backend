@@ -3,11 +3,14 @@ import {
   isPublicPageUrl,
   publicPagePrefix
 } from '@/core/use-cases/analytics/get-visitors/page-filter'
+import { observeDependency } from '@/shared/infra/open-telemetry/dependency-metrics'
 
 import { isCursorStuck, isLastPage, isValidPage } from './page-response'
 import { QUERY } from './query'
 import { readRow } from './read-row'
 import type { QueryInput, VisitorsEvent } from './types'
+
+export type { VisitorsEvent, VisitorsQueryConfig } from './types'
 
 export const queryVisitorsEvents = async ({
   slug,
@@ -39,38 +42,41 @@ export const queryVisitorsEvents = async ({
     for (;;) {
       const previousTimestamp = cursorTimestamp
       const previousUuid = cursorUuid
-      const response = await fetcher(
-        `${config.apiHost}/api/projects/${encodeURIComponent(config.projectId)}/query/`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${config.apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            name: 'Visitors public page',
-            query: {
-              kind: 'HogQLQuery',
-              query: QUERY,
-              values: {
-                startSeconds,
-                endSeconds,
-                urlPrefix: publicPagePrefix(
-                  config.publicHost,
-                  slug
-                ).toLowerCase(),
-                cursorTimestamp,
-                cursorUuid
+      const response = await observeDependency('posthog', 'query', () =>
+        fetcher(
+          `${config.apiHost}/api/projects/${encodeURIComponent(config.projectId)}/query/`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${config.apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              name: 'Visitors public page',
+              query: {
+                kind: 'HogQLQuery',
+                query: QUERY,
+                values: {
+                  startSeconds,
+                  endSeconds,
+                  urlPrefix: publicPagePrefix(
+                    config.publicHost,
+                    slug
+                  ).toLowerCase(),
+                  cursorTimestamp,
+                  cursorUuid
+                }
               }
-            }
-          }),
-          signal: controller.signal
-        }
+            }),
+            signal: controller.signal
+          }
+        ).then(response => {
+          if (!response.ok) throw new VisitorsQueryError()
+          return response
+        })
       )
 
       if (controller.signal.aborted) throw new VisitorsQueryError()
-
-      if (!response.ok) throw new VisitorsQueryError()
 
       const payload: unknown = await response.json()
 

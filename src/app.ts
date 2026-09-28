@@ -14,21 +14,36 @@ import { organizationsRoutes } from './adapters/inbound/http/controllers/organiz
 import { pagesRoutes } from './adapters/inbound/http/controllers/pages/routes'
 import { registerRoutes } from './adapters/inbound/http/decorators/route-decorator'
 import { env } from './config/env'
+import { getTraceContext } from './config/logger'
+import { registerHttpMetrics } from './shared/infra/open-telemetry/http-metrics'
 
 export const disableVisitorsRequestLogging = (request: { url: string }) =>
   request.url.split('?')[0] === '/api/analytics/visitors'
+
+const safeLoggerOptions = {
+  mixin: getTraceContext,
+  serializers: {
+    req: (request: { method: string }) => ({ method: request.method })
+  },
+  redact: ['req.headers.authorization', 'req.headers.cookie']
+}
 
 export const app = fastify({
   disableRequestLogging: disableVisitorsRequestLogging,
   logger:
     process.env.NODE_ENV === 'production'
       ? {
+          ...safeLoggerOptions,
           level: 'info',
           transport: {
-            target: 'pino-opentelemetry-transport'
+            targets: [
+              { target: 'pino-opentelemetry-transport' },
+              { target: 'pino/file', options: { destination: 1 } }
+            ]
           }
         }
       : {
+          ...safeLoggerOptions,
           level: 'debug',
           transport: {
             targets: [
@@ -47,6 +62,8 @@ export const app = fastify({
   keepAliveTimeout: 605000, // 10 minutes + 5 seconds buffer
   requestTimeout: 600000 // 10 minutes for the entire request
 })
+
+registerHttpMetrics(app)
 
 app.register(fastifyCors, {
   origin: true,
@@ -96,4 +113,8 @@ app.get('/health', (_, reply) => {
 
 app.get('/favicon.ico', (request, reply) => {
   return reply.status(204).send()
+})
+
+app.setNotFoundHandler((_request, reply) => {
+  return reply.status(404).send({ message: 'Not Found' })
 })

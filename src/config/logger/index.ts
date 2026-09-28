@@ -5,5 +5,9 @@ export function getTraceContext() {
   if (!span) return {}
 
   const { traceId, spanId, traceFlags } = span.spanContext()
-  return { traceId, spanId, sampled: traceFlags === 1 }
+  return {
+    trace_id: traceId,
+    span_id: spanId,
+    trace_flags: traceFlags
+  }
 }

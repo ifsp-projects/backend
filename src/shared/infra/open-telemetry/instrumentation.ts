@@ -1,25 +1,42 @@
 import { FastifyOtelInstrumentation } from '@fastify/otel'
 import type { Span } from '@opentelemetry/api'
-// import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
+import { AggregationType } from '@opentelemetry/sdk-metrics'
 import { NodeSDK } from '@opentelemetry/sdk-node'
 
 const sdk = new NodeSDK({
+  views: [
+    {
+      instrumentName: 'http.server.request.duration',
+      aggregation: {
+        type: AggregationType.EXPLICIT_BUCKET_HISTOGRAM,
+        options: {
+          boundaries: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]
+        }
+      }
+    },
+    {
+      instrumentName: 'dependency.client.duration',
+      aggregation: {
+        type: AggregationType.EXPLICIT_BUCKET_HISTOGRAM,
+        options: {
+          boundaries: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10]
+        }
+      }
+    }
+  ],
   instrumentations: [
     new FastifyOtelInstrumentation({
       registerOnInitialization: true,
       ignorePaths: (requestOptions: { url: string }) => {
-        return requestOptions.url === '/health'
+        return requestOptions.url.split('?')[0] === '/health'
       },
       requestHook: (
         span: Span,
         request: { id: any; routeOptions: { url: any }; url: any }
       ) => {
-        // Enrich spans with Fastify-specific context
         span.setAttribute('request.id', request.id)
-        span.setAttribute(
-          'http.route',
-          request.routeOptions?.url || request.url
-        )
+        span.setAttribute('http.route', request.routeOptions?.url || 'unknown')
+        span.setAttribute('url.path', request.url.split('?')[0])
       },
       lifecycleHook: (span: Span, info: { hookName: any }) => {
         span.setAttribute('fastify.hook', info.hookName)

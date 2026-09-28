@@ -17,8 +17,14 @@ export async function withSpan<T>(
         span.setStatus({ code: SpanStatusCode.OK })
         return result
       } catch (err: any) {
-        span.setStatus({ code: SpanStatusCode.ERROR, message: err.message })
-        span.recordException(err)
+        span.setStatus({
+          code: SpanStatusCode.ERROR,
+          message: 'Operation failed'
+        })
+        span.recordException({
+          name: err?.name ?? 'Error',
+          message: 'Operation failed'
+        })
         throw err
       } finally {
         span.end()

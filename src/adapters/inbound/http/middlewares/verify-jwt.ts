@@ -17,8 +17,8 @@ export async function verifyJWT(request: FastifyRequest, reply: FastifyReply) {
     const data = jwtService.verifyToken(token)
 
     request.user = { sub: data.sub }
-  } catch (err) {
-    console.log('Error verifying JWT:', err)
+  } catch {
+    request.log.warn({ auth_method: 'jwt' }, 'authentication failed')
     reply.status(401).send({
       message: 'Unauthorized'
     })

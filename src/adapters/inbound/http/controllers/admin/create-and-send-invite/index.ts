@@ -42,9 +42,20 @@ export class CreateAndSendInviteController {
 
     const response = await this.createInviteTokenUseCase.execute(payload)
 
-    await this.sendEmailUseCase.execute({
-      invite_token: response.inviteToken.token
-    })
+    try {
+      await this.sendEmailUseCase.execute({
+        invite_token: response.inviteToken.token
+      })
+    } catch (error) {
+      request.log.error(
+        {
+          dependency: 'resend',
+          error_type: error instanceof Error ? error.name : 'Error'
+        },
+        'dependency request failed'
+      )
+      throw error
+    }
 
     return reply.status(201).send(response)
   }

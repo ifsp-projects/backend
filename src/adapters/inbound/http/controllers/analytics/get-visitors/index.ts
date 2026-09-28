@@ -93,6 +93,16 @@ export class GetVisitorsController {
         reply,
         visitorsErrorMappings
       )
+      if (resolved.status === 502 || resolved.status === 503) {
+        request.log.warn(
+          {
+            dependency: 'posthog',
+            statusCode: resolved.status,
+            error_type: error instanceof Error ? error.name : 'Error'
+          },
+          'dependency request failed'
+        )
+      }
       return sendFailure(
         request,
         resolved.reply,
