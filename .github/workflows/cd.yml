@@ -160,6 +160,7 @@ jobs:
 
             sudo docker network inspect observability >/dev/null 2>&1 || sudo docker network create observability
 
+            umask 077
             cat > /opt/otel/.env <<EOF
             GRAFANA_CLOUD_OTLP_ENDPOINT=$GRAFANA_CLOUD_OTLP_ENDPOINT
             GRAFANA_CLOUD_AUTH_HEADER=$GRAFANA_CLOUD_AUTH_HEADER
@@ -181,3 +182,13 @@ jobs:
               $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG
 
             sudo docker system prune -f
+
+      - name: Publish Grafana dashboards
+        if: ${{ vars.GRAFANA_URL != '' }}
+        env:
+          GRAFANA_URL: ${{ vars.GRAFANA_URL }}
+          GRAFANA_SERVICE_ACCOUNT_TOKEN: ${{ secrets.GRAFANA_SERVICE_ACCOUNT_TOKEN }}
+          GRAFANA_PROMETHEUS_DATASOURCE_UID: ${{ vars.GRAFANA_PROMETHEUS_DATASOURCE_UID }}
+          GRAFANA_LOKI_DATASOURCE_UID: ${{ vars.GRAFANA_LOKI_DATASOURCE_UID }}
+          GRAFANA_FOLDER_UID: ${{ vars.GRAFANA_FOLDER_UID }}
+        run: node devops/otel/publish-dashboards.mjs
