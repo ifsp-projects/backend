@@ -61,7 +61,11 @@ jobs:
       - name: GCP Auth
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+          create_credentials_file: true
+          export_environment_variables: true
 
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
@@ -74,8 +78,6 @@ jobs:
       - name: Terraform Init
         working-directory: ./tf
         run: terraform init
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Terraform Apply
         working-directory: ./tf
@@ -84,7 +86,6 @@ jobs:
           echo "VM_HOST=$(terraform output -raw vm_public_ip)" >> $GITHUB_ENV
           echo "REGISTRY_URL=$(terraform output -raw artifact_registry_url)" >> $GITHUB_ENV
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
           TF_VAR_ssh_public_key: ${{ secrets.VM_SSH_PUBLIC_KEY }}
           TF_VAR_project_name: ${{ env.PROJECT_NAME }}
           TF_VAR_project_id: ${{ env.GCP_PROJECT_ID }}
