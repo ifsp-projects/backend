@@ -47,6 +47,13 @@ if (missing.length) {
   throw new Error(`Missing deployment configuration: ${missing.join(', ')}`)
 }
 
+if (new URL(otel.GRAFANA_CLOUD_OTLP_ENDPOINT).protocol !== 'https:') {
+  throw new Error('GRAFANA_CLOUD_OTLP_ENDPOINT must use HTTPS')
+}
+if (!/^[A-Za-z0-9+/]+={0,2}$/.test(otel.GRAFANA_CLOUD_AUTH_HEADER)) {
+  throw new Error('GRAFANA_CLOUD_AUTH_HEADER must be a base64 payload')
+}
+
 function serialize(values) {
   return `${Object.entries(values).map(([key, value]) => {
     if (/[\r\n\0]/.test(value)) {

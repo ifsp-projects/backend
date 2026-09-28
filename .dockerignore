@@ -12,3 +12,4 @@ README.md
 .env.*
 !.env.example
 deploy/
+gha-creds-*.json

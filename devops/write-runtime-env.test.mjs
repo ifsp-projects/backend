@@ -76,3 +76,16 @@ test('rejects multiline secrets before writing files', async () => {
     await rm(cwd, { recursive: true, force: true })
   }
 })
+
+test('requires dashboard inputs when publishing is enabled', async () => {
+  const { cwd, result } = await run({ GRAFANA_URL: 'https://grafana.example.com' })
+  try {
+    assert.notEqual(result.status, 0)
+    assert.match(result.stderr, /GRAFANA_SERVICE_ACCOUNT_TOKEN/)
+    assert.match(result.stderr, /GRAFANA_PROMETHEUS_DATASOURCE_UID/)
+    assert.match(result.stderr, /GRAFANA_LOKI_DATASOURCE_UID/)
+    await assert.rejects(readFile(join(cwd, 'deploy/app/.env')))
+  } finally {
+    await rm(cwd, { recursive: true, force: true })
+  }
+})

@@ -8,3 +8,4 @@ generated
 /data
 /data/*
 /deploy/
+gha-creds-*.json

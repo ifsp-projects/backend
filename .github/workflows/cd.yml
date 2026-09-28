@@ -10,6 +10,10 @@ permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
 env:
   PROJECT_NAME: ${{ vars.PROJECT_NAME }}
   GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
@@ -24,11 +28,35 @@ jobs:
     name: "Build and Deploy"
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: production
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           persist-credentials: false
+
+      - name: Validate and write runtime configuration
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+          WEBPAGE_BASE_URL: ${{ vars.WEBPAGE_BASE_URL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          APP_URL: ${{ vars.APP_URL }}
+          EMAIL_FROM: ${{ vars.EMAIL_FROM }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_ORGANIZATION_ID: ${{ vars.OPENAI_ORGANIZATION_ID }}
+          OPENAI_PROJECT_ID: ${{ vars.OPENAI_PROJECT_ID }}
+          POSTHOG_READABLE_API_KEY: ${{ secrets.POSTHOG_READABLE_API_KEY }}
+          POSTHOG_API_HOST: ${{ vars.POSTHOG_API_HOST }}
+          POSTHOG_PROJECT_ID: ${{ vars.POSTHOG_PROJECT_ID }}
+          GRAFANA_CLOUD_OTLP_ENDPOINT: ${{ vars.GRAFANA_CLOUD_OTLP_ENDPOINT }}
+          GRAFANA_CLOUD_AUTH_HEADER: ${{ secrets.GRAFANA_CLOUD_AUTH_HEADER }}
+          GRAFANA_URL: ${{ vars.GRAFANA_URL }}
+          GRAFANA_SERVICE_ACCOUNT_TOKEN: ${{ secrets.GRAFANA_SERVICE_ACCOUNT_TOKEN }}
+          GRAFANA_PROMETHEUS_DATASOURCE_UID: ${{ vars.GRAFANA_PROMETHEUS_DATASOURCE_UID }}
+          GRAFANA_LOKI_DATASOURCE_UID: ${{ vars.GRAFANA_LOKI_DATASOURCE_UID }}
+        run: node devops/write-runtime-env.mjs
 
       - name: GCP Auth
         uses: google-github-actions/auth@v2
@@ -61,9 +89,8 @@ jobs:
           TF_VAR_project_name: ${{ env.PROJECT_NAME }}
           TF_VAR_project_id: ${{ env.GCP_PROJECT_ID }}
           TF_VAR_env: "prod"
-
-      - name: Load .env from GitHub Secrets
-        run: echo "${{ secrets.APP_ENV_FILE }}" > .env
+          TF_VAR_region: ${{ env.REGION }}
+          TF_VAR_zone: ${{ env.ZONE }}
 
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
@@ -95,17 +122,18 @@ jobs:
 
           docker push $REGISTRY_URL/$IMAGE_REPOSITORY:$IMAGE_TAG
 
-      - name: Copy .env to VM
-        uses: appleboy/scp-action@master
+      - name: Copy app configuration to VM
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1
         with:
           host: ${{ env.VM_HOST }}
           username: gcpuser
           key: ${{ secrets.VM_SSH_KEY }}
-          source: ".env"
+          source: "deploy/app/.env"
           target: "/home/gcpuser/app"
+          strip_components: 2
 
       - name: Prepare OTel directory on VM
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
         with:
           host: ${{ env.VM_HOST }}
           username: gcpuser
@@ -116,7 +144,7 @@ jobs:
             sudo chmod 755 /opt/otel
 
       - name: Copy OTel config to VM
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1
         with:
           host: ${{ env.VM_HOST }}
           username: gcpuser
@@ -125,24 +153,33 @@ jobs:
           target: "/opt/otel"
           strip_components: 2
 
+      - name: Copy OTel credentials to VM
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1
+        with:
+          host: ${{ env.VM_HOST }}
+          username: gcpuser
+          key: ${{ secrets.VM_SSH_KEY }}
+          source: "deploy/otel/.env"
+          target: "/opt/otel"
+          strip_components: 2
+
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
         env:
           REGISTRY_URL: ${{ env.REGISTRY_URL }}
           IMAGE_REPOSITORY: ifsp-extensao-api-module-prod
           IMAGE_TAG: ${{ github.sha }}
           CONTAINER_NAME: api-ifsp
           REGION: ${{ env.REGION }}
-          GRAFANA_CLOUD_OTLP_ENDPOINT: ${{ secrets.GRAFANA_CLOUD_OTLP_ENDPOINT }}
-          GRAFANA_CLOUD_AUTH_HEADER: ${{ secrets.GRAFANA_CLOUD_AUTH_HEADER }}
         with:
           host: ${{ env.VM_HOST }}
           username: gcpuser
           key: ${{ secrets.VM_SSH_KEY }}
-          envs: REGISTRY_URL,IMAGE_REPOSITORY,IMAGE_TAG,CONTAINER_NAME,REGION,GRAFANA_CLOUD_OTLP_ENDPOINT,GRAFANA_CLOUD_AUTH_HEADER
+          envs: REGISTRY_URL,IMAGE_REPOSITORY,IMAGE_TAG,CONTAINER_NAME,REGION
           command_timeout: 15m
           script: |
             set -e
+            chmod 600 /home/gcpuser/app/.env /opt/otel/.env
 
             echo "Waiting for Docker daemon..."
             for i in $(seq 1 30); do
@@ -159,12 +196,6 @@ jobs:
             echo $TOKEN | sudo docker login -u oauth2accesstoken --password-stdin https://$REGION-docker.pkg.dev
 
             sudo docker network inspect observability >/dev/null 2>&1 || sudo docker network create observability
-
-            umask 077
-            cat > /opt/otel/.env <<EOF
-            GRAFANA_CLOUD_OTLP_ENDPOINT=$GRAFANA_CLOUD_OTLP_ENDPOINT
-            GRAFANA_CLOUD_AUTH_HEADER=$GRAFANA_CLOUD_AUTH_HEADER
-            EOF
 
             cd /opt/otel
             sudo docker compose --env-file .env -f otel-compose.yaml up -d

@@ -23,6 +23,9 @@ jobs:
         with:
           node-version: 24.12.0
 
+      - name: Check deployment env generation
+        run: node --test devops/write-runtime-env.test.mjs
+
       - name: Install PNPM
         run: |
           npm install -g pnpm
