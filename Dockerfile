@@ -37,6 +37,8 @@ ENV OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-collector:4317"
 
 ENV OTEL_SERVICE_NAME="capivara-solidaria-api"
 ENV OTEL_RESOURCE_ATTRIBUTES="service.namespace=capivara-solidaria,deployment.environment=production"
+ENV OTEL_TRACES_SAMPLER="parentbased_traceidratio"
+ENV OTEL_TRACES_SAMPLER_ARG="0.1"
 
 RUN addgroup --system --gid 1001 nodejs \
 	&& adduser --system --uid 1001 fastify --ingroup nodejs

@@ -27,11 +27,22 @@ const otel = {
   GRAFANA_CLOUD_AUTH_HEADER: process.env.GRAFANA_CLOUD_AUTH_HEADER
 }
 
+const dashboardRequired = process.env.GRAFANA_URL
+  ? [
+      'GRAFANA_SERVICE_ACCOUNT_TOKEN',
+      'GRAFANA_PROMETHEUS_DATASOURCE_UID',
+      'GRAFANA_LOKI_DATASOURCE_UID'
+    ]
+  : []
+
 const required = [
   ...Object.entries(app).filter(([key]) => !['OPENAI_ORGANIZATION_ID', 'OPENAI_PROJECT_ID'].includes(key)),
   ...Object.entries(otel)
 ]
-const missing = required.filter(([, value]) => !value).map(([key]) => key)
+const missing = [
+  ...required.filter(([, value]) => !value).map(([key]) => key),
+  ...dashboardRequired.filter(key => !process.env[key])
+]
 if (missing.length) {
   throw new Error(`Missing deployment configuration: ${missing.join(', ')}`)
 }
