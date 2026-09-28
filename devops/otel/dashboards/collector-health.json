@@ -1,0 +1,73 @@
+{
+  "id": null,
+  "uid": "capivara-collector-health",
+  "title": "Capivara | Collector",
+  "tags": ["capivara", "opentelemetry", "collector"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 0,
+  "refresh": "1m",
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Falhas de exportação por sinal",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "__PROMETHEUS_UID__" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(otelcol_exporter_send_failed_spans_total{job=\"capivara-otel-collector\"}[$__rate_interval]))",
+          "legendFormat": "traces"
+        },
+        {
+          "refId": "B",
+          "expr": "sum(rate(otelcol_exporter_send_failed_metric_points_total{job=\"capivara-otel-collector\"}[$__rate_interval]))",
+          "legendFormat": "métricas"
+        },
+        {
+          "refId": "C",
+          "expr": "sum(rate(otelcol_exporter_send_failed_log_records_total{job=\"capivara-otel-collector\"}[$__rate_interval]))",
+          "legendFormat": "logs"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" }, "overrides": [] }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Fila do exportador",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "__PROMETHEUS_UID__" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "otelcol_exporter_queue_size{job=\"capivara-otel-collector\"}",
+          "legendFormat": "ocupação"
+        },
+        {
+          "refId": "B",
+          "expr": "otelcol_exporter_queue_capacity{job=\"capivara-otel-collector\"}",
+          "legendFormat": "capacidade"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Memória RSS do Collector",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "__PROMETHEUS_UID__" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "otelcol_process_memory_rss_bytes{job=\"capivara-otel-collector\"}",
+          "legendFormat": "RSS"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] }
+    }
+  ]
+}

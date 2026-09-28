@@ -1,0 +1,58 @@
+{
+  "id": null,
+  "uid": "capivara-api-dependencies",
+  "title": "Capivara API | Dependências",
+  "tags": ["capivara", "backend", "dependencies"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 0,
+  "refresh": "1m",
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Chamadas por dependência e resultado",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "__PROMETHEUS_UID__" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (dependency_name, outcome) (rate(dependency_client_requests_total{job=\"capivara-solidaria/capivara-solidaria-api\"}[$__rate_interval]))",
+          "legendFormat": "{{dependency_name}} {{outcome}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" }, "overrides": [] }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Latência p95 por dependência",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "__PROMETHEUS_UID__" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le, dependency_name) (rate(dependency_client_duration_seconds_bucket{job=\"capivara-solidaria/capivara-solidaria-api\"}[$__rate_interval])))",
+          "legendFormat": "{{dependency_name}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Falhas por dependência",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "__PROMETHEUS_UID__" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (dependency_name) (rate(dependency_client_requests_total{job=\"capivara-solidaria/capivara-solidaria-api\",outcome=\"failure\"}[$__rate_interval]))",
+          "legendFormat": "{{dependency_name}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" }, "overrides": [] }
+    }
+  ]
+}

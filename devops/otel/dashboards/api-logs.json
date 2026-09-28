@@ -1,0 +1,51 @@
+{
+  "id": null,
+  "uid": "capivara-api-logs",
+  "title": "Capivara API | Logs e falhas",
+  "tags": ["capivara", "backend", "logs"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 0,
+  "refresh": "1m",
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "logs",
+      "title": "Erros e avisos da API",
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 0 },
+      "datasource": { "type": "loki", "uid": "__LOKI_UID__" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{service_name=\"capivara-solidaria-api\"} | severity_text =~ `(?i)warn|error|fatal`"
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending"
+      }
+    },
+    {
+      "id": 2,
+      "type": "logs",
+      "title": "Falhas em integrações externas",
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 12 },
+      "datasource": { "type": "loki", "uid": "__LOKI_UID__" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{service_name=\"capivara-solidaria-api\"} |= `dependency request failed`"
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending"
+      }
+    }
+  ]
+}

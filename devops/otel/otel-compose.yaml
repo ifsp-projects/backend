@@ -4,22 +4,22 @@ services:
     container_name: otel-collector
     hostname: otel-collector
     image: otel/opentelemetry-collector-contrib:0.155.0
-    command: [ "--config=/etc/otel-collector-config.yml" ]
+    command: ['--config=/etc/otel-collector-config.yml']
     volumes:
-      - ./collector-config.yaml:/etc/otel-collector-config.yml
+      - ./collector-config.yaml:/etc/otel-collector-config.yml:ro
     restart: unless-stopped
     environment:
-      - DEPLOY_ENV=prod
+      - DEPLOY_ENV=production
       - GRAFANA_CLOUD_OTLP_ENDPOINT=${GRAFANA_CLOUD_OTLP_ENDPOINT}
       - GRAFANA_CLOUD_AUTH_HEADER=${GRAFANA_CLOUD_AUTH_HEADER}
     ports:
-      - "127.0.0.1:4317:4317"
-      - "127.0.0.1:4318:4318"
+      - '127.0.0.1:4317:4317'
+      - '127.0.0.1:4318:4318'
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
     mem_limit: 256m
     cpus: 0.5
     networks:

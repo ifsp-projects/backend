@@ -20,14 +20,14 @@ processors:
   resource:
     attributes:
       - key: deployment.environment
-        value: "${env:DEPLOY_ENV}"
+        value: '${env:DEPLOY_ENV}'
         action: insert
 
 exporters:
   otlphttp/grafana_cloud:
-    endpoint: "${env:GRAFANA_CLOUD_OTLP_ENDPOINT}"
+    endpoint: '${env:GRAFANA_CLOUD_OTLP_ENDPOINT}'
     headers:
-      Authorization: "Basic ${env:GRAFANA_CLOUD_AUTH_HEADER}"
+      Authorization: 'Basic ${env:GRAFANA_CLOUD_AUTH_HEADER}'
     compression: gzip
     retry_on_failure:
       enabled: true
@@ -40,6 +40,18 @@ exporters:
       queue_size: 256
 
 service:
+  telemetry:
+    resource:
+      service.name: capivara-otel-collector
+      deployment.environment: '${env:DEPLOY_ENV}'
+    metrics:
+      readers:
+        - periodic:
+            interval: 10000
+            exporter:
+              otlp:
+                protocol: http/protobuf
+                endpoint: http://127.0.0.1:4318
   pipelines:
     traces:
       receivers: [otlp]
