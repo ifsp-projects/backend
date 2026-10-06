@@ -20,7 +20,6 @@ env:
   REGION: ${{ vars.REGION }}
   ZONE: ${{ vars.ZONE }}
   IMAGE_TAG: ${{ github.sha }}
-  NODE_VERSION: ${{ vars.NODE_VERSION }}
   IMAGE_REPOSITORY: ifsp-extensao-api-module-prod
 
 jobs:
@@ -111,6 +110,12 @@ jobs:
             --region us-east-1 \
             --query authorizationToken \
             --output text)" >> "$GITHUB_ENV"
+
+      - name: Read Node version from .nvmrc
+        run: |
+          NODE_VERSION=$(tr -d '[:space:]' < .nvmrc | sed 's/^v//')
+          echo "NODE_VERSION=$NODE_VERSION" >> "$GITHUB_ENV"
+          echo "Using Node $NODE_VERSION"
 
       - name: Build, tag, and push image
         run: |

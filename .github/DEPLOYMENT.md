@@ -44,7 +44,7 @@ Store these as Actions variables:
 
 `NODE_ENV=production`, `ENV=prod`, `PORT=8000`, and `DEBUG=false` are set in
 `devops/write-runtime-env.mjs`. The local `.env.example` also lists
-`GOOGLE_CLIENT_SECRET`, `OPENAI_API_TOKEN_BASE_URL`, and `API_PORT`; the current
+`GOOGLE_CLIENT_SECRET` and `API_PORT`; the current
 application does not read those names, so the deployment does not include them.
 The Docker image already provides the app's OTel exporter settings.
 

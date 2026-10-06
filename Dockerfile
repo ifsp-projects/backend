@@ -32,9 +32,6 @@ ENV NODE_ENV=production
 ENV OTEL_EXPORTER_OTLP_PROTOCOL="grpc"
 ENV OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-collector:4317"
 
-# ENV OTEL_EXPORTER_OTLP_LOGS_PROTOCOL="http/protobuf"
-# ENV OTEL_EXPORTER_OTLP_LOGS_ENDPOINT="http://otel-collector:4318/v1/logs"
-
 ENV OTEL_SERVICE_NAME="capivara-solidaria-api"
 ENV OTEL_RESOURCE_ATTRIBUTES="service.namespace=capivara-solidaria,deployment.environment=production"
 ENV OTEL_TRACES_SAMPLER="parentbased_traceidratio"

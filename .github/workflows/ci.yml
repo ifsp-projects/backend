@@ -4,8 +4,11 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+  id-token: write
+
 env:
-  IMAGE_LIST: ${{ vars.NODE_IMAGE }}
   NODE_VERSION: ${{ vars.NODE_VERSION }}
   REGION: ${{ vars.REGION }}
 
@@ -21,7 +24,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24.12.0
+          node-version-file: '.nvmrc'
 
       - name: Check deployment env generation
         run: node --test devops/write-runtime-env.test.mjs
@@ -30,9 +33,25 @@ jobs:
         run: |
           npm install -g pnpm
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_CODEARTIFACT_READ_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Get CodeArtifact token
+        shell: bash
+        run: |
+          echo "CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token \
+            --domain npm \
+            --domain-owner 412898606600 \
+            --region us-east-1 \
+            --query authorizationToken \
+            --output text)" >> "$GITHUB_ENV"
+
       - name: Install dependencies
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
 
       - name: Run Build
         run: |
